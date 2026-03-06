@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 [ExecuteAlways] // 항상 작동
 public class HexGridLayout : MonoBehaviour
@@ -42,6 +43,10 @@ public class HexGridLayout : MonoBehaviour
     public void LayoutGrid()
     {
         // 기존 타일 찌꺼기 깔끔하게 청소
+        if (TileManager.Instance != null) 
+        {
+            TileManager.Instance.ClearMap();
+        }
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             if (Application.isPlaying) Destroy(transform.GetChild(i).gameObject);
@@ -54,10 +59,15 @@ public class HexGridLayout : MonoBehaviour
             for (int x = 0; x < gridSize.x; x++)
             {
 
-                //게임 오브젝트 생성 후 HexRenderer 붙이기
-                GameObject tile = new GameObject($"Tile_{x}_{y}", typeof(HexRenderer));
+                //게임 오브젝트 생성 후 HexRenderer 붙이기 타일 관리용 TileScript 붙이기
+                GameObject tile = new GameObject($"Tile_{x}_{y}", typeof(HexRenderer),typeof(TileScript));
+                Vector2Int tileCoordinate = new Vector2Int(x,y); 
                 tile.transform.SetParent(transform, false);
-                tile.transform.localPosition = GetPositionForHexFromCoordinate(new Vector2Int(x, y));
+                tile.transform.localPosition = GetPositionForHexFromCoordinate(tileCoordinate);
+                TileScript tileScript = tile.GetComponent<TileScript>();
+                tileScript.GridCoordinate = tileCoordinate;
+                
+                TileManager.Instance.RegisterTile(tileCoordinate, tileScript);
 
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped = isFlatTopped;
