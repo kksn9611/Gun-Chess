@@ -13,12 +13,10 @@ public class TestScript : MonoBehaviour
         if (spawnTile != null)
         {
             UnitSpawner.Instance.SpawnUnit(mobUnit, spawnTile);
-            Debug.Log("spawnTile에 유닛 소환");
         }
         if (targetTile != null)
         {
             UnitSpawner.Instance.SpawnUnit(mobUnit, targetTile);
-            Debug.Log("targetTile에 유닛 소환");
         }
     }
 

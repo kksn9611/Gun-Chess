@@ -25,5 +25,11 @@ public class UnitSpawner : MonoBehaviour
         // 타일 채우기
         targetTile.IsOccupied = true;
 
+        //유닛 컨트롤러 갱신
+        if (unitObj.TryGetComponent<UnitController>(out UnitController controller))
+        {
+            controller.Initialize(data, targetTile);
+        }
+
     }
 }

@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class TileScript : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     [SerializeField] private Vector2Int gridCoordinate;
     [SerializeField] private bool isOccupied = false;
 
