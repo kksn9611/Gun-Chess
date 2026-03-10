@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: b25afd5c6c9c6694ca8780efef8c4a95, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -701,7 +701,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TestScript
   mobUnit: {fileID: 11400000, guid: f99f299c51bd3144ba119a664dfbd9dd, type: 2}
-  tileScript: {fileID: 0}
 --- !u!4 &1065424476
 Transform:
   m_ObjectHideFlags: 0
