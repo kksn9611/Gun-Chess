@@ -3,21 +3,17 @@ using System.Collections.Generic;
 [ExecuteAlways]
 public class TileManager : MonoBehaviour
 {
+    // 싱글톤
     public static TileManager Instance { get; private set; }
     private Dictionary<Vector2Int, TileScript> tileMap = new Dictionary<Vector2Int, TileScript>();
-
+ 
     private void Awake()
     {
-        // 싱글톤 
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
     }
 
-    public void Update()
-    {
-
-    }
-
+    // 게임 시작 시 HexGridLayout 스크립트에서 1회 실행해서 타일 맵에 등록
     public void RegisterTile(Vector2Int coord, TileScript tileScript)
         {
             tileMap.Add(coord, tileScript);

@@ -13,4 +13,7 @@ public void Initialize(UnitData data, TileScript spawnTile)
         
         Debug.Log($"{unitData.unitName}이(가) {currentCoord} 위치에 소환되었습니다!");
     }
+// 유닛 데이터 얻는 프로퍼티;
+public UnitData UnitData {get => unitData;}
+
 }

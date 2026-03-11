@@ -3,6 +3,7 @@ using System.Collections;
 public class TestScript : MonoBehaviour
 {
     public UnitData mobUnit;
+    [SerializeField]private UnitSpawner unitSpawner;
     IEnumerator Start()
     {
         // HexGridLayout이 타일을 다 생성할 때까지 대기
@@ -12,16 +13,11 @@ public class TestScript : MonoBehaviour
         TileScript targetTile = TileManager.Instance.GetTile(new Vector2Int(5, 5));
         if (spawnTile != null)
         {
-            UnitSpawner.Instance.SpawnUnit(mobUnit, spawnTile);
+            unitSpawner.SpawnUnit(mobUnit, spawnTile, Team.Player);
         }
         if (targetTile != null)
         {
-            UnitSpawner.Instance.SpawnUnit(mobUnit, targetTile);
+            unitSpawner.SpawnUnit(mobUnit, targetTile, Team.Enemy);
         }
-    }
-
-    void Update()
-    {
-        
     }
 }
