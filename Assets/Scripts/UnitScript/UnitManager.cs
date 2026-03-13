@@ -13,11 +13,11 @@ public class UnitManager : MonoBehaviour
 {
 // 싱글톤
 public static UnitManager Instance {get; private set;}
-private List<UnitController> playerUnitList = new List<UnitController>();
-private List<UnitController> enemyUnitList = new List<UnitController>();
-private List<UnitController> neutralUnitList = new List<UnitController>();
+public List<UnitController> playerUnitList = new List<UnitController>();
+public List<UnitController> enemyUnitList = new List<UnitController>();
+public List<UnitController> neutralUnitList = new List<UnitController>();
 
-    void Awake()
+    private void Awake()
     {
         if(Instance == null)
         {
@@ -42,7 +42,6 @@ private List<UnitController> neutralUnitList = new List<UnitController>();
         }
         Debug.Log(team + "unitList에 " + unit.UnitData.name + "추가");
     }
-
 
 
 

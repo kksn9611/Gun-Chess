@@ -28,6 +28,7 @@ public class TileManager : MonoBehaviour
         return null;
     }
 
+
     public void ClearMap()
     {
         tileMap.Clear();
