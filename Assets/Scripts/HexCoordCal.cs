@@ -17,7 +17,7 @@ public class HexCoordCal
             return distance;
     }
 
-    private static Vector3Int OffsetToCube(Vector2Int offsetCoord)
+    public static Vector3Int OffsetToCube(Vector2Int offsetCoord)
     {
         // HexGrid의 구조 odd-r 홀수 행 +1/2 밀어내기
         // 짝수 홀수 판별 & 1
