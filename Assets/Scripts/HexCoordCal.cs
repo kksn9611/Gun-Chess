@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using System.Collections.Generic;
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 public class HexCoordCal
 {
@@ -26,5 +26,32 @@ public class HexCoordCal
         int s = -q -r;
         return new Vector3Int(q, r, s);
     }
+    
+    // 육각형 근접 타일 반환 함수
+    public static List<Vector2Int> GetTileNeighbors(Vector2Int currentTile)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>();
+
+        foreach (var direction in Directions)
+        {
+            Vector2Int neighbor = new Vector2Int(
+                currentTile.x + direction.x,
+                currentTile.y + direction.y);
+
+            if (neighbor.x < 0 || neighbor.y < 0 || neighbor.x > 6 || neighbor.y > 7)
+                continue;
+
+            neighbors.Add(neighbor);
+        }
+
+        return neighbors;
+    }
+
+    private static Vector2Int[] Directions = new Vector2Int[]
+    {
+        new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int (1, 0),
+        new Vector2Int(0, 1), new Vector2Int(-1, 1), new Vector2Int (-1, 0)
+    };
 }
+
 
