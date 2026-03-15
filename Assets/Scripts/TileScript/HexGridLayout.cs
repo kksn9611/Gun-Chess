@@ -60,6 +60,7 @@ public class HexGridLayout : MonoBehaviour
                 hexRenderer.DrawMesh();
             }
         }
+        TileManager.Instance.InitializeAllTiles(); // 모든 타일 좌표 로딩
     }
 
 

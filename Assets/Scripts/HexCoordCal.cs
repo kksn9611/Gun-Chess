@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using System.Collections.Generic;
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 public class HexCoordCal
 {
@@ -26,5 +26,39 @@ public class HexCoordCal
         int s = -q -r;
         return new Vector3Int(q, r, s);
     }
+    
+    // 육각형 근접 타일 반환 함수
+    public static List<TileScript> GetTileNeighbors(TileScript currentTile)
+    {
+        List<TileScript> neighbors = new List<TileScript>();
+        Vector2Int pos = currentTile.GridCoordinate;
+
+        Vector2Int[] directions = (pos.y % 2 != 0) ? OddRowDirections : EvenRowDirections;
+
+        foreach (var direction in directions)
+        {
+            Vector2Int neighborPos = new Vector2Int(pos.x + direction.x, pos.y + direction.y);
+
+            TileScript neighborTile = TileManager.Instance.GetTile(neighborPos);
+
+            if (neighborTile != null)
+            {
+                neighbors.Add(neighborTile);
+            }
+        }
+        return neighbors;
+    }
+
+    private static readonly Vector2Int[] EvenRowDirections = new Vector2Int[]
+    {
+        new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(0, 1),
+        new Vector2Int(-1, 1), new Vector2Int(-1, 0), new Vector2Int(-1, -1)
+    };
+    private static readonly Vector2Int[] OddRowDirections = new Vector2Int[]
+        {
+        new Vector2Int(1, -1), new Vector2Int(1, 0), new Vector2Int(1, 1),
+        new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1)
+        };
 }
+
 

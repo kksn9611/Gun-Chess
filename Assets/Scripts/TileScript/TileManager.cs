@@ -27,6 +27,15 @@ public class TileManager : MonoBehaviour
         
         return null;
     }
+    
+    public void InitializeAllTiles() // 타일 큐브 좌표 계산, 이웃 타일 계산
+    {
+        foreach (TileScript tile in tileMap.Values)
+        {
+            tile.Initialize();
+        }
+        Debug.Log($"{tileMap.Count}개의 타일 연결");
+    }
 
 
     public void ClearMap()
