@@ -8,30 +8,30 @@ public class TileScript : MonoBehaviour
     private int movementCost = 1;
     private Vector3Int cubeCoordinate;
     private List<TileScript> neighbors;
-    public Vector2Int GridCoordinate // ¿∞∞¢«¸ ¡¬«•
+    public Vector2Int GridCoordinate // ÔøΩÔøΩÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩ«•
     { 
         get => gridCoordinate; 
         set => gridCoordinate = value; 
     }
 
-    public bool IsOccupied // ¿Ø¥÷ ø©∫Œ
+    public bool IsOccupied // ÔøΩÔøΩÔøΩÔøΩ ÔøΩÔøΩÔøΩÔøΩ
     { 
         get => isOccupied; 
         set => isOccupied = value; 
     }
 
-    public int MovementCost // ¿Ãµø ∫ÒøÎ
+    public int MovementCost // ÔøΩÃµÔøΩ ÔøΩÔøΩÔøΩ
     {
         get => movementCost;
     }
 
-    public Vector3Int CubeCoordinate // ∞ËªÍøÎ ≈•∫Í¡¬«•
+    public Vector3Int CubeCoordinate // ÔøΩÔøΩÔøΩÔøΩ ≈•ÔøΩÔøΩÔøΩÔøΩ«•
     {
         get => cubeCoordinate;
         private set => cubeCoordinate = value;
     }
 
-    public List<TileScript> Neighbors // ¿ÃøÙ«— ≈∏¿œµÈ
+    public List<TileScript> Neighbors // ÔøΩÃøÔøΩÔøΩÔøΩ ≈∏ÔøΩœµÔøΩ
     {
         get => neighbors;
         private set => neighbors = value;
@@ -41,7 +41,6 @@ public class TileScript : MonoBehaviour
     {
         cubeCoordinate = HexCoordCal.OffsetToCube(gridCoordinate);
         neighbors = HexCoordCal.GetTileNeighbors(this);
-        Debug.Log(Neighbors);
     }
     
 }

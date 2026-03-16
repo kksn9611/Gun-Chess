@@ -17,6 +17,14 @@ public class HexCoordCal
             return distance;
     }
 
+    public static int GetCubeDistance(Vector3Int cubeA, Vector3Int cubeB)
+    {
+        return Mathf.Max(
+            Mathf.Abs(cubeA.x - cubeB.x),
+            Mathf.Abs(cubeA.y - cubeB.y),
+            Mathf.Abs(cubeA.z - cubeB.z));
+    }
+
     public static Vector3Int OffsetToCube(Vector2Int offsetCoord)
     {
         // HexGrid의 구조 odd-r 홀수 행 +1/2 밀어내기
