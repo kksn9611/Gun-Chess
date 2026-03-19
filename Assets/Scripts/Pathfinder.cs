@@ -36,6 +36,8 @@ public class Pathfinder : MonoBehaviour
 
     public List<TileScript> FindPath(TileScript startTile, TileScript endTile)
     {
+        if (startTile == endTile) return new List<TileScript>();
+
         //이전 계산 기록 데이터 초기화
         visitQueueList.Clear();
         parentMap.Clear();
@@ -59,7 +61,7 @@ public class Pathfinder : MonoBehaviour
             foreach(TileScript neighbor in currentTile.Neighbors)
             {
                 // 타일에 유닛이 배치되어있다면 그 타일은 무시하기
-                if(neighbor.IsOccupied) continue;
+                if(neighbor.IsOccupied && neighbor != endTile) continue;
                 // 임시 루트 비용 계산 (현재까지 누적된 루트 비용) G Score
                 int tentativeGscore = costOfRoute[currentTile] + neighbor.MovementCost;
                 // 가지 않았던 길 or 더 빠른 길
@@ -69,7 +71,7 @@ public class Pathfinder : MonoBehaviour
                     // 이웃 타일에서 목적지까지 남은 거리 계산 (H Score)
                     int heuristicScore = HexCoordCal.GetCubeDistance(neighbor.CubeCoordinate, endTile.CubeCoordinate);
                     // 총 예상 비용 (임시 G Score + H Score)
-                    int fScore = tentativeGscore;
+                    int fScore = tentativeGscore + heuristicScore;
                     // fScore가 낮은(비용이 낮은) 타일부터 탐색하기 위해 우선순위 큐로 넘겨줌
                     visitQueueList.Enqueue(neighbor,fScore);
                     

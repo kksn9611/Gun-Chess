@@ -15,13 +15,17 @@ public class UnitSpawner : MonoBehaviour
         // 유닛 생성
         GameObject unitObj = 
             Instantiate(data.unitPrefab, targetTile.transform.position, Quaternion.identity);
-        // 타일 채우기
-        targetTile.IsOccupied = true;
         //유닛 컨트롤러 갱신 후 유닛 리스트에 등록
         if (unitObj.TryGetComponent<UnitController>(out UnitController controller))
         {
             controller.Initialize(data, targetTile, team);
             UnitManager.Instance.AddUnitToList(controller, team);
+        }
+
+        else
+        {
+            Debug.LogError($"{data.unitPrefab.name}의 UnitContorller가 없음, 유닛 생성 실패");
+            Destroy(unitObj);
         }
 
     }

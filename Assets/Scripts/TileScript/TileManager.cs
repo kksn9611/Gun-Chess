@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-[ExecuteAlways]
 public class TileManager : MonoBehaviour
 {
     // 싱글톤
@@ -16,7 +15,7 @@ public class TileManager : MonoBehaviour
     // 게임 시작 시 HexGridLayout 스크립트에서 1회 실행해서 타일 맵에 등록
     public void RegisterTile(Vector2Int coord, TileScript tileScript)
         {
-            tileMap.Add(coord, tileScript);
+            tileMap[coord] = tileScript;
         }
     public TileScript GetTile(Vector2Int coord)
         {

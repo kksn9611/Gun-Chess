@@ -43,6 +43,12 @@ public List<UnitController> neutralUnitList = new List<UnitController>();
         Debug.Log(team + "unitList에 " + unit.UnitData.name + "추가");
     }
 
+    public void RemoveUnit(UnitController unit, Team team)
+    {
+        if (team == Team.Player) playerUnitList.Remove(unit);
+        else if (team == Team.Enemy) enemyUnitList.Remove(unit);
+        else if (team == Team.Neutral) neutralUnitList.Remove(unit);
+    }
 
 
 }

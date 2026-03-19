@@ -19,11 +19,14 @@ public class HexGridLayout : MonoBehaviour
 
     public void LayoutGrid()
     {
-        // 기존 타일 찌꺼기 깔끔하게 청소
-        if (TileManager.Instance != null)
+        if (TileManager.Instance == null)
         {
-            TileManager.Instance.ClearMap();
+            Debug.LogError("TileManager가 없음");
+            return;
         }
+        // 기존 타일 찌꺼기 깔끔하게 청소
+        TileManager.Instance.ClearMap();
+        
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             Destroy(transform.GetChild(i).gameObject);

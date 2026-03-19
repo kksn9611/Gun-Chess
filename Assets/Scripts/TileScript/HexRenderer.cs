@@ -14,7 +14,7 @@ public class HexRenderer : MonoBehaviour
     public float innerSize;
     public float outerSize = 1;
     public float height;
-    public bool isFlatTopped;
+    private bool isFlatTopped = false; // 육각형 방향 설정 false 고정!!
 
     List<Face> m_faces;
 
