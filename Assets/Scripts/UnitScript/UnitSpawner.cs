@@ -19,7 +19,7 @@ public class UnitSpawner : MonoBehaviour
         if (unitObj.TryGetComponent<UnitController>(out UnitController controller))
         {
             controller.Initialize(data, targetTile, team);
-            UnitManager.Instance.AddUnitToList(controller, team);
+            UnitManager.Instance.AddUnit(controller, team);
         }
 
         else

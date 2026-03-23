@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-// 유닛 상태 Enum
-public enum UnitState { Idle, Moving, Attacking, Dead }
 public class UnitController : MonoBehaviour
 {
     [SerializeField] private UnitData unitData;
@@ -19,6 +16,8 @@ public class UnitController : MonoBehaviour
     [SerializeField] private Team currentTeam;
     [SerializeField] private UnitState currentState = UnitState.Idle;
     [SerializeField] private UnitController currentTarget;
+    // 유닛 데이터 얻는 프로퍼티
+    public UnitData UnitData { get => unitData; }
     //유닛 초기화 및 소환
     public void Initialize(UnitData data, TileScript spawnTile, Team team)
     {
@@ -41,25 +40,14 @@ public class UnitController : MonoBehaviour
 
 private void Update()
  {
-        if (currentState == UnitState.Idle) // 대기 상태일 경우 타겟을 찾아서 이동 또는 공격 실행
+        switch (currentState)
         {
-            currentTarget = FindClosestTarget();
-
-            if (currentTarget == null) 
-            return; // 타겟 없으면 행동 종료
-            int distance = HexCoordCal.GetDistance(this.currentCoord, currentTarget.currentCoord);
-
-                // 사거리 안에 있다면 공격!
-                if (distance <= currentAttRange)
-                {
-                    // StartCoroutine(AttackTarget()); // 공격
-                }
-                // 사거리 밖이라면 -> 이동!
-                else
-                {
-                    //MoveTowardsTarget();
-                }
-            
+            case UnitState.Idle:
+                break;
+            case UnitState.Moving:
+                break;
+            case UnitState.Attacking:
+                break;
         }
  }
 //유닛 타겟 함수
@@ -67,15 +55,8 @@ public UnitController FindClosestTarget()
     {
         UnitController closestTarget = null;
         int minDistance = int.MaxValue;
-        List<UnitController> targetList = new List<UnitController>();
-        if (currentTeam == Team.Player)
-        {
-            targetList = UnitManager.Instance.enemyUnitList;
-        }
-        else if (currentTeam == Team.Enemy)
-        {
-            targetList = UnitManager.Instance.playerUnitList;    
-        }
+        IReadOnlyList<UnitController> targetList = new List<UnitController>();
+        targetList = UnitManager.Instance.GetEnemiesOf(currentTeam);
 
         foreach (UnitController target in targetList)
         {
@@ -107,7 +88,27 @@ public UnitController FindClosestTarget()
         return closestTarget;
     }
 
+    public void EnterIdleState() // 다른 상태에서 Idle로 전환할 때 호출
+    {
+        currentState = UnitState.Idle;
+        currentTarget = FindClosestTarget();
 
+        if (currentTarget == null) return; // 타겟 없으면 행동 종료
+
+        int distance = HexCoordCal.GetDistance(currentCoord, currentTarget.currentCoord);
+        if (distance <= currentAttRange) // 사거리 안이면 공격, 밖이면 이동
+            EnterAttackState();
+        else
+            EnterMoveState();
+    }
+public void EnterAttackState() // 다른 상태에서 Attack로 전환할 때 호출
+    {
+        currentState = UnitState.Attacking;
+    }
+public void EnterMoveState() // 다른 상태에서 Move로 전환할 때 호출
+    {
+        currentState = UnitState.Moving;
+    }
 public void TakeDamage(float damage)
     {
         float actualDamage = damage * (1f - currentDef / 100f); // 방어력 10이면 10% 감소
@@ -130,11 +131,4 @@ public void Die()
       //UnitManager.Instance.OnUnitDied(currentTeam); // 승패 판정 (미구현)
         Destroy(gameObject, 3f);
     }
-
-
-
-// 유닛 데이터 얻는 프로퍼티
-public UnitData UnitData {get => unitData;}
-
-
 }

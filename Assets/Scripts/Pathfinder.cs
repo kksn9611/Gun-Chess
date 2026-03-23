@@ -1,53 +1,23 @@
-using UnityEngine;
 using System.Collections.Generic;
 using Priority_Queue;
 
-public class Pathfinder : MonoBehaviour
-{
-    // 우선순위 탐색 큐
-    private SimplePriorityQueue<TileScript, int> visitQueueList = new SimplePriorityQueue<TileScript, int>(); 
-    // 이동 경로 저장
-    private Dictionary<TileScript,TileScript> parentMap = new Dictionary<TileScript, TileScript>(); 
-    // 이동 경로 비용
-    private Dictionary<TileScript,int> costOfRoute = new Dictionary<TileScript, int>();
-    public TileScript startTile;
-    public TileScript endTile;
-    public List<TileScript> routeList;
-
-    public bool isCalculating;
-    
-    private void Update()
+public static class Pathfinder
+{   
+    public static List<TileScript> FindPath(TileScript startTile, TileScript endTile)
     {
-        if(isCalculating)
-        {
-            isCalculating = false;
-            CalculatePath();
-        }
-    }
-    public void CalculatePath()
-    {
-        if(startTile == null || endTile == null)
-        {
-            return;
-        }
-        routeList = FindPath(startTile, endTile);
-    }
-
-
-    public List<TileScript> FindPath(TileScript startTile, TileScript endTile)
-    {
+        if (startTile == null || endTile == null) return new List<TileScript>();
         if (startTile == endTile) return new List<TileScript>();
 
-        //이전 계산 기록 데이터 초기화
-        visitQueueList.Clear();
-        parentMap.Clear();
-        costOfRoute.Clear();
-
-
-        // 우선순위 탐색 큐에 시작 타일
-        visitQueueList.Enqueue(startTile,0);
-        // costOfRoute 이동 경로 비용 딕셔너리 시작 타일 
-        costOfRoute[startTile] = 0;
+            // 우선순위 탐색 큐
+     SimplePriorityQueue<TileScript, int> visitQueueList = new SimplePriorityQueue<TileScript, int>();
+    // 이동 경로 저장
+     Dictionary<TileScript, TileScript> parentMap = new Dictionary<TileScript, TileScript>();
+    // 이동 경로 비용
+     Dictionary<TileScript, int> costOfRoute = new Dictionary<TileScript, int>();
+    // 우선순위 탐색 큐에 시작 타일
+    visitQueueList.Enqueue(startTile,0);
+    // costOfRoute 이동 경로 비용 딕셔너리 시작 타일 
+    costOfRoute[startTile] = 0;
 
         while (visitQueueList.Count > 0)
         {
@@ -83,7 +53,7 @@ public class Pathfinder : MonoBehaviour
         return new List<TileScript>();
     }
 
-    private List<TileScript> RetraceRoute(Dictionary<TileScript, TileScript> parentMap,TileScript startTile, TileScript endTile)
+    private static List<TileScript> RetraceRoute(Dictionary<TileScript, TileScript> parentMap,TileScript startTile, TileScript endTile)
     {
         List<TileScript> route = new List<TileScript>();
         TileScript current = endTile;
