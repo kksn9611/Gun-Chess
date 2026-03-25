@@ -3,6 +3,12 @@ using System.Collections.Generic;
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 public class HexCoordCal
 {
+    /// <summary>
+    /// 육각형 좌표 계산
+    /// </summary>
+    /// <param name="a"></param>
+    /// <param name="b"></param>
+    /// <returns></returns>
     public static int GetDistance(Vector2Int a, Vector2Int b)
     {
         Vector3Int cubeA = OffsetToCube(a);
@@ -16,7 +22,9 @@ public class HexCoordCal
 
             return distance;
     }
-
+    /// <summary>
+    /// 큐브 좌표 거리 계산
+    /// </summary>
     public static int GetCubeDistance(Vector3Int cubeA, Vector3Int cubeB)
     {
         return Mathf.Max(
@@ -24,7 +32,9 @@ public class HexCoordCal
             Mathf.Abs(cubeA.y - cubeB.y),
             Mathf.Abs(cubeA.z - cubeB.z));
     }
-
+    /// <summary>
+    /// 육각형 좌표 큐브 좌표 계산
+    /// </summary>
     public static Vector3Int OffsetToCube(Vector2Int offsetCoord)
     {
         // HexGrid의 구조 odd-r 홀수 행 +1/2 밀어내기
@@ -34,8 +44,9 @@ public class HexCoordCal
         int s = -q -r;
         return new Vector3Int(q, r, s);
     }
-    
-    // 육각형 근접 타일 반환 함수
+    /// <summary>
+    /// 육각형 근접 타일 반환 함수
+    /// </summary>
     public static List<TileScript> GetTileNeighbors(TileScript currentTile)
     {
         List<TileScript> neighbors = new List<TileScript>();

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[ExecuteAlways] // 이 스크립트를 에디터 상에서도 실행
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))] // MeshFilter MeshRenderer 유니티가 자동으로 추가
 public class HexRenderer : MonoBehaviour
@@ -14,8 +13,8 @@ public class HexRenderer : MonoBehaviour
     public float innerSize;
     public float outerSize = 1;
     public float height;
-    private bool isFlatTopped = false; // 육각형 방향 설정 false 고정!!
-
+    public bool isFlatTopped = false; // 육각형 방향 설정 false 고정!!
+    public bool IsFlatTopped => isFlatTopped;
     List<Face> m_faces;
 
     void GetComponentsIfNeeded()

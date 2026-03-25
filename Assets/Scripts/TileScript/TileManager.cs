@@ -15,8 +15,11 @@ public class TileManager : MonoBehaviour
         }
         else Destroy(gameObject);
     }
-
-    // 게임 시작 시 HexGridLayout 스크립트에서 1회 실행해서 타일 맵에 등록
+    /// <summary>
+    /// 게임 시작 시 HexGridLayout 스크립트에서 1회 실행해서 타일 맵에 등록
+    /// </summary>
+    /// <param name="coord"></param>
+    /// <param name="tileScript"></param>
     public void RegisterTile(Vector2Int coord, TileScript tileScript)
         {
             tileMap[coord] = tileScript;
@@ -30,8 +33,10 @@ public class TileManager : MonoBehaviour
         
         return null;
     }
-    
-    public void InitializeAllTiles() // 타일 큐브 좌표 계산, 이웃 타일 계산
+    /// <summary>
+    /// 타일 큐브 좌표 계산, 이웃 타일 계산
+    /// </summary>
+    public void InitializeAllTiles()
     {
         foreach (TileScript tile in tileMap.Values)
         {
