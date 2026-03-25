@@ -126,7 +126,7 @@ public class UnitController : MonoBehaviour
         StopMovement();
 
         currentState = UnitState.Attacking;
-        // TODO: _attackCoroutine = StartCoroutine(AttackCoroutine()); — 미구현
+        StartCoroutine(AttackCoroutine());
     }
 
     /// <summary>
@@ -341,6 +341,60 @@ public class UnitController : MonoBehaviour
             Debug.Log($"[타겟] {currentTeam}[{unitData.unitName}] → {closestTarget.currentTeam}[{closestTarget.unitData.unitName}]");
 
         return closestTarget;
+    }
+
+    /// <summary>
+    /// 공격 코루틴, 공격 속도에 따라 공격, searchInterval 값마다 타겟을 재탐색해 갱신한다.
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator AttackCoroutine()
+    {
+        float attackCooldown = 1f / currentAttSpd;
+        float searchInterval = 1f;
+        float searchTimer = 0f;
+        
+        while(true)
+        {
+            // 사거리 체크 후 밖이면 이동
+            int distToTarget = HexCoordCal.GetDistance(currentCoord, currentTarget.currentCoord);
+            if (distToTarget > currentAttRange)
+            {
+                EnterMoveState();
+                yield break;
+            }
+
+            if (currentTarget == null || currentTarget.currentHp <= 0)
+            {
+                EnterIdleState();
+                yield break;
+            }
+            // 공격 
+            currentTarget.TakeDamage(currentAtt);
+            Debug.Log($"[공격] {unitData.unitName} -> {currentTarget.UnitData.unitName}");
+            float cooldownTimer = 0f;
+
+            // 공격 쿨타임
+            while (cooldownTimer < attackCooldown)
+            {
+                float deltaTime = Time.deltaTime;
+                cooldownTimer += deltaTime;
+                searchTimer += deltaTime;
+
+                // searchInterval마다 타겟 재검색
+                if (searchTimer >= searchInterval)
+                {
+                    searchTimer = 0f;
+                    UnitController searchedTarget = FindClosestTarget();
+
+                    if (searchedTarget != null && searchedTarget != currentTarget)
+                    {
+                        currentTarget = searchedTarget;
+                    }
+                }
+                yield return null;
+            }
+        }
+
     }
 
     // ─────────────────────────────────────────────────────────────
