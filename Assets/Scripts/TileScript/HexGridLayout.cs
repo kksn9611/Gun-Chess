@@ -19,11 +19,6 @@ public class HexGridLayout : MonoBehaviour
 
     public void LayoutGrid()
     {
-        if (TileManager.Instance == null)
-        {
-            Debug.LogError("TileManager가 없음");
-            return;
-        }
         // 기존 타일 찌꺼기 깔끔하게 청소
         TileManager.Instance.ClearMap();
         
@@ -46,12 +41,7 @@ public class HexGridLayout : MonoBehaviour
                 TileScript tileScript = tile.GetComponent<TileScript>();
                 tileScript.GridCoordinate = tileCoordinate;
                 
-                if (TileManager.Instance != null)
                 TileManager.Instance.RegisterTile(tileCoordinate, tileScript);
-                else
-                {
-                    Debug.Log("등록실패");
-                }
 
                     // 타일 그리기
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
@@ -61,11 +51,61 @@ public class HexGridLayout : MonoBehaviour
                 hexRenderer.height = height;
                 hexRenderer.SetMaterial(material);
                 hexRenderer.DrawMesh();
+
+                // 레이캐스트(마우스 클릭) 대상이 되도록 MeshCollider 추가
+                // innerSize > 0 이면 시각적 메시가 도넛 형태라 내부가 빈다.
+                // 클릭 판정용으로 innerSize=0 인 솔리드 메시를 별도 생성해 콜라이더에 할당한다.
+                MeshCollider col = tile.AddComponent<MeshCollider>();
+                col.sharedMesh = CreateSolidHexMesh(outerSize, height, isFlatTopped);
             }
         }
         TileManager.Instance.InitializeAllTiles(); // 모든 타일 좌표 로딩
     }
 
+
+    /// <summary>
+    /// 클릭 판정 전용 솔리드 육각형 메시를 생성한다.
+    /// innerSize=0 으로 고정해 중심까지 꽉 찬 뚜껑 면 6개로만 구성한다.
+    /// </summary>
+    private static Mesh CreateSolidHexMesh(float outer, float h, bool flatTopped)
+    {
+        var vertices  = new System.Collections.Generic.List<Vector3>();
+        var triangles = new System.Collections.Generic.List<int>();
+
+        float top = h / 2f;
+
+        for (int i = 0; i < 6; i++)
+        {
+            // 각 섹터: 중심(0,top,0) + 외곽 두 꼭짓점으로 삼각형 생성
+            int next = (i + 1) % 6;
+            vertices.Add(new Vector3(0, top, 0));
+            vertices.Add(GetHexPoint(outer, top, i,    flatTopped));
+            vertices.Add(GetHexPoint(outer, top, next, flatTopped));
+
+            int baseIdx = i * 3;
+            triangles.Add(baseIdx);
+            triangles.Add(baseIdx + 1);
+            triangles.Add(baseIdx + 2);
+        }
+
+        Mesh mesh = new Mesh();
+        mesh.name       = "HexColliderMesh";
+        mesh.vertices   = vertices.ToArray();
+        mesh.triangles  = triangles.ToArray();
+        mesh.RecalculateNormals();
+        return mesh;
+    }
+
+    /// <summary>
+    /// CreateSolidHexMesh 전용 꼭짓점 계산.
+    /// HexRenderer.GetPoint() 와 동일한 공식을 사용한다.
+    /// </summary>
+    private static Vector3 GetHexPoint(float size, float heightPos, int index, bool flatTopped)
+    {
+        float deg = flatTopped ? 60f * index : 60f * index - 30f;
+        float rad = Mathf.PI / 180f * deg;
+        return new Vector3(size * Mathf.Cos(rad), heightPos, size * Mathf.Sin(rad));
+    }
 
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate) // 육각형 타일 배치 구조 계산
     {

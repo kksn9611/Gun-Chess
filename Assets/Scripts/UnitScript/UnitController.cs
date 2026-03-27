@@ -24,10 +24,27 @@ public class UnitController : MonoBehaviour
 
     // 유닛 데이터 읽기 전용 프로퍼티
     public UnitData UnitData { get => unitData; }
+    public TileScript CurrentTile => currentTile;
+    public Team CurrentTeam => currentTeam;
 
     // ─────────────────────────────────────────────────────────────
     // 초기화
     // ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// 유닛을 지정한 타일로 이동시킨다. (준비 페이즈 배치용)
+    /// clearCurrentTile=false 는 스왑 시 원래 타일을 유지해야 할 때 사용한다.
+    /// </summary>
+    public void PlaceOnTile(TileScript newTile, bool clearCurrentTile = true)
+    {
+        if (clearCurrentTile && currentTile != null)
+            currentTile.IsOccupied = false;
+
+        currentTile  = newTile;
+        currentCoord = newTile.GridCoordinate;
+        newTile.IsOccupied   = true;
+        transform.position   = newTile.transform.position;
+    }
 
     /// <summary>
     /// UnitSpawner.SpawnUnit()에서 호출된다.
@@ -172,7 +189,6 @@ public class UnitController : MonoBehaviour
             // 이동 중 타겟이 사망하거나 제거됐으면 새 타겟을 찾으러 Idle 복귀
             if (currentTarget == null || currentTarget.currentHp <= 0)
             {
-                Debug.Log($"[이동] {unitData.unitName}: 타겟 소멸 → Idle 복귀");
                 EnterIdleState();
                 yield break; // 코루틴 종료
             }
@@ -182,7 +198,6 @@ public class UnitController : MonoBehaviour
             int distToTarget = HexCoordCal.GetDistance(currentCoord, currentTarget.currentCoord);
             if (distToTarget <= currentAttRange)
             {
-                Debug.Log($"[이동] {unitData.unitName}: 사거리 진입(거리={distToTarget}) → 공격 전환");
                 EnterAttackState();
                 yield break; // 코루틴 종료 (EnterAttackState 내부에서 StopMovement 호출)
             }
@@ -194,7 +209,6 @@ public class UnitController : MonoBehaviour
             {
                 // 타겟 주변 모든 타일이 다른 유닛으로 막혀있다.
                 // 1프레임 기다렸다가 다시 시도 — 다른 유닛이 이동하면 자리가 생긴다.
-                Debug.Log($"[이동] {unitData.unitName}: 목적지 없음(주변 막힘) → 1프레임 대기");
                 yield return null;
                 continue;
             }
@@ -206,7 +220,6 @@ public class UnitController : MonoBehaviour
             if (path == null || path.Count == 0)
             {
                 // 길이 완전히 막힌 경우 대기 후 재시도
-                Debug.Log($"[이동] {unitData.unitName}: 경로 없음 → 대기");
                 yield return null;
                 continue;
             }
@@ -234,6 +247,7 @@ public class UnitController : MonoBehaviour
             // Lerp 완료 후 내부 상태를 새 타일로 업데이트
             currentTile  = nextTile;
             currentCoord = nextTile.GridCoordinate;
+            currentTarget = FindClosestTarget(); // 가까운 타겟 재설정
             yield return new WaitForSeconds(0.05f); // 
 
         }
@@ -346,31 +360,30 @@ public class UnitController : MonoBehaviour
     /// <summary>
     /// 공격 코루틴, 공격 속도에 따라 공격, searchInterval 값마다 타겟을 재탐색해 갱신한다.
     /// </summary>
-    /// <returns></returns>
     private IEnumerator AttackCoroutine()
     {
         float attackCooldown = 1f / currentAttSpd;
-        float searchInterval = 1f;
+        float searchInterval = 0.2f;
         float searchTimer = 0f;
         
         while(true)
         {
-            // 사거리 체크 후 밖이면 이동
+            // null, 사망 체크
+            if (currentTarget == null || currentTarget.currentHp <= 0)
+            {
+                EnterIdleState();
+                yield break;
+            }
+
+            // 타겟이 사거리 밖으로 이동했으면 추격
             int distToTarget = HexCoordCal.GetDistance(currentCoord, currentTarget.currentCoord);
             if (distToTarget > currentAttRange)
             {
                 EnterMoveState();
                 yield break;
             }
-
-            if (currentTarget == null || currentTarget.currentHp <= 0)
-            {
-                EnterIdleState();
-                yield break;
-            }
             // 공격 
             currentTarget.TakeDamage(currentAtt);
-            Debug.Log($"[공격] {unitData.unitName} -> {currentTarget.UnitData.unitName}");
             float cooldownTimer = 0f;
 
             // 공격 쿨타임
@@ -439,9 +452,9 @@ public class UnitController : MonoBehaviour
         }
 
         UnitManager.Instance.RemoveUnit(this, currentTeam);
-        // TODO: UnitManager.Instance.OnUnitDied(currentTeam); — 승패 판정 (Phase 1-4에서 구현)
+        UnitManager.Instance.CheckBattleEnd();
 
-        // 3초 후 오브젝트 파괴 (사망 이펙트/애니메이션 재생 시간 확보용)
-        Destroy(gameObject, 3f);
+        // 2초 후 오브젝트 파괴 (사망 이펙트/애니메이션 재생 시간 확보용)
+        Destroy(gameObject, 2f);
     }
 }

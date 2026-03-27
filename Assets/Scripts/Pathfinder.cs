@@ -8,8 +8,8 @@ public static class Pathfinder
         if (startTile == null || endTile == null) return new List<TileScript>();
         if (startTile == endTile) return new List<TileScript>();
 
-            // 우선순위 탐색 큐
-     SimplePriorityQueue<TileScript, int> visitQueueList = new SimplePriorityQueue<TileScript, int>();
+    // 우선순위 탐색 큐
+    SimplePriorityQueue<TileScript, int> visitQueueList = new SimplePriorityQueue<TileScript, int>();
     // 이동 경로 저장
      Dictionary<TileScript, TileScript> parentMap = new Dictionary<TileScript, TileScript>();
     // 이동 경로 비용
@@ -61,7 +61,11 @@ public static class Pathfinder
         while (current != startTile)
         {
             route.Add(current);
-            current = parentMap[current];
+            if (!parentMap.TryGetValue(current, out TileScript parent))
+            {
+                return new List<TileScript>();
+            }
+            current = parent;
         }
         route.Reverse();
         return route;   
