@@ -2,14 +2,14 @@
 
 public class HexGridLayout : MonoBehaviour
 {
-    [Header("Grid Settings")]
-    public Vector2Int gridSize;
+    [Header("설정")]
+    [SerializeField] private Vector2Int gridSize;
+    [SerializeField] private float outerSize; // 1.5
+    [SerializeField] private float innerSize; // 1.4
+    [SerializeField] private float height; // 0.01
+    private bool isFlatTopped;
 
-    [Header("Tile Settings")]
-    public float outerSize = 1f;
-    public float innerSize = 0f;
-    public float height = 1f;
-    public bool isFlatTopped;
+    [Header("재질")]
     public Material material;
 
     private void Start()
@@ -24,7 +24,7 @@ public class HexGridLayout : MonoBehaviour
         
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
-            Destroy(transform.GetChild(i).gameObject);
+            DestroyImmediate(transform.GetChild(i).gameObject);
         }
 
         // 새 타일 생성 및 배치
@@ -41,9 +41,7 @@ public class HexGridLayout : MonoBehaviour
                 TileScript tileScript = tile.GetComponent<TileScript>();
                 tileScript.GridCoordinate = tileCoordinate;
                 
-                TileManager.Instance.RegisterTile(tileCoordinate, tileScript);
-
-                    // 타일 그리기
+                // 타일 그리기
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.isFlatTopped = isFlatTopped;
                 hexRenderer.outerSize = outerSize;
@@ -52,9 +50,10 @@ public class HexGridLayout : MonoBehaviour
                 hexRenderer.SetMaterial(material);
                 hexRenderer.DrawMesh();
 
+                // 타일 등록
+                TileManager.Instance.RegisterTile(tileCoordinate, tileScript);
+
                 // 레이캐스트(마우스 클릭) 대상이 되도록 MeshCollider 추가
-                // innerSize > 0 이면 시각적 메시가 도넛 형태라 내부가 빈다.
-                // 클릭 판정용으로 innerSize=0 인 솔리드 메시를 별도 생성해 콜라이더에 할당한다.
                 MeshCollider col = tile.AddComponent<MeshCollider>();
                 col.sharedMesh = CreateSolidHexMesh(outerSize, height, isFlatTopped);
             }
@@ -64,8 +63,7 @@ public class HexGridLayout : MonoBehaviour
 
 
     /// <summary>
-    /// 클릭 판정 전용 솔리드 육각형 메시를 생성한다.
-    /// innerSize=0 으로 고정해 중심까지 꽉 찬 뚜껑 면 6개로만 구성한다.
+    /// 클릭 판정 전용 솔리드 육각형 메시
     /// </summary>
     private static Mesh CreateSolidHexMesh(float outer, float h, bool flatTopped)
     {
@@ -106,6 +104,21 @@ public class HexGridLayout : MonoBehaviour
         float rad = Mathf.PI / 180f * deg;
         return new Vector3(size * Mathf.Cos(rad), heightPos, size * Mathf.Sin(rad));
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        UnityEditor.EditorApplication.delayCall -= OnValidateDelayed;
+        UnityEditor.EditorApplication.delayCall += OnValidateDelayed;
+    }
+
+    private void OnValidateDelayed()
+    {
+        UnityEditor.EditorApplication.delayCall -= OnValidateDelayed;
+        if (this == null) return;
+        LayoutGrid();
+    }
+#endif
 
     public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate) // 육각형 타일 배치 구조 계산
     {

@@ -1,10 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class TileScript : MonoBehaviour
+public class TileScript : BaseTile
 {
     [SerializeField] private Vector2Int gridCoordinate;
-    [SerializeField] private bool isOccupied = false;
     private int movementCost = 1;
     private Vector3Int cubeCoordinate;
     private List<TileScript> neighbors;
@@ -12,12 +11,6 @@ public class TileScript : MonoBehaviour
     { 
         get => gridCoordinate; 
         set => gridCoordinate = value; 
-    }
-
-    public bool IsOccupied // ���� ����
-    { 
-        get => isOccupied; 
-        set => isOccupied = value; 
     }
 
     public int MovementCost // �̵� ���
@@ -37,6 +30,7 @@ public class TileScript : MonoBehaviour
         private set => neighbors = value;
     }
 
+    public override Vector2Int GetCoordinate() => gridCoordinate; // 자기 좌표 반환
     public void Initialize()
     {
         cubeCoordinate = HexCoordCal.OffsetToCube(gridCoordinate);

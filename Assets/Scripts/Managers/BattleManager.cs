@@ -1,10 +1,9 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 /// <summary>
-/// 전투 흐름을 관리하는 싱글톤.
 /// Phase 전환과 static 이벤트(OnBattleStart / OnBattleEnd)
-/// 유닛은 OnEnable/OnDisable에서 OnBattleStart를 구독해 전투 시작 신호를 받는다.
+/// 유닛은 OnEnable/OnDisable에서 OnBattleStart를 구독
 /// </summary>
 public class BattleManager : MonoBehaviour
 {
@@ -21,8 +20,7 @@ public class BattleManager : MonoBehaviour
     [field: SerializeField] public Phase CurrentPhase { get; private set; } = Phase.Preparation;
 
 
-    // 이벤트 — 유닛/UI 등 외부에서 구독
-
+    // 이벤트 — 외부에서 구독
     //StartBattle() 호출 시 발동. 모든 유닛의 AI를 시작
     public static event Action OnBattleStart;
 

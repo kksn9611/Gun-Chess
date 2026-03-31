@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -8,7 +8,6 @@ public class UnitManager
 {
     private static UnitManager instance;
     public static UnitManager Instance => instance ??= new UnitManager();
-
     private UnitManager() { }
 
     private readonly List<UnitController> playerUnitList  = new List<UnitController>();

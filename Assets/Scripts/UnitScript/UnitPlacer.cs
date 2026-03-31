@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -53,7 +53,7 @@ public class UnitPlacer : MonoBehaviour
         }
     }
     /// <summary>
-    /// 들고 있는 유닛을 마우스 커서 위치에 즉각적으로 붙여서 이동시킵니다.
+    /// 들고 있는 유닛 마우스 드래그
     /// </summary>
     private void UpdateDragVisuals()
     {
@@ -63,10 +63,7 @@ public class UnitPlacer : MonoBehaviour
         // 가상의 바닥 평면(y=0)과 광선이 만나는 지점을 계산
         if (groundPlane.Raycast(ray, out float enter))
         {
-            // 광선이 평면과 부딪힌 정확한 3D 좌표
             Vector3 hitPoint = ray.GetPoint(enter);
-
-            // Lerp 없이, 계산된 위치를 유닛의 position에 즉시 덮어씌웁니다.
             Vector3 targetPosition = new Vector3(hitPoint.x, hitPoint.y + dragHeightOffset, hitPoint.z);
 
             heldUnit.transform.position = Vector3.Lerp(heldUnit.transform.position, targetPosition, Time.deltaTime * dragFollowSpeed);
@@ -74,8 +71,7 @@ public class UnitPlacer : MonoBehaviour
     }
 
     /// <summary>
-    /// PlayerInput (Invoke Unity Events) — 좌클릭 액션에 연결.
-    /// Inspector: PlayerInput → Events → [액션명] → OnPlaceClick
+    /// 클릭
     /// </summary>
     public void OnPlaceClick(InputAction.CallbackContext context)
     {
@@ -103,7 +99,7 @@ public class UnitPlacer : MonoBehaviour
 
     private void HandleHover()
     {
-        TileScript tile = RaycastTile();
+        TileScript tile = RaycastTarget<TileScript>();
 
         if (tile == hoveredTile) return; // 변화 없음
 
@@ -153,7 +149,7 @@ public class UnitPlacer : MonoBehaviour
 
     private void TryPickUp()
     {
-        TileScript tile = RaycastTile();
+        TileScript tile = RaycastTarget<TileScript>();
         if (tile == null) return;
         if (!IsPlayerZone(tile)) return;
         if (!tile.IsOccupied) return;
@@ -168,7 +164,7 @@ public class UnitPlacer : MonoBehaviour
 
     private void TryDrop()
     {
-        TileScript targetTile = RaycastTile();
+        TileScript targetTile = RaycastTarget<TileScript>();
 
         if (targetTile == null || !IsPlayerZone(targetTile))
         {
@@ -223,26 +219,25 @@ public class UnitPlacer : MonoBehaviour
         originalTile = null;
     }
 
-    // ── 유틸리티 ─────────────────────────────────────────────────
 
     private bool IsPlayerZone(TileScript tile)
         => tile.GridCoordinate.y < playerZoneMaxRow;
 
     /// <summary>
-    /// 마우스 위치에서 Physics.Raycast 를 쏴 TileScript 컴포넌트를 반환한다.
+    /// 마우스 위치에서 Physics.Raycast 를 쏴 컴포넌트를 반환한다.
     /// </summary>
-    private TileScript RaycastTile()
+    private T RaycastTarget<T>() where T : Component
     {
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.value);
         if (Physics.Raycast(ray, out RaycastHit hit))
-            return hit.collider.GetComponent<TileScript>();
+            return hit.collider.GetComponent<T>();
         return null;
     }
 
     /// <summary>
     /// UnitManager 플레이어 목록에서 해당 타일에 있는 유닛을 반환한다.
     /// </summary>
-    private UnitController GetUnitOnTile(TileScript tile)
+    private UnitController GetUnitOnTile(BaseTile tile)
     {
         foreach (UnitController unit in UnitManager.Instance.playerUnits)
         {

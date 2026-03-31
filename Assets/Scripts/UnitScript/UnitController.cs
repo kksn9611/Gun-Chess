@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,8 +12,8 @@ public class UnitController : MonoBehaviour
     [SerializeField] private float         currentAttRange;
     [SerializeField] private float         currentAttSpd;
     [SerializeField] private float         currentMoveSpd;
-    [SerializeField] private TileScript    currentTile;    // 현재 이 유닛이 점유 중인 타일
-    [SerializeField] private Vector2Int    currentCoord;   // 현재 그리드 좌표 (타일 논리 좌표)
+    [SerializeField] private TileScript currentTile;    // 현재 이 유닛이 점유 중인 타일
+    [SerializeField] private Vector2Int    currentCoord;   // 현재 타일 좌표
     [SerializeField] private Team          currentTeam;
     [SerializeField] private UnitState     currentState = UnitState.Idle;
     [SerializeField] private UnitController currentTarget; // 현재 추격/공격 중인 적 유닛
@@ -24,12 +24,8 @@ public class UnitController : MonoBehaviour
 
     // 유닛 데이터 읽기 전용 프로퍼티
     public UnitData UnitData { get => unitData; }
-    public TileScript CurrentTile => currentTile;
+    public BaseTile CurrentTile => currentTile;
     public Team CurrentTeam => currentTeam;
-
-    // ─────────────────────────────────────────────────────────────
-    // 초기화
-    // ─────────────────────────────────────────────────────────────
 
     /// <summary>
     /// 유닛을 지정한 타일로 이동시킨다. (준비 페이즈 배치용)
@@ -41,9 +37,25 @@ public class UnitController : MonoBehaviour
             currentTile.IsOccupied = false;
 
         currentTile  = newTile;
-        currentCoord = newTile.GridCoordinate;
+        currentCoord = newTile.GetCoordinate();
         newTile.IsOccupied   = true;
-        transform.position   = newTile.transform.position;
+        if (!clearCurrentTile) StartCoroutine(MoveToTileSmoothly(newTile.transform.position, 0.2f));
+        else StartCoroutine(MoveToTileSmoothly(newTile.transform.position, 0.1f));
+    }
+
+    private IEnumerator MoveToTileSmoothly(Vector3 targetPosition, float duration)
+    {
+        float elapsed = 0f;
+        Vector3 startPosition = transform.position;
+
+        while (elapsed < duration)
+        {
+            transform.position = Vector3.Lerp(startPosition, targetPosition, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null; 
+        }
+        // 위치 보정
+        transform.position = targetPosition;
     }
 
     /// <summary>
@@ -295,8 +307,7 @@ public class UnitController : MonoBehaviour
         Vector3 endPos   = tile.transform.position;
 
         // moveSpd = 초당 이동할 수 있는 타일 수
-        // duration = 타일 1칸 이동에 걸리는 시간(초)
-        // 예) moveSpd=3 → 0.33초/칸,  moveSpd=1 → 1초/칸
+        // duration = 타일 1칸 이동에 걸리는 시간
         float duration = 1f / currentMoveSpd;
         float elapsed  = 0f;
 
@@ -328,7 +339,7 @@ public class UnitController : MonoBehaviour
         UnitController closestTarget = null;
         int            minDistance   = int.MaxValue;
 
-        // GetEnemiesOf: 자신 팀의 반대 팀 리스트를 IReadOnlyList로 반환 (직접 수정 불가)
+        // GetEnemiesOf: IReadOnlyList로 적 리스트 받기
         IReadOnlyList<UnitController> targetList = UnitManager.Instance.GetEnemiesOf(currentTeam);
 
         foreach (UnitController target in targetList)
@@ -345,7 +356,7 @@ public class UnitController : MonoBehaviour
             }
             else if (distance == minDistance && closestTarget != null)
             {
-                // 거리 동률: 사거리가 짧은 적(공격 범위가 좁은 = 더 위협적)을 우선
+                // 거리 동률: 사거리가 짧은 적을 우선
                 if (target.currentAttRange < closestTarget.currentAttRange)
                     closestTarget = target;
             }
@@ -410,12 +421,9 @@ public class UnitController : MonoBehaviour
 
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // 전투 — 데미지 수신 / 사망
-    // ─────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// 공격 유닛이 호출한다. 방어력(def)을 반영해 실제 데미지를 계산하고 HP를 감소시킨다.
+    /// 방어력(def)을 반영해 실제 데미지를 계산하고 HP를 감소시킨다.
     /// HP가 0 이하가 되면 Die()를 호출한다.
     /// </summary>
     public void TakeDamage(float damage)
@@ -433,12 +441,11 @@ public class UnitController : MonoBehaviour
 
     /// <summary>
     /// 유닛 사망 처리.
-    /// 모든 코루틴 중단 → 타일 해제 → 팀 목록에서 제거 → 오브젝트 파괴 순으로 처리한다.
+    /// 모든 코루틴 중단 → 타일 해제 → 팀 목록에서 제거 → 오브젝트 파괴 순으로 처리
     /// </summary>
-    public void Die()
+    public IEnumerable Die()
     {
-        // 이동·공격 등 실행 중인 모든 코루틴을 즉시 중단
-        // (StopMovement 대신 StopAllCoroutines를 써서 공격 코루틴도 함께 정리)
+        // 모든 코루틴을 즉시 중단
         StopAllCoroutines();
         moveCoroutine = null; // 참조 초기화 (이미 중단됐지만 null로 명시)
 
@@ -455,6 +462,14 @@ public class UnitController : MonoBehaviour
         UnitManager.Instance.CheckBattleEnd();
 
         // 2초 후 오브젝트 파괴 (사망 이펙트/애니메이션 재생 시간 확보용)
-        Destroy(gameObject, 2f);
+        yield return new WaitForSeconds(2f);
+        if (currentTeam == Team.Player)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
