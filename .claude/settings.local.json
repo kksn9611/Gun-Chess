@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(unity-cli editor:*)",
-      "Bash(unity-cli console:*)"
-    ]
-  }
-}
