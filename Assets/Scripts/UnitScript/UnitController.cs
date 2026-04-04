@@ -13,6 +13,7 @@ public class UnitController : MonoBehaviour
     [SerializeField] private float         currentAttSpd;
     [SerializeField] private float         currentMoveSpd;
     [SerializeField] private TileScript currentTile;    // 현재 이 유닛이 점유 중인 타일
+    [SerializeField] private BenchTileScript currentBenchTile; // 대기석 타일. null = 전장에 있음
     [SerializeField] private Vector2Int    currentCoord;   // 현재 타일 좌표
     [SerializeField] private Team          currentTeam;
     [SerializeField] private UnitState     currentState = UnitState.Idle;
@@ -24,23 +25,47 @@ public class UnitController : MonoBehaviour
 
     // 유닛 데이터 읽기 전용 프로퍼티
     public UnitData UnitData { get => unitData; }
-    public BaseTile CurrentTile => currentTile;
+    public BaseTile CurrentTile => currentBenchTile != null ? (BaseTile)currentBenchTile : (BaseTile)currentTile;
     public Team CurrentTeam => currentTeam;
+    public bool IsOnBench => currentBenchTile != null;
 
     /// <summary>
-    /// 유닛을 지정한 타일로 이동시킨다. (준비 페이즈 배치용)
-    /// clearCurrentTile=false 는 스왑 시 원래 타일을 유지해야 할 때 사용한다.
+    /// 유닛을 헥스 타일에 배치한다. (준비 페이즈 배치용)
+    /// clearCurrent=false : 스왑 시 원래 위치의 IsOccupied를 해제하지 않음
     /// </summary>
-    public void PlaceOnTile(TileScript newTile, bool clearCurrentTile = true)
+    public void PlaceOnTile(TileScript newTile, bool clearCurrent = true)
     {
-        if (clearCurrentTile && currentTile != null)
-            currentTile.IsOccupied = false;
+        if (clearCurrent)
+        {
+            if (currentTile != null)      currentTile.IsOccupied = false;
+            if (currentBenchTile != null) currentBenchTile.IsOccupied = false;
+        }
+        // 헥스에 배치 = 벤치 참조 해제 (clearCurrent 여부와 무관)
+        currentTile      = newTile;
+        currentBenchTile = null;
+        currentCoord     = newTile.GetCoordinate();
+        newTile.IsOccupied = true;
+        StartCoroutine(MoveToTileSmoothly(newTile.transform.position, clearCurrent ? 0.1f : 0.2f));
+    }
 
-        currentTile  = newTile;
-        currentCoord = newTile.GetCoordinate();
-        newTile.IsOccupied   = true;
-        if (!clearCurrentTile) StartCoroutine(MoveToTileSmoothly(newTile.transform.position, 0.2f));
-        else StartCoroutine(MoveToTileSmoothly(newTile.transform.position, 0.1f));
+    /// <summary>
+    /// 유닛을 벤치 슬롯에 배치한다.
+    /// clearCurrent=false : 스왑 시 원래 위치의 IsOccupied를 해제하지 않음
+    /// </summary>
+    public void PlaceOnBench(BenchTileScript slot, bool clearCurrent = true)
+    {
+        StopAllCoroutines();
+        moveCoroutine = null;
+        if (clearCurrent)
+        {
+            if (currentTile != null)      currentTile.IsOccupied = false;
+            if (currentBenchTile != null) currentBenchTile.IsOccupied = false;
+        }
+        // 벤치에 배치 = 헥스 참조 해제 (clearCurrent 여부와 무관)
+        currentTile      = null;
+        currentBenchTile = slot;
+        slot.IsOccupied  = true;
+        StartCoroutine(MoveToTileSmoothly(slot.transform.position, 0.2f));
     }
 
     private IEnumerator MoveToTileSmoothly(Vector3 targetPosition, float duration)
@@ -60,7 +85,7 @@ public class UnitController : MonoBehaviour
 
     /// <summary>
     /// UnitSpawner.SpawnUnit()에서 호출된다.
-    /// 스탯을 UnitData로부터 복사하고, 타일을 점유한 뒤
+    /// 스탯을 UnitData로부터 복사하고, 타일을 점유
     /// </summary>
     public void Initialize(UnitData data, TileScript spawnTile, Team team)
     {
@@ -92,7 +117,7 @@ public class UnitController : MonoBehaviour
 
         // 전투 중에 소환된 유닛 처리
         if (BattleManager.Instance != null &&
-            BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle)
+            BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle && !IsOnBench)
         {
             EnterIdleState();
         }
@@ -106,7 +131,7 @@ public class UnitController : MonoBehaviour
         BattleManager.OnBattleStart -= EnterIdleState;
     }
 
-    // 실제 동작은 코루틴·EnterXxx()에서 처리
+    // 실제 동작은 코루틴·EnterState() 종류에서 처리
     private void Update()
     {
         switch (currentState)
@@ -127,7 +152,7 @@ public class UnitController : MonoBehaviour
 
 
     /// <summary>
-    /// 어떤 상태에서든 Idle로 복귀할 때 호출한다.
+    /// Idle로 복귀할 때 호출
     /// 가장 가까운 타겟을 찾아 이동 또는 공격 상태로 즉시 전환
     /// 타겟이 없으면 Idle을 유지하며 대기
     /// </summary>
@@ -150,7 +175,6 @@ public class UnitController : MonoBehaviour
     /// </summary>
     public void EnterAttackState()
     {
-        // LerpToTile 중간에 전환될 경우 오브젝트가 타일 사이에 떠 있을 수 있다.
         // StopMovement()가 현재 타일 위치로 스냅해준다.
         StopMovement();
 
@@ -441,13 +465,12 @@ public class UnitController : MonoBehaviour
 
     /// <summary>
     /// 유닛 사망 처리.
-    /// 모든 코루틴 중단 → 타일 해제 → 팀 목록에서 제거 → 오브젝트 파괴 순으로 처리
     /// </summary>
-    public IEnumerable Die()
+    public void Die()
     {
         // 모든 코루틴을 즉시 중단
         StopAllCoroutines();
-        moveCoroutine = null; // 참조 초기화 (이미 중단됐지만 null로 명시)
+        moveCoroutine = null;
 
         currentState = UnitState.Dead;
 
@@ -461,15 +484,19 @@ public class UnitController : MonoBehaviour
         UnitManager.Instance.RemoveUnit(this, currentTeam);
         UnitManager.Instance.CheckBattleEnd();
 
-        // 2초 후 오브젝트 파괴 (사망 이펙트/애니메이션 재생 시간 확보용)
-        yield return new WaitForSeconds(2f);
+        // 2초 후 오브젝트 파괴
+        StartCoroutine(DestroyAfterDelay(2f));
+    }
+
+    /// <summary>
+    /// delay초 후 플레이어 유닛은 비활성화, 적 유닛은 파괴
+    /// </summary>
+    private IEnumerator DestroyAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         if (currentTeam == Team.Player)
-        {
             gameObject.SetActive(false);
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 }

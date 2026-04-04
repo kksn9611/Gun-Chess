@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// 전장 타일 하나의 상태를 관리
+/// </summary>
 public class TileScript : BaseTile
 {
     [SerializeField] private Vector2Int gridCoordinate;

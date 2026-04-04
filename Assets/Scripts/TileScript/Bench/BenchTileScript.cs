@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
 /// <summary>
-/// 벤치 슬롯 타일 하나의 상태를 관리한다.
-/// TileScript와 동일한 역할 — 점유 여부와 슬롯 인덱스를 보관한다.
+/// 벤치 슬롯 타일 하나의 상태를 관리
 /// </summary>
 public class BenchTileScript : BaseTile
 {

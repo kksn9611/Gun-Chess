@@ -1,6 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+
 public class TestScript : MonoBehaviour
 {
     public UnitData mobUnit;
@@ -19,11 +20,6 @@ public class TestScript : MonoBehaviour
         // EnemyZone (y >= 4): 적 유닛 배치
         SpawnAt(1, 5, Team.Enemy);
         SpawnAt(3, 6, Team.Enemy);
-    }
-
-    private void Update()
-    {
-
     }
 
     private void SpawnAt(int x, int y, Team team)

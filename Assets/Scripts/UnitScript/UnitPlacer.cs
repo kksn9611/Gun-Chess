@@ -2,29 +2,27 @@
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 준비 페이즈에서 마우스로 플레이어 유닛을 집어 PlayerZone 타일에 배치하는 컴포넌트.
-/// BattleManager.Phase.Preparation 일 때만 동작한다.
+/// 마우스로 플레이어 유닛을 집어 타일에 배치
+
 /// </summary>
 public class UnitPlacer : MonoBehaviour
 {
     [Header("Settings")]
-    [Tooltip("y < playerZoneMaxRow 인 타일을 PlayerZone으로 간주한다.")]
-    [SerializeField] private int playerZoneMaxRow = 4;
+    [SerializeField] private int    playerZoneMaxRow = 4;
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private float dragHeightOffset;
-    [SerializeField] private float dragFollowSpeed;
+    [SerializeField] private float  dragHeightOffset;
+    [SerializeField] private float  dragFollowSpeed;
 
     [Header("Visual")]
     [SerializeField] private Material highlightMaterial;
 
-    
-    private UnitController heldUnit;        // 현재 들고 있는 유닛
-    private TileScript     originalTile;    // 집어 올리기 전 타일
+    private UnitController heldUnit;      // 현재 들고 있는 유닛
+    private BaseTile       originalTile;  // 집어 올리기 전 원래 타일(헥스 또는 벤치)
 
-    private TileScript hoveredTile;                 // 마우스가 올려져 있는 타일
-    private Material   hoveredOriginalMaterial;     // 하이라이트 전 원본 머터리얼
+    private BaseTile hoveredTile;                // 마우스가 올려져 있는 타일
+    private Material hoveredOriginalMaterial;   // 하이라이트 전 원본 머터리얼
 
-    // 지면 Plane.Raycast
+    // 지면 Plane.Raycast (유닛 드래그용)
     private readonly Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
 
 
@@ -36,78 +34,65 @@ public class UnitPlacer : MonoBehaviour
 
     private void Update()
     {
-        // 준비 페이즈 이외에는 동작하지 않는다
-        if (BattleManager.Instance == null ||
-            BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation)
+        if (!IsActivePhase())
         {
-            // 들고 있던 유닛이 있으면 원래 자리에 복귀
             if (heldUnit != null) CancelPlacement();
             return;
         }
 
-        // 호버는 매 프레임 마우스 위치를 추적해야 하므로 Update에서 처리
         HandleHover();
+
         if (heldUnit != null)
-        {
             UpdateDragVisuals();
-        }
     }
+
     /// <summary>
-    /// 들고 있는 유닛 마우스 드래그
+    /// BattleManager 인스턴스가 존재하면 모든 페이즈에서 동작 허용.
     /// </summary>
+    private bool IsActivePhase()
+        => BattleManager.Instance != null;
+
+    /// <summary>
+    /// Preparation 이외 페이즈(Battle / Result)에서는 벤치 전용 모드로 동작한다.
+    /// </summary>
+    private bool IsBenchOnlyPhase()
+        => BattleManager.Instance != null
+        && BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation;
+
+    // ── 드래그 비주얼 ──────────────────────────────────────────
+
     private void UpdateDragVisuals()
     {
-        // 화면의 마우스 위치에서 3D 공간으로 향하는 광선 생성
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.value);
-
-        // 가상의 바닥 평면(y=0)과 광선이 만나는 지점을 계산
         if (groundPlane.Raycast(ray, out float enter))
         {
-            Vector3 hitPoint = ray.GetPoint(enter);
-            Vector3 targetPosition = new Vector3(hitPoint.x, hitPoint.y + dragHeightOffset, hitPoint.z);
-
-            heldUnit.transform.position = Vector3.Lerp(heldUnit.transform.position, targetPosition, Time.deltaTime * dragFollowSpeed);
+            Vector3 hit    = ray.GetPoint(enter);
+            Vector3 target = new Vector3(hit.x, hit.y + dragHeightOffset, hit.z);
+            heldUnit.transform.position =
+                Vector3.Lerp(heldUnit.transform.position, target, Time.deltaTime * dragFollowSpeed);
         }
     }
 
-    /// <summary>
-    /// 클릭
-    /// </summary>
     public void OnPlaceClick(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
-        if (BattleManager.Instance == null ||
-            BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation) return;
-
-        HandleLeftClick();
+        OnLeftClick();
     }
 
-    /// <summary>
-    /// PlayerInput (Invoke Unity Events) — 우클릭 또는 ESC 취소 액션에 연결.
-    /// Inspector: PlayerInput → Events → [액션명] → OnPlaceCancel
-    /// </summary>
     public void OnPlaceCancel(InputAction.CallbackContext context)
     {
-        if (!context.performed) return;
-        if (BattleManager.Instance == null ||
-            BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation) return;
-
         CancelPlacement();
     }
 
-    // 마우스오버
-
     private void HandleHover()
     {
-        TileScript tile = RaycastTarget<TileScript>();
+        // BaseTile 기반 레이캐스트 — 헥스·벤치 타일 모두 감지
+        BaseTile tile = RaycastTarget<BaseTile>();
 
-        if (tile == hoveredTile) return; // 변화 없음
+        if (tile == hoveredTile) return;
 
-        // 이전 타일 원복
         ClearHover();
 
-        // 새 타일 하이라이트 (PlayerZone & 빈 타일 또는 유닛 있는 타일)
-        if (tile != null && IsPlayerZone(tile) && highlightMaterial != null)
+        if (tile != null && IsValidDropTarget(tile) && highlightMaterial != null)
         {
             MeshRenderer mr = tile.GetComponent<MeshRenderer>();
             if (mr != null)
@@ -122,39 +107,34 @@ public class UnitPlacer : MonoBehaviour
     private void ClearHover()
     {
         if (hoveredTile == null) return;
-
         MeshRenderer mr = hoveredTile.GetComponent<MeshRenderer>();
         if (mr != null && hoveredOriginalMaterial != null)
             mr.sharedMaterial = hoveredOriginalMaterial;
-
         hoveredTile             = null;
         hoveredOriginalMaterial = null;
     }
 
-    // 클릭 처리
-
-    private void HandleLeftClick()
+    private void OnLeftClick()
     {
-        if (heldUnit == null)
-        {
-            // 유닛 집어 올리기
-            TryPickUp();
-        }
-        else
-        {
-            // 유닛 내려놓기
-            TryDrop();
-        }
+        if (heldUnit == null) TryPickUp();
+        else                  TryDrop();
     }
 
     private void TryPickUp()
     {
-        TileScript tile = RaycastTarget<TileScript>();
-        if (tile == null) return;
-        if (!IsPlayerZone(tile)) return;
-        if (!tile.IsOccupied) return;
+        BaseTile tile = RaycastTarget<BaseTile>();
+        if (tile == null || !tile.IsOccupied) return;
 
-        // 타일에 있는 플레이어 유닛 찾기
+        // 배틀 페이즈: 벤치 슬롯에서만 집기 가능 (전장 유닛 조작 불가)
+        if (IsBenchOnlyPhase())
+        {
+            if (!(tile is BenchTileScript)) return;
+        }
+        else
+        {
+            if (tile is TileScript hexTile && !IsPlayerZone(hexTile)) return;
+        }
+
         UnitController unit = GetUnitOnTile(tile);
         if (unit == null || unit.CurrentTeam != Team.Player) return;
 
@@ -162,48 +142,100 @@ public class UnitPlacer : MonoBehaviour
         originalTile = tile;
     }
 
+    /// <summary>
+    /// 유닛을 내려놓는다. 집은 위치(헥스/벤치) × 놓는 위치(헥스/벤치) × 점유 여부
+    /// </summary>
     private void TryDrop()
     {
-        TileScript targetTile = RaycastTarget<TileScript>();
+        BaseTile targetTile = RaycastTarget<BaseTile>();
 
-        if (targetTile == null || !IsPlayerZone(targetTile))
+        if (targetTile == null || !IsValidDropTarget(targetTile))
         {
-            // 유효하지 않은 위치 → 취소
             CancelPlacement();
             return;
         }
-
         if (targetTile == originalTile)
         {
-            // 제자리 클릭 → 취소
             CancelPlacement();
             return;
         }
 
-        if (targetTile.IsOccupied)
+        bool heldFromHex  = originalTile is TileScript;
+        bool targetIsHex  = targetTile   is TileScript;
+        UnitController other = targetTile.IsOccupied ? GetUnitOnTile(targetTile) : null;
+
+        if (heldFromHex && targetIsHex)
         {
-            // 다른 유닛이 있으면 스왑
-            UnitController other = GetUnitOnTile(targetTile);
-            if (other == null)
+            //헥스 → 헥스
+            if (other != null)
             {
-                // 유닛 오브젝트를 못 찾은 경우 취소
-                CancelPlacement();
-                return;
+                // 스왑: 두 유닛 모두 UnitManager에 유지
+                other.PlaceOnTile((TileScript)originalTile, clearCurrent: false);
+                heldUnit.PlaceOnTile((TileScript)targetTile,   clearCurrent: false);
             }
-
-            // 스왑: 두 유닛의 타일 점유를 교환
-            // clearCurrentTile=false 로 호출해 IsOccupied 상태를 수동 관리한다
-            other.PlaceOnTile(originalTile, clearCurrentTile: false);
-            heldUnit.PlaceOnTile(targetTile, clearCurrentTile: false);
-
-            // 원래 타일(originalTile)의 IsOccupied 는 other 가 새로 점유
-            // targetTile 의 IsOccupied 는 heldUnit 이 새로 점유
-            // — PlaceOnTile 내부에서 newTile.IsOccupied = true 처리됨
+            else
+            {
+                heldUnit.PlaceOnTile((TileScript)targetTile);
+            }
         }
-        else
+        else if (heldFromHex) // 헥스 → 벤치
         {
-            // 빈 타일 → 이동
-            heldUnit.PlaceOnTile(targetTile);
+            var benchTarget = (BenchTileScript)targetTile;
+            if (other != null)
+            {
+                // 스왑: other(벤치) → 헥스 / held(헥스) → 벤치
+                BenchManager.Instance.RemoveUnit(other);
+                UnitManager.Instance.AddUnit(other, other.CurrentTeam);
+                other.PlaceOnTile((TileScript)originalTile, clearCurrent: false);
+
+                UnitManager.Instance.RemoveUnit(heldUnit, heldUnit.CurrentTeam);
+                BenchManager.Instance.AddUnit(heldUnit, benchTarget);
+                heldUnit.PlaceOnBench(benchTarget, clearCurrent: false);
+            }
+            else
+            {
+                // 이동: held → 빈 벤치
+                UnitManager.Instance.RemoveUnit(heldUnit, heldUnit.CurrentTeam);
+                BenchManager.Instance.AddUnit(heldUnit, benchTarget);
+                heldUnit.PlaceOnBench(benchTarget);
+            }
+        }
+        else if (targetIsHex) // 벤치 → 헥스
+        {
+            var hexTarget    = (TileScript)targetTile;
+            var benchOrigin  = (BenchTileScript)originalTile;
+            if (other != null)
+            {
+                // 스왑: other(헥스) → 벤치 / held(벤치) → 헥스
+                UnitManager.Instance.RemoveUnit(other, other.CurrentTeam);
+                BenchManager.Instance.AddUnit(other, benchOrigin);
+                other.PlaceOnBench(benchOrigin, clearCurrent: false);
+
+                BenchManager.Instance.RemoveUnit(heldUnit);
+                UnitManager.Instance.AddUnit(heldUnit, heldUnit.CurrentTeam);
+                heldUnit.PlaceOnTile(hexTarget, clearCurrent: false);
+            }
+            else
+            {
+                // 이동: held → 빈 헥스
+                BenchManager.Instance.RemoveUnit(heldUnit);
+                UnitManager.Instance.AddUnit(heldUnit, heldUnit.CurrentTeam);
+                heldUnit.PlaceOnTile(hexTarget);
+            }
+        }
+        else // 벤치 → 벤치
+        {
+            var benchTarget = (BenchTileScript)targetTile;
+            if (other != null)
+            {
+                // 스왑: 두 유닛 모두 BenchManager에 유지
+                other.PlaceOnBench((BenchTileScript)originalTile, clearCurrent: false);
+                heldUnit.PlaceOnBench(benchTarget, clearCurrent: false);
+            }
+            else
+            {
+                heldUnit.PlaceOnBench(benchTarget);
+            }
         }
 
         heldUnit     = null;
@@ -213,18 +245,35 @@ public class UnitPlacer : MonoBehaviour
     private void CancelPlacement()
     {
         if (heldUnit != null && originalTile != null)
-            heldUnit.PlaceOnTile(originalTile);
-
+        {
+            if (originalTile is TileScript hexTile)
+                heldUnit.PlaceOnTile(hexTile);
+            else if (originalTile is BenchTileScript benchSlot)
+                heldUnit.PlaceOnBench(benchSlot);
+        }
         heldUnit     = null;
         originalTile = null;
     }
+/// <summary>
+    /// 유효한 드롭 대상인지 확인한다.
+    /// - 배틀 페이즈: 벤치 슬롯만 유효 (전장 배치 불가)
+    /// - 준비 페이즈: 헥스(PlayerZone) + 벤치 모두 유효
+    /// </summary>
+    private bool IsValidDropTarget(BaseTile tile)
+    {
+        if (IsBenchOnlyPhase())
+            return tile is BenchTileScript;
 
+        if (tile is TileScript hexTile) return IsPlayerZone(hexTile);
+        if (tile is BenchTileScript)    return true;
+        return false;
+    }
 
     private bool IsPlayerZone(TileScript tile)
         => tile.GridCoordinate.y < playerZoneMaxRow;
 
     /// <summary>
-    /// 마우스 위치에서 Physics.Raycast 를 쏴 컴포넌트를 반환한다.
+    /// 마우스 위치에서 Physics.Raycast 를 쏴 T 컴포넌트를 반환한다.
     /// </summary>
     private T RaycastTarget<T>() where T : Component
     {
@@ -235,15 +284,15 @@ public class UnitPlacer : MonoBehaviour
     }
 
     /// <summary>
-    /// UnitManager 플레이어 목록에서 해당 타일에 있는 유닛을 반환한다.
+    /// 해당 타일 위에 있는 플레이어 유닛을 반환한다.
+    /// 헥스 전장(UnitManager)과 벤치(BenchManager) 모두 탐색한다.
     /// </summary>
     private UnitController GetUnitOnTile(BaseTile tile)
     {
         foreach (UnitController unit in UnitManager.Instance.playerUnits)
-        {
-            if (unit != null && unit.CurrentTile == tile)
-                return unit;
-        }
+            if (unit != null && unit.CurrentTile == tile) return unit;
+        foreach (UnitController unit in BenchManager.Instance.benchUnits)
+            if (unit != null && unit.CurrentTile == tile) return unit;
         return null;
     }
 }

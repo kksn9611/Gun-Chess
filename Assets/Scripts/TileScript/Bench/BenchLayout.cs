@@ -56,40 +56,14 @@ public class BenchLayout : MonoBehaviour
             benchTileScript.Initialize(i);
             BenchManager.Instance.RegisterTile(i, benchTileScript);
 
-            // 클릭 판정용 콜라이더
-            // innerSize > 0 이면 메시를 별도 생성한다.
-            MeshCollider col = tile.AddComponent<MeshCollider>();
-            col.sharedMesh = innerSize > 0f
-                ? CreateSolidColliderMesh(outerSize, tileHeight)
-                : tile.GetComponent<MeshFilter>().sharedMesh;
+            // 클릭 판정용 콜라이더 — BoxCollider 사용
+            // MeshCollider 단면 메시는 레이캐스트가 불안정하므로 BoxCollider 를 사용한다.
+            BoxCollider col = tile.AddComponent<BoxCollider>();
+            col.size   = new Vector3(outerSize * 2f, Mathf.Max(tileHeight, 0.05f), outerSize * 2f);
+            col.center = Vector3.zero;
         }
     }
 
-    /// <summary>
-    /// innerSize > 0 일 때 클릭 판정 전용 솔리드 메시 생성
-    /// HexGridLayout.CreateSolidHexMesh() 와 동일한 역할.
-    /// </summary>
-    private static Mesh CreateSolidColliderMesh(float outer, float h)
-    {
-        float top = h / 2f;
-
-        // 상단 면만으로 구성된 꽉 찬 사각형 (두 개의 삼각형)
-        var vertices = new[]
-        {
-            new Vector3(-outer, top, -outer),
-            new Vector3( outer, top, -outer),
-            new Vector3( outer, top,  outer),
-            new Vector3(-outer, top,  outer),
-        };
-        var triangles = new[] { 0, 1, 2, 2, 3, 0 };
-
-        Mesh mesh       = new Mesh();
-        mesh.name       = "BenchColliderMesh";
-        mesh.vertices   = vertices;
-        mesh.triangles  = triangles;
-        mesh.RecalculateNormals();
-        return mesh;
-    }
 
 #if UNITY_EDITOR
     private void OnValidate()
