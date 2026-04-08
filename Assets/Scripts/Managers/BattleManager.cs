@@ -41,6 +41,7 @@ public class BattleManager : MonoBehaviour
         CurrentPhase = Phase.Battle;
         Debug.Log("[BattleManager] 전투 시작");
         OnBattleStart?.Invoke();
+        UnitManager.Instance.CheckBattleEnd();
     }
 
     /// <summary>

@@ -7,7 +7,6 @@ public class HexGridLayout : MonoBehaviour
     [SerializeField] private float outerSize; // 1.5
     [SerializeField] private float innerSize; // 1.4
     [SerializeField] private float height; // 0.01
-    private bool isFlatTopped;
 
     [Header("재질")]
     public Material material;
@@ -43,7 +42,6 @@ public class HexGridLayout : MonoBehaviour
                 
                 // 타일 그리기
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
-                hexRenderer.isFlatTopped = isFlatTopped;
                 hexRenderer.outerSize = outerSize;
                 hexRenderer.innerSize = innerSize;
                 hexRenderer.height = height;
@@ -55,7 +53,7 @@ public class HexGridLayout : MonoBehaviour
 
                 // 레이캐스트(마우스 클릭) 대상이 되도록 MeshCollider 추가
                 MeshCollider col = tile.AddComponent<MeshCollider>();
-                col.sharedMesh = CreateSolidHexMesh(outerSize, height, isFlatTopped);
+                col.sharedMesh = CreateSolidHexMesh(outerSize, height);
             }
         }
         TileManager.Instance.InitializeAllTiles(); // 모든 타일 좌표 로딩
@@ -65,7 +63,7 @@ public class HexGridLayout : MonoBehaviour
     /// <summary>
     /// 클릭 판정 전용 솔리드 육각형 메시
     /// </summary>
-    private static Mesh CreateSolidHexMesh(float outer, float h, bool flatTopped)
+    private static Mesh CreateSolidHexMesh(float outer, float h)
     {
         var vertices  = new System.Collections.Generic.List<Vector3>();
         var triangles = new System.Collections.Generic.List<int>();
@@ -77,8 +75,8 @@ public class HexGridLayout : MonoBehaviour
             // 각 섹터: 중심(0,top,0) + 외곽 두 꼭짓점으로 삼각형 생성
             int next = (i + 1) % 6;
             vertices.Add(new Vector3(0, top, 0));
-            vertices.Add(GetHexPoint(outer, top, i,    flatTopped));
-            vertices.Add(GetHexPoint(outer, top, next, flatTopped));
+            vertices.Add(GetHexPoint(outer, top, i ));
+            vertices.Add(GetHexPoint(outer, top, next));
 
             int baseIdx = i * 3;
             triangles.Add(baseIdx);
@@ -98,9 +96,9 @@ public class HexGridLayout : MonoBehaviour
     /// CreateSolidHexMesh 전용 꼭짓점 계산.
     /// HexRenderer.GetPoint() 와 동일한 공식을 사용한다.
     /// </summary>
-    private static Vector3 GetHexPoint(float size, float heightPos, int index, bool flatTopped)
+    private static Vector3 GetHexPoint(float size, float heightPos, int index)
     {
-        float deg = flatTopped ? 60f * index : 60f * index - 30f;
+        float deg = 60f * index - 30f;
         float rad = Mathf.PI / 180f * deg;
         return new Vector3(size * Mathf.Cos(rad), heightPos, size * Mathf.Sin(rad));
     }
@@ -128,8 +126,6 @@ public class HexGridLayout : MonoBehaviour
         float size = outerSize;
         bool shouldOffset;
 
-        if (!isFlatTopped) // 위쪽이 뾰족한 육각형
-        {
             shouldOffset = (row % 2) != 0; // 홀수번째 확인
             width = Mathf.Sqrt(3f) * size; // 너비
             heightPos = 2f * size; // 높이
@@ -138,18 +134,7 @@ public class HexGridLayout : MonoBehaviour
             offset = (shouldOffset) ? width * 0.5f : 0; // 홀수 줄 처리 (너비의 0.5만큼 이동)
             xPosition = (column * horizontalDistance) + offset; 
             yPosition = (row * verticalDistance);
-        }
-        else // 위쪽 평평한 육각형
-        {
-            shouldOffset = (column % 2) != 0;
-            width = 2f * size;
-            heightPos = Mathf.Sqrt(3f) * size;
-            horizontalDistance = width * 0.75f;
-            verticalDistance = heightPos;
-            offset = (shouldOffset) ? heightPos * 0.5f : 0;
-            xPosition = (column * horizontalDistance);
-            yPosition = (row * verticalDistance) - offset;
-        }
+
         return new Vector3(xPosition, 0, -yPosition);
     }
 }

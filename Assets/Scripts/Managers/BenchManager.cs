@@ -20,7 +20,7 @@ public class BenchManager
     }
 
     /// <summary>
-    /// 비어있는 슬롯(IsOccupied == false)을 인덱스 순으로 탐색해 반환한다.
+    /// 비어있는 슬롯을 순서대로 탐색해 반환
     /// 모든 슬롯이 찼으면 null.
     /// </summary>
     public BenchTileScript GetEmptySlot()

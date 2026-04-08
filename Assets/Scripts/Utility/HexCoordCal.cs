@@ -1,7 +1,7 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 // https://www.redblobgames.com/grids/hexagons/#coordinates
-public class HexCoordCal
+public static class HexCoordCal
 {
     /// <summary>
     /// 육각형 좌표 계산

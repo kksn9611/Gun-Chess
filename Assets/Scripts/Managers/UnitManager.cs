@@ -4,16 +4,20 @@ using UnityEngine;
 /// <summary>
 /// 전투 참여 목록 관리
 /// </summary>
-public class UnitManager
+public class UnitManager : MonoBehaviour
 {
-    private static UnitManager instance;
-    public static UnitManager Instance => instance ??= new UnitManager();
+    public static UnitManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null) Instance = this;
+        else Destroy(gameObject);
+    }
     private UnitManager() { }
 
-    private readonly List<UnitController> playerUnitList  = new List<UnitController>();
-    private readonly List<UnitController> enemyUnitList   = new List<UnitController>();
-    private readonly List<UnitController> neutralUnitList = new List<UnitController>();
-
+    [SerializeField] private  List<UnitController> playerUnitList  = new List<UnitController>();
+    [SerializeField] private  List<UnitController> enemyUnitList   = new List<UnitController>();
+    [SerializeField] private  List<UnitController> neutralUnitList = new List<UnitController>();
     public IReadOnlyList<UnitController> playerUnits  => playerUnitList;
     public IReadOnlyList<UnitController> enemyUnits   => enemyUnitList;
     public IReadOnlyList<UnitController> neutralUnits => neutralUnitList;
@@ -38,8 +42,7 @@ public class UnitManager
         => team == Team.Player ? enemyUnitList : playerUnitList;
 
     /// <summary>
-    /// 유닛 사망 시 호출. 어느 한 팀의 목록이 비면 BattleManager에 전투 종료를 알린다.
-    /// BattleManager가 Battle 페이즈가 아닐 때는 무시한다 (준비 페이즈 중 유닛 제거 대비).
+    /// 전투 시작, 유닛 사망 시 호출해 전투가 끝났는지 확인.
     /// </summary>
     public void CheckBattleEnd()
     {
@@ -58,7 +61,16 @@ public class UnitManager
     }
 
 
-    public void Clear()
+    /// <summary>특정 팀의 유닛 목록만 비운다.</summary>
+    public void ClearTeam(Team team)
+    {
+        if      (team == Team.Player)  playerUnitList.Clear();
+        else if (team == Team.Enemy)   enemyUnitList.Clear();
+        else if (team == Team.Neutral) neutralUnitList.Clear();
+    }
+
+    /// <summary>모든 팀의 유닛 목록을 비운다.</summary>
+    public void ClearAll()
     {
         playerUnitList.Clear();
         enemyUnitList.Clear();

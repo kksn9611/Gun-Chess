@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "UnitData", menuName = "Scriptable Objects/UnitData")]
 public class UnitData : ScriptableObject
@@ -16,4 +16,14 @@ public class UnitData : ScriptableObject
     public float attRange = 1f;  // 공격 사거리 (격자 기준 칸)
     public float attSpd = 1f;  // 공격 속도
     public float moveSpd = 3f;    // 이동 속도
+
+    [Header("스킬")]
+    [Tooltip("이 유닛이 사용하는 스킬. null이면 스킬 없음")]
+    public BaseSkill skill;
+
+    [Tooltip("공격 시 획득하는 MP")]
+    public float mpGainOnAttack = 10f;
+
+    [Tooltip("피격 시 획득하는 MP")]
+    public float mpGainOnHit = 2f;
 }

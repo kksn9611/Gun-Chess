@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Priority_Queue;
 
 public static class Pathfinder
@@ -43,8 +43,16 @@ public static class Pathfinder
                     // 총 예상 비용 (임시 G Score + H Score)
                     int fScore = tentativeGscore + heuristicScore;
                     // fScore가 낮은(비용이 낮은) 타일부터 탐색하기 위해 우선순위 큐로 넘겨줌
-                    visitQueueList.Enqueue(neighbor,fScore);
-                    
+                    if (visitQueueList.Contains(neighbor))
+                    {
+                        visitQueueList.UpdatePriority(neighbor, fScore);
+                    }
+                    // 큐에 없는 처음 탐색하는 타일이라면 큐에 추가
+                    else
+                    {
+                        visitQueueList.Enqueue(neighbor, fScore);
+                    }
+
                     parentMap[neighbor] = currentTile;
                 }
             }

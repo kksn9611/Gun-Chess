@@ -1,4 +1,4 @@
 using UnityEngine;
 
-// ю╞╢ж ╩Себ Enum
-public enum UnitState { Idle, Moving, Attacking, Dead }
+// О©╫О©╫О©╫О©╫ О©╫О©╫О©╫О©╫ Enum
+public enum UnitState { Idle, Moving, Attacking, Casting, Dead }

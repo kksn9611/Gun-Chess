@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 /// <summary>
 /// 마우스로 플레이어 유닛을 집어 타일에 배치
-
 /// </summary>
 public class UnitPlacer : MonoBehaviour
 {
@@ -75,12 +74,18 @@ public class UnitPlacer : MonoBehaviour
 
     public void OnPlaceClick(InputAction.CallbackContext context)
     {
-        OnLeftClick();
+        if (context.performed)
+        {
+            OnLeftClick();
+        }
     }
 
     public void OnPlaceCancel(InputAction.CallbackContext context)
     {
-        CancelPlacement();
+        if (context.performed)
+        {
+            CancelPlacement();
+        }
     }
 
     private void HandleHover()

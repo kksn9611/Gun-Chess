@@ -37,6 +37,16 @@ public class TileManager
         Debug.Log($"{tileMap.Count}개의 타일 연결");
     }
 
+    /// <summary>
+    /// 모든 타일의 IsOccupied를 false로 초기화
+    /// 라운드 전환 시 호출
+    /// </summary>
+    public void ClearAllOccupied()
+    {
+        foreach (TileScript tile in tileMap.Values)
+            tile.IsOccupied = false;
+    }
+
     public void ClearMap()
     {
         tileMap.Clear();
