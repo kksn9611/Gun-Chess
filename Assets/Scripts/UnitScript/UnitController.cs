@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +25,27 @@ public class UnitController : MonoBehaviour
     [SerializeField] private UnitController currentTarget; // 현재 추격/공격 중인 적 유닛
     private Coroutine moveCoroutine;
 
+
+    public Transform uiAnchor;
+    public static event Action<UnitController> OnUnitSpawned;
+    /// <summary>HP 변경 시 실행. (현재HP, 최대HP)</summary>
+    public event Action<float, float> OnHpChanged;
+    /// <summary>MP 변경 시 실행. (현재MP, 최대MP)</summary>
+    public event Action<float, float> OnMpChanged;
+    /// <summary>벤치 ↔ 전장 전환 시 실행. (true = 벤치에 있음)</summary>
+    public event Action<bool> OnBenchState;
+    private void SetHp(float value)
+    {
+        currentHp = Mathf.Clamp(value, 0f, unitData.maxHp);
+        OnHpChanged?.Invoke(currentHp, unitData.maxHp);
+    }
+
+    private void SetMp(float value)
+    {
+        currentMp = Mathf.Clamp(value, 0f, currentMaxMp);
+        OnMpChanged?.Invoke(currentMp, currentMaxMp);
+    }
+
     // 유닛 데이터 읽기 전용 프로퍼티
     public UnitData UnitData { get => unitData; }
     public BaseTile CurrentTile => currentBenchTile != null ? (BaseTile)currentBenchTile : (BaseTile)currentTile;
@@ -48,6 +70,7 @@ public class UnitController : MonoBehaviour
         currentBenchTile = null;
         currentCoord     = newTile.GetCoordinate();
         newTile.IsOccupied = true;
+        OnBenchState?.Invoke(false);
         StartCoroutine(MoveToTileSmoothly(newTile.transform.position, clearCurrent ? 0.1f : 0.2f));
     }
 
@@ -69,6 +92,7 @@ public class UnitController : MonoBehaviour
         currentBenchTile = slot;
         currentCoord = slot.GetCoordinate();
         slot.IsOccupied  = true;
+        OnBenchState?.Invoke(true);
         StartCoroutine(MoveToTileSmoothly(slot.transform.position, 0.2f));
     }
 
@@ -95,8 +119,6 @@ public class UnitController : MonoBehaviour
     public void Initialize(UnitData data, BaseTile spawnTile, Team team)
     {
         unitData        = data;
-        currentHp       = unitData.maxHp;
-        currentMp       = 0f;
         currentAtt      = unitData.att;
         currentDef      = unitData.def;
         currentAttRange = unitData.attRange;
@@ -122,6 +144,9 @@ public class UnitController : MonoBehaviour
             currentBenchTile = null;
         }
 
+        OnUnitSpawned?.Invoke(this);
+        SetHp(unitData.maxHp);
+        SetMp(0f);
         Debug.Log($"{unitData.unitName} @ {currentCoord} ({currentTeam}팀)");
         // 전투 시작은 BattleManager.OnBattleStart 이벤트
         // Initialize() 시점에 EnterIdleState() 호출 XX
@@ -217,7 +242,7 @@ public class UnitController : MonoBehaviour
     }
 
     /// <summary>
-    /// 실행 중인 이동 코루틴을 중단하고, 오브젝트 위치를 타일로 변경.
+    /// 실행 중인 이동 중단하고, 오브젝트 위치를 타일로 변경.
     /// EnterAttackState(), Die(), 강제 재시작 시 반드시 호출한다.
     /// </summary>
     private void StopMovement()
@@ -235,7 +260,7 @@ public class UnitController : MonoBehaviour
     }
 
     /// <summary>
-    /// 타겟을 향해 한 칸씩 이동하는 메인 코루틴.
+    /// 타겟을 향해 한 칸씩 이동
     /// 타일 도착마다 타겟 유효성 → 사거리 → 목적지 → 경로 평가 실행
     /// </summary>
     private IEnumerator MoveCoroutine()
@@ -312,8 +337,7 @@ public class UnitController : MonoBehaviour
 
     /// <summary>
     /// targetTile의 Neighbors 중에서
-    /// 비어있고 자신에게 가장 가까운 타일을 반환한다.
-    /// 모든 인접 타일이 점유되어 있으면 null을 반환한다.
+    /// 비어있고 자신에게 가장 가까운 타일을 반환
     /// </summary>
     private TileScript GetBestAdjacentTile(TileScript targetTile)
     {
@@ -370,13 +394,9 @@ public class UnitController : MonoBehaviour
         transform.position = endPos;
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // 타겟 탐색
-    // ─────────────────────────────────────────────────────────────
-
     /// <summary>
     /// 적 팀 유닛 중 가장 가까운 생존 유닛을 반환한다.
-    /// 거리가 같을 경우 공격 사거리가 짧은 적(더 위협적인 적)을 우선한다.
+    /// 거리가 같을 경우 공격 사거리가 짧은 적을 우선한다.
     /// 적이 없거나 모두 사망했으면 null을 반환한다.
     /// </summary>
     public UnitController FindClosestTarget()
@@ -487,21 +507,14 @@ public class UnitController : MonoBehaviour
         if (currentState == UnitState.Dead) return;
         // def = % 데미지 감소율.
         float actualDamage = damage * (1f - currentDef / 100f);
-        currentHp -= actualDamage;
+        SetHp(currentHp - actualDamage);
 
         // 피격 시 MP 획득
         GainMp(mpGainOnHit);
 
         if (currentHp <= 0f)
-        {
-            currentHp = 0f;
             Die();
-        }
     }
-
-    // ─────────────────────────────────────────────────────────────
-    // MP & 스킬
-    // ─────────────────────────────────────────────────────────────
 
     /// <summary>
     /// MP를 획득한다. maxMp를 초과하지 않도록 클램프한다.
@@ -509,7 +522,7 @@ public class UnitController : MonoBehaviour
     private void GainMp(float amount)
     {
         if (amount <= 0f) return;
-        currentMp = Mathf.Min(currentMp + amount, currentMaxMp);
+        SetMp(currentMp + amount);
     }
 
     /// <summary>
@@ -535,7 +548,7 @@ public class UnitController : MonoBehaviour
         yield return StartCoroutine(skill.Execute(this));
 
         // MP 초기화
-        currentMp = 0f;
+        SetMp(0f);
         Debug.Log($"[스킬] {unitData.unitName} → {skill.skillName} 시전 완료, MP 초기화");
     }
 
@@ -582,8 +595,6 @@ public class UnitController : MonoBehaviour
         currentTarget  = null;
 
         // UnitData 기준으로 스탯 초기화
-        currentHp       = unitData.maxHp;
-        currentMp       = 0f;
         currentAtt      = unitData.att;
         currentDef      = unitData.def;
         currentAttRange = unitData.attRange;
@@ -592,6 +603,9 @@ public class UnitController : MonoBehaviour
         currentMaxMp    = unitData.maxMp;
         mpGainOnAttack  = unitData.mpGainOnAttack;
         mpGainOnHit     = unitData.mpGainOnHit;
+
+        SetHp(unitData.maxHp);
+        SetMp(0f);
     }
 
     /// <summary>

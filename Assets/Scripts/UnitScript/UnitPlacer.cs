@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 /// </summary>
 public class UnitPlacer : MonoBehaviour
 {
-    [Header("Settings")]
+    [Header("세팅")]
     [SerializeField] private int    playerZoneMaxRow = 4;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private float  dragHeightOffset;
     [SerializeField] private float  dragFollowSpeed;
 
-    [Header("Visual")]
+    [Header("비주얼")]
     [SerializeField] private Material highlightMaterial;
 
     private UnitController heldUnit;      // 현재 들고 있는 유닛
