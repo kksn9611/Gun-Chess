@@ -9,7 +9,7 @@ public class MPBar : MonoBehaviour
 {
     [SerializeField] private Image fill;
 
-    [SerializeField] private Vector3 screenOffset = new Vector3(0f, -10f, 0f); // HP바 아래 오프셋 (Screen 픽셀)
+    [SerializeField] private Vector3 screenOffset = new Vector3(0f, -9f, 0f); // HP바 아래 오프셋 (Screen 픽셀)
 
     private UnitController targetUnit;
     private Camera mainCam;
@@ -19,7 +19,7 @@ public class MPBar : MonoBehaviour
     {
         targetUnit = target;
         targetUnit.OnMpChanged += UpdateMp;
-        targetUnit.OnBenchState += HandleBenchStateChanged;
+        targetUnit.OnBenchState += BarStateChanged;
         mainCam = Camera.main;
         targetAnchor = uiAnchor;
 
@@ -28,7 +28,7 @@ public class MPBar : MonoBehaviour
     }
 
     /// <summary>벤치 ↔ 전장 전환 시 바를 숨기거나 보여준다.</summary>
-    private void HandleBenchStateChanged(bool isOnBench)
+    private void BarStateChanged(bool isOnBench)
     {
         gameObject.SetActive(!isOnBench);
     }
@@ -55,7 +55,7 @@ public class MPBar : MonoBehaviour
         if (targetUnit != null)
         {
             targetUnit.OnMpChanged -= UpdateMp;
-            targetUnit.OnBenchState -= HandleBenchStateChanged;
+            targetUnit.OnBenchState -= BarStateChanged;
         }
     }
 }
