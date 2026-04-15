@@ -96,6 +96,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2930573582792040482}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6786460819799433154}
   m_SourcePrefab: {fileID: 100100000, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
 --- !u!4 &8297871527116550821 stripped
 Transform:
@@ -119,7 +122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce08ab7f8c40b014686521b06fbb924f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitController
-  unitData: {fileID: 0}
+  unitData: {fileID: 11400000, guid: f99f299c51bd3144ba119a664dfbd9dd, type: 2}
   currentHp: 0
   currentMp: 0
   currentAtt: 0
@@ -131,12 +134,12 @@ MonoBehaviour:
   mpGainOnAttack: 0
   mpGainOnHit: 0
   skill: {fileID: 0}
+  currentSkillDmgMul: 1
   currentTile: {fileID: 0}
   currentBenchTile: {fileID: 0}
   currentCoord: {x: 0, y: 0}
   currentTeam: 0
-  currentState: 0
-  currentTarget: {fileID: 0}
+  synergyState: {fileID: 11400000, guid: 75ae85a31b8c5414ab5554eead6078b0, type: 2}
   uiAnchor: {fileID: 8628236388946299409}
 --- !u!95 &2930573582792040482
 Animator:
@@ -160,3 +163,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6786460819799433154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8677353033613207583}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8866dd5f85a89844abb0018bf66bd208, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitAI
+  currentState: 0

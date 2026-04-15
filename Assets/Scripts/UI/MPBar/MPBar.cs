@@ -19,6 +19,7 @@ public class MPBar : MonoBehaviour
     {
         targetUnit = target;
         targetUnit.OnMpChanged += UpdateMp;
+        targetUnit.OnHpChanged += OnHpChanged;
         targetUnit.OnBenchState += BarStateChanged;
         mainCam = Camera.main;
         targetAnchor = uiAnchor;
@@ -40,13 +41,33 @@ public class MPBar : MonoBehaviour
         fill.fillAmount = maxMp > 0f ? currentMp / maxMp : 0f;
     }
 
+    /// <summary>HP 변경 시 사망 여부를 확인하여 바를 숨긴다.</summary>
+    private void OnHpChanged(float currentHp, float maxHp)
+    {
+        if (currentHp <= 0f)
+            gameObject.SetActive(false);
+    }
+
     private void LateUpdate()
     {
-        if (targetUnit == null || !targetUnit.gameObject.activeInHierarchy)
+        // 유닛이 완전히 파괴된 경우에만 바를 파괴
+        if (targetUnit == null)
         {
             Destroy(gameObject);
             return;
         }
+
+        // 유닛이 비활성화(사망 등)되면 바를 숨기고, 재활성화되면 다시 표시
+        if (!targetUnit.gameObject.activeInHierarchy)
+        {
+            if (gameObject.activeSelf) gameObject.SetActive(false);
+            return;
+        }
+        else if (!gameObject.activeSelf && !targetUnit.IsOnBench)
+        {
+            gameObject.SetActive(true);
+        }
+
         transform.position = mainCam.WorldToScreenPoint(targetAnchor.position) + screenOffset;
     }
 
@@ -55,6 +76,7 @@ public class MPBar : MonoBehaviour
         if (targetUnit != null)
         {
             targetUnit.OnMpChanged -= UpdateMp;
+            targetUnit.OnHpChanged -= OnHpChanged;
             targetUnit.OnBenchState -= BarStateChanged;
         }
     }

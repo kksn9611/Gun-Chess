@@ -30,9 +30,13 @@ public class HPBar : MonoBehaviour
     public void UpdateHp(float currentHp, float maxHp)
     {
         if (fill == null) return;
-        
-        
+
         fill.fillAmount = currentHp / maxHp;
+
+        // HP가 0이 되면 즉시 숨김
+        if (currentHp <= 0f)
+            gameObject.SetActive(false);
+
         if (tickImage != null)
         {
             float hpPerTick = 100f; // 체력 100당 눈금 1칸
@@ -46,11 +50,24 @@ public class HPBar : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (targetUnit == null || !targetUnit.gameObject.activeInHierarchy)
+        // 유닛이 완전히 파괴된 경우에만 바를 파괴
+        if (targetUnit == null)
         {
             Destroy(gameObject);
             return;
         }
+
+        // 유닛이 비활성화(사망 등)되면 바를 숨기고, 재활성화되면 다시 표시
+        if (!targetUnit.gameObject.activeInHierarchy)
+        {
+            if (gameObject.activeSelf) gameObject.SetActive(false);
+            return;
+        }
+        else if (!gameObject.activeSelf && !targetUnit.IsOnBench)
+        {
+            gameObject.SetActive(true);
+        }
+
         transform.position = mainCam.WorldToScreenPoint(targetAnchor.position);
     }
 

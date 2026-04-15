@@ -229,7 +229,7 @@ public class RoundManager : MonoBehaviour
         // 플레이어 유닛 목록 비우기
         UnitManager.Instance.ClearTeam(Team.Player);
 
-        // 전장 유닛 복원
+        // 전장 유닛 복원 (시너지 재계산은 전체 복원 완료 후 1회만 실행)
         foreach (var pair in savedFieldPositions)
         {
             UnitController unit = pair.Key;
@@ -238,12 +238,12 @@ public class RoundManager : MonoBehaviour
 
             // 사망으로 비활성화된 유닛 재활성화
             unit.gameObject.SetActive(true);
-            // 스탯·상태 초기화
+            // 스탯·상태 초기화 (시너지 버프 해제 포함)
             unit.ResetForNewRound();
-            // 저장된 타일에 배치
-            unit.PlaceOnTile(tile);
-            // UnitManager에 재등록
+            // UnitManager에 먼저 등록 (Recalculate가 playerUnits를 순회하므로)
             UnitManager.Instance.AddUnit(unit, Team.Player);
+            // 저장된 타일에 배치 (OnBenchState → Recalculate 트리거)
+            unit.PlaceOnTile(tile);
         }
 
         Debug.Log($"[RoundManager] 플레이어 유닛 복원 완료");

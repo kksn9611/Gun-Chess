@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0566ee998734a504b9ca04894979f18d, type: 3}
+  m_Name: SynergyState
+  m_EditorClassIdentifier: Assembly-CSharp::SynergyState
+  entries:
+  - synergy: {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}
+    currentCount: 0
+    activeTierIndex: 0
