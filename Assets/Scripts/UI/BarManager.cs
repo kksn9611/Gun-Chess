@@ -8,18 +8,18 @@ public class BarManager : MonoBehaviour
     [SerializeField] private Transform canvasTransform;
 
     /// <summary>
-    /// 유닛 스폰 시 HP 바와 MP 바를 함께 생성한다.
+    /// Create HP bar and MP bar when a unit spawns.
     /// </summary>
     public void CreateBars(UnitController target)
     {
-        // HP 바 생성
+        // Create HP bar
         if (healthBarPrefab != null)
         {
             HPBar hpBar = Instantiate(healthBarPrefab, canvasTransform);
             hpBar.Initialize(target, target.uiAnchor);
         }
 
-        // MP 바 생성
+        // Create MP bar
         if (mpBarPrefab != null)
         {
             MPBar mpBar = Instantiate(mpBarPrefab, canvasTransform);

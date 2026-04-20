@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
-/// 전장 타일 하나의 상태를 관리
+/// Manages the state of a single battlefield hex tile.
 /// </summary>
 public class TileScript : BaseTile
 {
@@ -10,34 +10,34 @@ public class TileScript : BaseTile
     private int movementCost = 1;
     private Vector3Int cubeCoordinate;
     private List<TileScript> neighbors;
-    public Vector2Int GridCoordinate // ������ ��ǥ
-    { 
-        get => gridCoordinate; 
-        set => gridCoordinate = value; 
+    public Vector2Int GridCoordinate // Grid coordinate
+    {
+        get => gridCoordinate;
+        set => gridCoordinate = value;
     }
 
-    public int MovementCost // �̵� ���
+    public int MovementCost // Movement cost
     {
         get => movementCost;
     }
 
-    public Vector3Int CubeCoordinate // ���� ť����ǥ
+    public Vector3Int CubeCoordinate // Cube coordinate
     {
         get => cubeCoordinate;
         private set => cubeCoordinate = value;
     }
 
-    public List<TileScript> Neighbors // �̿��� Ÿ�ϵ�
+    public List<TileScript> Neighbors // Neighboring tiles
     {
         get => neighbors;
         private set => neighbors = value;
     }
 
-    public override Vector2Int GetCoordinate() => gridCoordinate; // 자기 좌표 반환
+    public override Vector2Int GetCoordinate() => gridCoordinate; // Return own coordinate
     public void Initialize()
     {
         cubeCoordinate = HexCoordCal.OffsetToCube(gridCoordinate);
         neighbors = HexCoordCal.GetTileNeighbors(this);
     }
-    
+
 }

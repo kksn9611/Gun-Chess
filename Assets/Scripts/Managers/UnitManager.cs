@@ -2,7 +2,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 전투 참여 목록 관리
+/// Manages combat unit rosters per team.
 /// </summary>
 public class UnitManager : MonoBehaviour
 {
@@ -28,7 +28,7 @@ public class UnitManager : MonoBehaviour
         else if (team == Team.Enemy)   enemyUnitList.Add(unit);
         else if (team == Team.Neutral) neutralUnitList.Add(unit);
 
-        Debug.Log($"{team} 팀 목록에 {unit.UnitData.name} 추가");
+        Debug.Log($"Added {unit.Stats.UnitData.name} to {team} roster");
     }
 
     public void RemoveUnit(UnitController unit, Team team)
@@ -42,7 +42,7 @@ public class UnitManager : MonoBehaviour
         => team == Team.Player ? enemyUnitList : playerUnitList;
 
     /// <summary>
-    /// 전투 시작, 유닛 사망 시 호출해 전투가 끝났는지 확인.
+    /// Called on battle start and unit death to check if the battle has ended.
     /// </summary>
     public void CheckBattleEnd()
     {
@@ -61,7 +61,7 @@ public class UnitManager : MonoBehaviour
     }
 
 
-    /// <summary>특정 팀의 유닛 목록만 비운다.</summary>
+    /// <summary>Clear the unit list for a specific team.</summary>
     public void ClearTeam(Team team)
     {
         if      (team == Team.Player)  playerUnitList.Clear();
@@ -69,7 +69,7 @@ public class UnitManager : MonoBehaviour
         else if (team == Team.Neutral) neutralUnitList.Clear();
     }
 
-    /// <summary>모든 팀의 유닛 목록을 비운다.</summary>
+    /// <summary>Clear all team unit lists.</summary>
     public void ClearAll()
     {
         playerUnitList.Clear();

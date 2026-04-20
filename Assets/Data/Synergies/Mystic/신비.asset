@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "\uC2E0\uBE44"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uC2E0\uBE44"
-  description: "\uC2E0\uBE44 \uC720\uB2DB\uC740 \uAE30\uBCF8 \uB2A5\uB825 \uAC15\uD568\n\uC2DC\uB108\uC9C0
+  description: "\uC2E0\uBE44 \uC720\uB2DB\uC740 \uAE30\uBCF8\uC801\uC73C\uB85C \uAC15\uD558\uBA70,\n\uC2DC\uB108\uC9C0
     \uD6A8\uACFC \uB192\uC9C0 \uC54A\uC74C"
   tiers:
   - requiredCount: 1

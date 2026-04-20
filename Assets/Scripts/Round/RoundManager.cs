@@ -4,37 +4,36 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 라운드 진행을 관리한다.
-/// 준비 → 전투 → 결과 → 준비 반복
-/// 전투 시작 직전 플레이어 유닛 위치를 저장하고,
-/// 전투 종료 후 저장된 위치로 복원하여 배치 상태를 유지한다.
+/// Manages round progression.
+/// Preparation → Battle → Result → Preparation loop.
+/// Saves player unit positions before battle, restores after.
 /// </summary>
 public class RoundManager : MonoBehaviour
 {
-    [Header("스테이지 데이터")]
+    [Header("Stage Data")]
     [SerializeField] private StageData[] stages;
 
-    [Header("플레이어 초기 배치")]
+    [Header("Player Initial Placement")]
     [SerializeField] private PlayerSpawnInfo[] playerSpawns;
 
-    [Header("설정")]
+    [Header("Settings")]
     [SerializeField] private int currentRound = 0;
     private float resultPhaseDuration = 5f;
     private int previousRound;
 
 
-    [Header("참조")]
+    [Header("References")]
     [SerializeField] private UnitSpawner unitSpawner;
 
     public int CurrentRound => currentRound;
 
-    /// <summary>전투 시작 전 전장 유닛 위치 저장소</summary>
+    /// <summary>Saved field unit positions before battle starts</summary>
     private readonly Dictionary<UnitController, TileScript> savedFieldPositions = new();
 
-    /// <summary>현재 라운드에 스폰된 적 유닛 참조 (준비 페이즈에서 미리 보여주기 위함)</summary>
+    /// <summary>Enemy units spawned for current round preview</summary>
     private readonly List<UnitController> previewEnemies = new();
 
-    private void OnValidate() // 에디터 조작으로 스테이지 적 미리보기 가능
+    private void OnValidate() // Editor: preview stage enemies by changing round
     {
         if (currentRound != previousRound && currentRound >= 1 && currentRound <= stages.Length)
         {
@@ -54,22 +53,22 @@ public class RoundManager : MonoBehaviour
 
     private IEnumerator Start()
     {
-        // HexGridLayout / BenchLayout 이 타일을 생성할 때까지 대기
+        // Wait for HexGridLayout / BenchLayout to create tiles
         yield return new WaitForSeconds(0.3f);
 
-        // 플레이어 유닛 초기 배치
+        // Initial player unit placement
         SpawnPlayerUnitsForTest();
 
-        // 1라운드 준비 시작 — 적 유닛을 미리보기
+        // Start round 1 preparation — preview enemy units
         currentRound = 1;
         previousRound = currentRound;
         SpawnEnemiesForPreview(stages[currentRound - 1]);
-        Debug.Log($"[RoundManager] === 라운드 {currentRound} 준비 페이즈 ===");
+        Debug.Log($"[RoundManager] === Round {currentRound} Preparation Phase ===");
     }
 
     /// <summary>
-    /// Input System → Invoke Unity Events 에서 Space 키에 바인딩한다.
-    /// Preparation 페이즈에서 전투를 시작한다.
+    /// Bound to Space key via Input System → Invoke Unity Events.
+    /// Starts battle during Preparation phase.
     /// </summary>
     public void OnStartBattle(InputAction.CallbackContext context)
     {
@@ -77,7 +76,7 @@ public class RoundManager : MonoBehaviour
         BeginBattle();
     }
     /// <summary>
-    /// 현재 라운드의 전투를 시작
+    /// Start battle for the current round.
     /// </summary>
     public void BeginBattle()
     {
@@ -86,22 +85,22 @@ public class RoundManager : MonoBehaviour
 
         if (currentRound < 1 || currentRound > stages.Length)
         {
-            Debug.LogWarning($"[RoundManager] 유효하지 않은 라운드: {currentRound} (최대 {stages.Length})");
+            Debug.LogWarning($"[RoundManager] Invalid round: {currentRound} (max {stages.Length})");
             return;
         }
 
-        // 1) 플레이어 유닛 위치 저장 (전장 유닛만)
+        // 1) Save player unit positions (field units only)
         SavePlayerUnitPositions();
 
-        // 2) 미리 스폰된 적 유닛을 UnitManager에 등록
+        // 2) Register preview enemies with UnitManager
         RegisterPreviewEnemies();
 
-        // 3) 전투 시작
+        // 3) Start battle
         BattleManager.Instance.StartBattle();
-        Debug.Log($"[RoundManager] === 라운드 {currentRound} 전투 시작 ===");
+        Debug.Log($"[RoundManager] === Round {currentRound} Battle Start ===");
     }
 
-    // ── 전투 종료 ────────────────────────────────────────────────
+    // ── Battle End ────────────────────────────────────────────────
 
     private void OnBattleEnd(Team winner)
     {
@@ -109,47 +108,47 @@ public class RoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 전투 결과를 처리한다.
-    /// 결과 페이즈 대기 → 적 정리 → 타일 초기화 → 플레이어 복원 → 다음 라운드 준비.
+    /// Handle battle result.
+    /// Result phase wait → clear enemies → reset tiles → restore players → next round.
     /// </summary>
     private IEnumerator HandleBattleResult(Team winner)
     {
-        Debug.Log($"[RoundManager] 라운드 {currentRound} 결과: {winner} 승리");
+        Debug.Log($"[RoundManager] Round {currentRound} result: {winner} wins");
 
-        // 결과 페이즈 대기 (사망 연출 시간 확보)
+        // Result phase wait (allow death animations)
         yield return new WaitForSeconds(resultPhaseDuration);
 
-        // 적 유닛 정리
+        // Clear enemy units
         ClearEnemyUnits();
 
-        // 전장 타일 점유 상태 초기화 (벤치는 건드리지 않는다)
+        // Reset field tile occupancy (bench untouched)
         TileManager.Instance.ClearAllOccupied();
 
-        // 플레이어 유닛을 전투 시작 전 위치로 복원
+        // Restore player units to pre-battle positions
         RestorePlayerPositions();
 
-        // 다음 라운드로 진행
+        // Advance to next round
         currentRound++;
 
         if (currentRound > stages.Length)
         {
-            Debug.Log("[RoundManager] === 모든 스테이지 클리어! ===");
+            Debug.Log("[RoundManager] === All Stages Cleared! ===");
             yield return new WaitForSeconds(resultPhaseDuration);
             BattleManager.Instance.ResetBattle();
             yield break;
         }
 
-        // 다음 라운드 적 유닛을 미리 스폰하여 보여준다
+        // Preview-spawn enemies for next round
         SpawnEnemiesForPreview(stages[currentRound - 1]);
 
         BattleManager.Instance.ResetBattle();
-        Debug.Log($"[RoundManager] === 라운드 {currentRound} 준비 페이즈 ===");
+        Debug.Log($"[RoundManager] === Round {currentRound} Preparation Phase ===");
     }
 
 
     /// <summary>
-    /// Inspector에 설정된 플레이어 유닛을 벤치에 초기 배치한다.
-    /// 빈 벤치 슬롯을 순서대로 할당하며, 슬롯이 부족하면 경고를 출력한다.
+    /// Spawn player units on bench from Inspector settings.
+    /// Assigns empty bench slots in order; warns if no slots available.
     /// </summary>
     private void SpawnPlayerUnitsForTest()
     {
@@ -158,7 +157,7 @@ public class RoundManager : MonoBehaviour
             BenchTileScript slot = BenchManager.Instance.GetEmptySlot();
             if (slot == null)
             {
-                Debug.LogWarning($"[RoundManager] 벤치 슬롯 부족 — {spawn.unitData.unitName} 배치 실패");
+                Debug.LogWarning($"[RoundManager] No bench slot — failed to place {spawn.unitData.unitName}");
                 continue;
             }
 
@@ -169,11 +168,11 @@ public class RoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 준비 페이즈에서 적 유닛을 미리 스폰하여 보여주는 함수
+    /// Preview-spawn enemy units during preparation phase.
     /// </summary>
     private void SpawnEnemiesForPreview(StageData stage)
     {
-        // 기존 미리보기 적을 파괴한 뒤 리스트를 비운다
+        // Destroy existing preview enemies and clear the list
         ClearPreviewEnemies();
 
         foreach (var enemy in stage.enemies)
@@ -187,14 +186,14 @@ public class RoundManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"[RoundManager] 적 스폰 타일 ({enemy.spawnCoordinate}) 없음");
+                Debug.LogWarning($"[RoundManager] Enemy spawn tile ({enemy.spawnCoordinate}) not found");
             }
         }
     }
 
     /// <summary>
-    /// 미리 스폰된 적 유닛을 UnitManager에 등록하여 전투에 참여시킨다.
-    /// 전투 시작 시 호출한다.
+    /// Register preview-spawned enemies with UnitManager for combat.
+    /// Called at battle start.
     /// </summary>
     private void RegisterPreviewEnemies()
     {
@@ -206,7 +205,7 @@ public class RoundManager : MonoBehaviour
         previewEnemies.Clear();
     }
 
-    /// <summary>전투 시작 전 전장 위 플레이어 유닛의 현재 위치를 저장</summary>
+    /// <summary>Save current positions of field player units before battle.</summary>
     private void SavePlayerUnitPositions()
     {
         savedFieldPositions.Clear();
@@ -217,42 +216,42 @@ public class RoundManager : MonoBehaviour
                 savedFieldPositions[unit] = hexTile;
         }
 
-        Debug.Log($"[RoundManager] 위치 저장 — 전장 {savedFieldPositions.Count}기");
+        Debug.Log($"[RoundManager] Positions saved — {savedFieldPositions.Count} field units");
     }
 
     /// <summary>
-    /// 저장된 위치로 플레이어 유닛을 복원
-    /// 사망 유닛은 재활성화, 스탯 초기화, 원래 타일에 재배치한다.
+    /// Restore player units to saved positions.
+    /// Reactivate dead units, reset stats, and re-place on original tiles.
     /// </summary>
     private void RestorePlayerPositions()
     {
-        // 플레이어 유닛 목록 비우기
+        // Clear player unit roster
         UnitManager.Instance.ClearTeam(Team.Player);
 
-        // 전장 유닛 복원 (시너지 재계산은 전체 복원 완료 후 1회만 실행)
+        // Restore field units (synergy recalc runs once after full restore)
         foreach (var pair in savedFieldPositions)
         {
             UnitController unit = pair.Key;
             TileScript tile     = pair.Value;
             if (unit == null) continue;
 
-            // 사망으로 비활성화된 유닛 재활성화
+            // Reactivate units deactivated by death
             unit.gameObject.SetActive(true);
-            // 스탯·상태 초기화 (시너지 버프 해제 포함)
+            // Reset stats and state (including synergy buff removal)
             unit.ResetForNewRound();
-            // UnitManager에 먼저 등록 (Recalculate가 playerUnits를 순회하므로)
+            // Register with UnitManager first (Recalculate iterates playerUnits)
             UnitManager.Instance.AddUnit(unit, Team.Player);
-            // 저장된 타일에 배치 (OnBenchState → Recalculate 트리거)
+            // Place on saved tile (OnBenchState → Recalculate trigger)
             unit.PlaceOnTile(tile);
         }
 
-        Debug.Log($"[RoundManager] 플레이어 유닛 복원 완료");
+        Debug.Log($"[RoundManager] Player unit restoration complete");
     }
 
 
     /// <summary>
-    /// 미리보기 유닛을 모두 파괴하고 리스트를 비운다.
-    /// SpawnEnemiesForPreview() 재호출 또는 라운드 전환 시 사용
+    /// Destroy all preview units and clear the list.
+    /// Used on SpawnEnemiesForPreview() re-call or round transition.
     /// </summary>
     private void ClearPreviewEnemies()
     {
@@ -260,7 +259,7 @@ public class RoundManager : MonoBehaviour
         {
             if (enemy != null && enemy.gameObject != null)
             {
-                // 점유 중인 타일 해제
+                // Release occupied tile
                 if (enemy.CurrentTile != null)
                     enemy.CurrentTile.IsOccupied = false;
                 Destroy(enemy.gameObject);
@@ -270,11 +269,11 @@ public class RoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 살아있는 적 유닛을 모두 파괴하고 목록을 정리한다.
+    /// Destroy all remaining enemy units and clear the roster.
     /// </summary>
     private void ClearEnemyUnits()
     {
-        // enemyUnitList를 복사 후 순회 (Destroy 중 리스트 변경 방지)
+        // Copy list before iterating (Destroy modifies the list)
         var remaining = new List<UnitController>(UnitManager.Instance.enemyUnits);
         foreach (var enemy in remaining)
         {
@@ -285,7 +284,7 @@ public class RoundManager : MonoBehaviour
             }
         }
 
-        // 적 유닛 목록 일괄 정리
+        // Batch-clear enemy unit roster
         UnitManager.Instance.ClearTeam(Team.Enemy);
     }
 }

@@ -2,25 +2,25 @@
 using System.Collections;
 
 /// <summary>
-/// 모든 스킬의 기반 클래스.
-/// ScriptableObject로 만들어 UnitData에 슬롯으로 할당한다.
-/// 각 스킬은 이 클래스를 상속하여 Execute()를 구현한다.
+/// Base class for all skills.
+/// Created as ScriptableObject and assigned to UnitData skill slot.
+/// Each skill overrides Execute().
 /// </summary>
 public abstract class BaseSkill : ScriptableObject
 {
-    [Header("스킬 기본 정보")]
-    [Tooltip("스킬 이름")]
-    public string skillName = "기본 스킬";
+    [Header("Skill Info")]
+    [Tooltip("Skill name")]
+    public string skillName = "Default Skill";
 
-    [Tooltip("스킬 설명")]
+    [Tooltip("Skill description")]
     [TextArea(2, 4)]
     public string description = "";
 
-    [Tooltip("스킬 시전 시간")]
+    [Tooltip("Cast time")]
     public float castTime = 1f;
 
     /// <summary>
-    /// 스킬 발동
+    /// Execute the skill.
     /// </summary>
     public abstract IEnumerator Execute(UnitController caster);
 }

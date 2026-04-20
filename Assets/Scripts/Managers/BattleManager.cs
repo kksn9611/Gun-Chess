@@ -2,8 +2,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Phase 전환과 static 이벤트(OnBattleStart / OnBattleEnd)
-/// 유닛은 OnEnable/OnDisable에서 OnBattleStart를 구독
+/// Phase transitions and static events (OnBattleStart / OnBattleEnd).
+/// Units subscribe to OnBattleStart via OnEnable/OnDisable.
 /// </summary>
 public class BattleManager : MonoBehaviour
 {
@@ -16,57 +16,53 @@ public class BattleManager : MonoBehaviour
     }
     public enum Phase { Preparation, Battle, Result }
 
-    // 현재 전투 페이즈.
+    // Current battle phase
     [field: SerializeField] public Phase CurrentPhase { get; private set; } = Phase.Preparation;
 
 
-    // 이벤트 — 외부에서 구독
-    //StartBattle() 호출 시 발동. 모든 유닛의 AI를 시작
-    public static event Action OnBattleStart;
-
-    //EndBattle() 호출 시 발동. 승리 팀을 인자로 전달
-    public static event Action<Team> OnBattleEnd;
+    // Events //
+    public static event Action OnBattleStart;   // Fires on StartBattle(); activates all unit AI
+    public static event Action<Team> OnBattleEnd; // Fires on EndBattle(); passes winning team
 
     /// <summary>
-    /// 전투 시작 OnBattleStart 이벤트 발동
+    /// Start battle and fire OnBattleStart event.
     /// </summary>
     public void StartBattle()
     {
         if (CurrentPhase == Phase.Battle)
         {
-            Debug.LogWarning("[BattleManager] 이미 전투 중");
+            Debug.LogWarning("[BattleManager] Already in battle");
             return;
         }
 
         CurrentPhase = Phase.Battle;
-        Debug.Log("[BattleManager] 전투 시작");
+        Debug.Log("[BattleManager] Battle started");
         OnBattleStart?.Invoke();
         UnitManager.Instance.CheckBattleEnd();
     }
 
     /// <summary>
-    /// 전투를 종료한다. Battle → Result 페이즈로 전환하고
-    /// OnBattleEnd 이벤트에 승리 팀을 전달
+    /// End battle. Transition Battle → Result and pass winning team to OnBattleEnd.
     /// </summary>
     public void EndBattle(Team winner)
     {
         if (CurrentPhase != Phase.Battle)
         {
-            Debug.LogWarning("[BattleManager] 전투 중이 아닌데 EndBattle 호출");
+            Debug.LogWarning("[BattleManager] EndBattle called outside of battle");
             return;
         }
 
         CurrentPhase = Phase.Result;
-        Debug.Log($"[BattleManager] 전투 종료 — 승리: {winner}");
+        Debug.Log($"[BattleManager] Battle ended — Winner: {winner}");
         OnBattleEnd?.Invoke(winner);
     }
 
     /// <summary>
-    /// 다음 라운드를 위해 페이즈를 Preparation으로 초기화
+    /// Reset phase to Preparation for the next round.
     /// </summary>
     public void ResetBattle()
     {
         CurrentPhase = Phase.Preparation;
-        Debug.Log("[BattleManager] 준비 페이즈로 리셋");
+        Debug.Log("[BattleManager] Reset to Preparation phase");
     }
 }

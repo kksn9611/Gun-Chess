@@ -2,18 +2,18 @@
 using UnityEngine;
 
 /// <summary>
-/// 전장에 배치된 플레이어 유닛의 시너지를 집계하고,
-/// SynergyState SO에 활성 상태를 기록
+/// Tallies synergies for player units on the field
+/// and records active state in SynergyState SO.
 /// </summary>
 public class SynergyManager : MonoBehaviour
 {
-    [Header("공유 데이터")]
-    [Tooltip("프로젝트 전체에서 공유하는 SynergyState 에셋")]
+    [Header("Shared Data")]
+    [Tooltip("Project-wide shared SynergyState asset")]
     [SerializeField] private SynergyState synergyState;
 
     /// <summary>
-    /// 유닛 스폰 시 OnBenchState 이벤트를 구독하여,
-    /// 전장↔벤치 전환 시 시너지를 재계산한다.
+    /// Subscribe to OnBenchState on unit spawn
+    /// to recalculate synergies on field↔bench transitions.
     /// </summary>
     private void OnEnable()
     {
@@ -28,49 +28,49 @@ public class SynergyManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 유닛이 스폰될 때 OnBenchState 이벤트를 구독한다.
-    /// 플레이어 유닛만 시너지에 영향을 준다.
+    /// Subscribe to OnBenchState when a unit spawns.
+    /// Only player units affect synergies.
     /// </summary>
     private void OnUnitSpawned(UnitController unit)
     {
         if (unit.CurrentTeam != Team.Player) return;
         unit.OnBenchState += _ => Recalculate();
-        // 스폰 직후에도 재계산 (전장에 직접 스폰되는 경우)
+        // Recalculate on spawn too (unit may spawn directly on field)
         Recalculate();
     }
 
     /// <summary>
-    /// 전투 종료 시 시너지를 재계산한다.
-    /// RestorePlayerPositions()에서 PlaceOnTile() → OnBenchState → Recalculate()가
-    /// 트리거되지만, 복원 완료 후에도 한 번 더 재계산하여 최종 상태를 보장한다.
-    /// Clear()는 하지 않는다 — Recalculate()가 매번 전체 상태를 덮어쓰므로 불필요.
+    /// Recalculate synergies on battle end.
+    /// RestorePlayerPositions() triggers PlaceOnTile() → OnBenchState → Recalculate(),
+    /// but we also recalculate after full restore to guarantee final state.
+    /// No Clear() needed — Recalculate() overwrites the entire state each time.
     /// </summary>
     private void OnBattleEnd(Team winner)
     {
-        // Recalculate는 RestorePlayerPositions() 완료 후 OnBenchState 이벤트로 자동 트리거됨
+        // Recalculate auto-triggers via OnBenchState after RestorePlayerPositions()
     }
 
     /// <summary>
-    /// 전장(벤치 제외)에 배치된 플레이어 유닛의 시너지 태그를 집계하고,
-    /// SynergyData의 활성 구간과 비교하여 SynergyState를 갱신한다.
+    /// Tally synergy tags from field player units (excluding bench)
+    /// and update SynergyState by comparing against SynergyData tier thresholds.
     /// </summary>
     public void Recalculate()
     {
         if (synergyState == null) return;
 
-        // 1) 전장 유닛 시너지 집계 (같은 UnitData는 1회만 카운트)
+        // 1) Tally field unit synergies (same UnitData counted once)
         Dictionary<SynergyData, int> synergyCounts = new Dictionary<SynergyData, int>();
         HashSet<UnitData> countedUnitData = new HashSet<UnitData>();
 
         foreach (var unit in UnitManager.Instance.playerUnits)
         {
             if (unit == null || unit.IsOnBench) continue;
-            if (unit.UnitData == null || unit.UnitData.synergies == null) continue;
+            if (unit.Stats.UnitData == null || unit.Stats.UnitData.synergies == null) continue;
 
-            // 같은 UnitData를 가진 유닛이 여럿이면 한 번만 집계
-            if (!countedUnitData.Add(unit.UnitData)) continue;
+            // Count each UnitData only once even if multiple units share it
+            if (!countedUnitData.Add(unit.Stats.UnitData)) continue;
 
-            foreach (var synergy in unit.UnitData.synergies)
+            foreach (var synergy in unit.Stats.UnitData.synergies)
             {
                 if (synergy == null) continue;
                 if (synergyCounts.ContainsKey(synergy))
@@ -83,8 +83,8 @@ public class SynergyManager : MonoBehaviour
         // 벤치 유닛도 순회하여 태그가 있지만 전장에 없는 시너지도 0카운트로 표시
         //foreach (var unit in BenchManager.Instance.benchUnits)
         //{
-        //    if (unit == null || unit.UnitData.synergies == null) continue;
-        //    foreach (var synergy in unit.UnitData.synergies)
+        //    if (unit == null || unit.Stats.UnitData.synergies == null) continue;
+        //    foreach (var synergy in unit.Stats.UnitData.synergies)
         //    {
         //        if (synergy == null) continue;
         //        if (!synergyCounts.ContainsKey(synergy))
@@ -92,7 +92,7 @@ public class SynergyManager : MonoBehaviour
         //    }
         //}
 
-        // 2) SynergyEntry 리스트 생성
+        // 2) Build SynergyEntry list
         List<SynergyEntry> newEntries = new List<SynergyEntry>();
 
         foreach (var pair in synergyCounts)
@@ -109,16 +109,16 @@ public class SynergyManager : MonoBehaviour
             });
         }
 
-        // 3) SynergyState에 기록 → OnSynergyChanged 발행
+        // 3) Write to SynergyState → fire OnSynergyChanged
         synergyState.UpdateEntries(newEntries);
 
-        // 디버그 로그
+        // Debug log
         foreach (var entry in newEntries)
         {
             if (entry.activeTierIndex >= 0)
             {
-                Debug.Log($"[시너지] {entry.synergy.synergyName}: " +
-                          $"{entry.currentCount}기 → Tier {entry.activeTierIndex + 1} 활성");
+                Debug.Log($"[Synergy] {entry.synergy.synergyName}: " +
+                          $"{entry.currentCount} units → Tier {entry.activeTierIndex + 1} active");
             }
         }
     }

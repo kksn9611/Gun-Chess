@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
-/// 타일 시스템 기본 타일
+/// Base class for all tile types.
 /// </summary>
 public abstract class BaseTile : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public abstract class BaseTile : MonoBehaviour
         get => isOccupied;
         set => isOccupied = value;
     }
-    // 타일 좌표 반환
+    // Return tile coordinate
     public abstract Vector2Int GetCoordinate();
 
 }

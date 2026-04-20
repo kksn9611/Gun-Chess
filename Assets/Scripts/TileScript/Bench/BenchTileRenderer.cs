@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -45,21 +45,21 @@ public class BenchTileRenderer : MonoBehaviour
         CombineFaces();
     }
 
-    // 면 생성 — HexRenderer.DrawFaces() 와 동일한 구조
+    // Face generation — same structure as HexRenderer.DrawFaces()
     void DrawFaces()
     {
         m_faces = new List<Face>();
 
-        for (int side = 0; side < 4; side++) // 상단 프레임
+        for (int side = 0; side < 4; side++) // Top frame
             m_faces.Add(CreateFace(innerSize, outerSize,  height / 2f,  height / 2f, side));
 
-        for (int side = 0; side < 4; side++) // 하단 프레임
+        for (int side = 0; side < 4; side++) // Bottom frame
             m_faces.Add(CreateFace(innerSize, outerSize, -height / 2f, -height / 2f, side, true));
 
-        for (int side = 0; side < 4; side++) // 바깥쪽 벽면
+        for (int side = 0; side < 4; side++) // Outer walls
             m_faces.Add(CreateFace(outerSize, outerSize,  height / 2f, -height / 2f, side, true));
 
-        for (int side = 0; side < 4; side++) // 안쪽 벽면
+        for (int side = 0; side < 4; side++) // Inner walls
             m_faces.Add(CreateFace(innerSize, innerSize,  height / 2f, -height / 2f, side));
     }
 
@@ -85,7 +85,7 @@ public class BenchTileRenderer : MonoBehaviour
         m_mesh.RecalculateNormals();
     }
 
-    //HexRenderer.CreateFace() / GetPoint() 와 동일한 구조
+    // Same structure as HexRenderer.CreateFace() / GetPoint()
     Face CreateFace(float innerRad, float outerRad,
                     float heightA,  float heightB,
                     int   side,     bool  reverse = false)
@@ -110,7 +110,7 @@ public class BenchTileRenderer : MonoBehaviour
     }
 
     /// <summary>
-    /// 사각형의 꼭짓점 위치를 반환한다.
+    /// Return vertex position for a square tile.
     /// </summary>
     Vector3 GetPoint(float size, float heightPos, int index)
     {

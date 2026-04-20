@@ -12,16 +12,19 @@ public class HPBar : MonoBehaviour
     public void Initialize(UnitController target, Transform uiAnchor)
     {
         targetUnit = target;
-        targetUnit.OnHpChanged += UpdateHp;
+        targetUnit.Stats.OnHpChanged += UpdateHp;
         targetUnit.OnBenchState += BarStateChanged;
         mainCam = Camera.main;
         targetAnchor = uiAnchor;
 
-        // 초기 상태 반영 (벤치에서 스폰된 유닛이면 즉시 숨김)
+        // Apply initial state (hide immediately if spawned on bench)
         gameObject.SetActive(!targetUnit.IsOnBench);
+
+        // Set initial fill and ticks
+        UpdateHp(targetUnit.Stats.CurrentHp, targetUnit.Stats.CurrentMaxHp);
     }
 
-    /// <summary>벤치 ↔ 전장 전환 시 바를 숨기거나 보여준다.</summary>
+    /// <summary>Show/hide bar on bench ↔ field transition.</summary>
     private void BarStateChanged(bool isOnBench)
     {
         gameObject.SetActive(!isOnBench);
@@ -33,15 +36,15 @@ public class HPBar : MonoBehaviour
 
         fill.fillAmount = currentHp / maxHp;
 
-        // HP가 0이 되면 즉시 숨김
+        // Hide immediately when HP reaches 0
         if (currentHp <= 0f)
             gameObject.SetActive(false);
 
         if (tickImage != null)
         {
-            float hpPerTick = 100f; // 체력 100당 눈금 1칸
+            float hpPerTick = 100f; // 1 tick per 100 HP
 
-            // 최대 체력이 500이라면 tickCount는 5가 됩니다.
+            // e.g., maxHp 500 → tickCount = 5
             float tickCount = maxHp / hpPerTick;
 
             tickImage.uvRect = new Rect(0, 0, tickCount-1f, 1);
@@ -50,14 +53,14 @@ public class HPBar : MonoBehaviour
 
     private void LateUpdate()
     {
-        // 유닛이 완전히 파괴된 경우에만 바를 파괴
+        // Destroy bar only when unit is fully destroyed
         if (targetUnit == null)
         {
             Destroy(gameObject);
             return;
         }
 
-        // 유닛이 비활성화(사망 등)되면 바를 숨기고, 재활성화되면 다시 표시
+        // Hide bar when unit is deactivated (death etc.), show on reactivation
         if (!targetUnit.gameObject.activeInHierarchy)
         {
             if (gameObject.activeSelf) gameObject.SetActive(false);
@@ -75,7 +78,7 @@ public class HPBar : MonoBehaviour
     {
         if (targetUnit != null)
         {
-            targetUnit.OnHpChanged -= UpdateHp;
+            targetUnit.Stats.OnHpChanged -= UpdateHp;
             targetUnit.OnBenchState -= BarStateChanged;
         }
     }

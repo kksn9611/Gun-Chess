@@ -1,22 +1,22 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Priority_Queue;
 
 public static class Pathfinder
-{   
+{
     public static List<TileScript> FindPath(TileScript startTile, TileScript endTile)
     {
         if (startTile == null || endTile == null) return new List<TileScript>();
         if (startTile == endTile) return new List<TileScript>();
 
-    // 우선순위 탐색 큐
+    // Priority search queue
     SimplePriorityQueue<TileScript, int> visitQueueList = new SimplePriorityQueue<TileScript, int>();
-    // 이동 경로 저장
+    // Path trace map
      Dictionary<TileScript, TileScript> parentMap = new Dictionary<TileScript, TileScript>();
-    // 이동 경로 비용
+    // Route cost map
      Dictionary<TileScript, int> costOfRoute = new Dictionary<TileScript, int>();
-    // 우선순위 탐색 큐에 시작 타일
+    // Enqueue start tile
     visitQueueList.Enqueue(startTile,0);
-    // costOfRoute 이동 경로 비용 딕셔너리 시작 타일 
+    // Initialize start tile cost
     costOfRoute[startTile] = 0;
 
         while (visitQueueList.Count > 0)
@@ -24,30 +24,30 @@ public static class Pathfinder
             TileScript currentTile = visitQueueList.Dequeue();
             if(currentTile == endTile)
             {
-                // 길찾기를 완료했을경우 경로를 되돌아가서 루트 반환
-               return RetraceRoute(parentMap, startTile, endTile); 
+                // Pathfinding complete — retrace and return route
+               return RetraceRoute(parentMap, startTile, endTile);
             }
 
             foreach(TileScript neighbor in currentTile.Neighbors)
             {
-                // 타일에 유닛이 배치되어있다면 그 타일은 무시하기
+                // Skip occupied tiles (unless it's the destination)
                 if(neighbor.IsOccupied && neighbor != endTile) continue;
-                // 임시 루트 비용 계산 (현재까지 누적된 루트 비용) G Score
+                // Tentative G score = accumulated route cost so far
                 int tentativeGscore = costOfRoute[currentTile] + neighbor.MovementCost;
-                // 가지 않았던 길 or 더 빠른 길
+                // Unvisited tile or cheaper path found
                 if(!costOfRoute.ContainsKey(neighbor) || tentativeGscore < costOfRoute[neighbor])
                 {
                     costOfRoute[neighbor] = tentativeGscore;
-                    // 이웃 타일에서 목적지까지 남은 거리 계산 (H Score)
+                    // H score = remaining distance from neighbor to destination
                     int heuristicScore = HexCoordCal.GetCubeDistance(neighbor.CubeCoordinate, endTile.CubeCoordinate);
-                    // 총 예상 비용 (임시 G Score + H Score)
+                    // F score = tentative G + H
                     int fScore = tentativeGscore + heuristicScore;
-                    // fScore가 낮은(비용이 낮은) 타일부터 탐색하기 위해 우선순위 큐로 넘겨줌
+                    // Update priority if already in queue; lower F = explored first
                     if (visitQueueList.Contains(neighbor))
                     {
                         visitQueueList.UpdatePriority(neighbor, fScore);
                     }
-                    // 큐에 없는 처음 탐색하는 타일이라면 큐에 추가
+                    // First visit — enqueue
                     else
                     {
                         visitQueueList.Enqueue(neighbor, fScore);
@@ -57,7 +57,7 @@ public static class Pathfinder
                 }
             }
         }
-        // 길 없으면 빈 타일 리스트 반환
+        // No path found — return empty list
         return new List<TileScript>();
     }
 
@@ -76,6 +76,6 @@ public static class Pathfinder
             current = parent;
         }
         route.Reverse();
-        return route;   
+        return route;
     }
 }

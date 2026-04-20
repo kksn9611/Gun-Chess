@@ -1,20 +1,17 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 // https://www.redblobgames.com/grids/hexagons/#coordinates
 public static class HexCoordCal
 {
     /// <summary>
-    /// 육각형 좌표 계산
+    /// Calculate hex distance between two offset coordinates.
     /// </summary>
-    /// <param name="a"></param>
-    /// <param name="b"></param>
-    /// <returns></returns>
     public static int GetDistance(Vector2Int a, Vector2Int b)
     {
         Vector3Int cubeA = OffsetToCube(a);
         Vector3Int cubeB = OffsetToCube(b);
-        // 세 개 축의 절대값 중 가장 큰 값 = 거리값
-        int distance = 
+        // Max of three axis absolute differences = hex distance
+        int distance =
         Mathf.Max(
             Mathf.Abs(cubeA.x - cubeB.x),
             Mathf.Abs(cubeA.y - cubeB.y),
@@ -23,7 +20,7 @@ public static class HexCoordCal
             return distance;
     }
     /// <summary>
-    /// 큐브 좌표 거리 계산
+    /// Calculate distance between two cube coordinates.
     /// </summary>
     public static int GetCubeDistance(Vector3Int cubeA, Vector3Int cubeB)
     {
@@ -33,19 +30,18 @@ public static class HexCoordCal
             Mathf.Abs(cubeA.z - cubeB.z));
     }
     /// <summary>
-    /// 육각형 좌표 큐브 좌표 계산
+    /// Convert offset coordinate to cube coordinate.
     /// </summary>
     public static Vector3Int OffsetToCube(Vector2Int offsetCoord)
     {
-        // HexGrid의 구조 odd-r 홀수 행 +1/2 밀어내기
-        // 짝수 홀수 판별 & 1
+        // HexGrid uses odd-r layout (odd rows shifted +1/2)
         int q = offsetCoord.x - (offsetCoord.y - (offsetCoord.y & 1)) / 2;
         int r = offsetCoord.y;
         int s = -q -r;
         return new Vector3Int(q, r, s);
     }
     /// <summary>
-    /// 육각형 근접 타일 반환 함수
+    /// Return neighboring tiles of a hex tile.
     /// </summary>
     public static List<TileScript> GetTileNeighbors(TileScript currentTile)
     {
@@ -79,5 +75,3 @@ public static class HexCoordCal
         new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1)
         };
 }
-
-

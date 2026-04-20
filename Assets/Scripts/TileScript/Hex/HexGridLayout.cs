@@ -1,14 +1,14 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class HexGridLayout : MonoBehaviour
 {
-    [Header("설정")]
+    [Header("Settings")]
     [SerializeField] private Vector2Int gridSize;
     [SerializeField] private float outerSize; // 1.5
     [SerializeField] private float innerSize; // 1.4
     [SerializeField] private float height; // 0.01
 
-    [Header("재질")]
+    [Header("Material")]
     public Material material;
 
     private void Start()
@@ -18,29 +18,29 @@ public class HexGridLayout : MonoBehaviour
 
     public void LayoutGrid()
     {
-        // 기존 타일 찌꺼기 깔끔하게 청소
+        // Clean up existing tiles
         TileManager.Instance.ClearMap();
-        
+
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             DestroyImmediate(transform.GetChild(i).gameObject);
         }
 
-        // 새 타일 생성 및 배치
+        // Create and place new tiles
         for (int y = 0; y < gridSize.y; y++)
         {
             for (int x = 0; x < gridSize.x; x++)
             {
 
-                //게임 오브젝트 생성 후 HexRenderer 붙이기 타일 관리용 TileScript 붙이기
+                // Create GameObject with HexRenderer + TileScript
                 GameObject tile = new GameObject($"Tile_{x}_{y}", typeof(HexRenderer),typeof(TileScript));
-                Vector2Int tileCoordinate = new Vector2Int(x,y); 
+                Vector2Int tileCoordinate = new Vector2Int(x,y);
                 tile.transform.SetParent(transform, false);
                 tile.transform.localPosition = GetPositionForHexFromCoordinate(tileCoordinate);
                 TileScript tileScript = tile.GetComponent<TileScript>();
                 tileScript.GridCoordinate = tileCoordinate;
-                
-                // 타일 그리기
+
+                // Draw tile mesh
                 HexRenderer hexRenderer = tile.GetComponent<HexRenderer>();
                 hexRenderer.outerSize = outerSize;
                 hexRenderer.innerSize = innerSize;
@@ -48,20 +48,20 @@ public class HexGridLayout : MonoBehaviour
                 hexRenderer.SetMaterial(material);
                 hexRenderer.DrawMesh();
 
-                // 타일 등록
+                // Register tile
                 TileManager.Instance.RegisterTile(tileCoordinate, tileScript);
 
-                // 레이캐스트(마우스 클릭) 대상이 되도록 MeshCollider 추가
+                // Add MeshCollider for raycast (mouse click) detection
                 MeshCollider col = tile.AddComponent<MeshCollider>();
                 col.sharedMesh = CreateSolidHexMesh(outerSize, height);
             }
         }
-        TileManager.Instance.InitializeAllTiles(); // 모든 타일 좌표 로딩
+        TileManager.Instance.InitializeAllTiles(); // Initialize all tile coordinates
     }
 
 
     /// <summary>
-    /// 클릭 판정 전용 솔리드 육각형 메시
+    /// Create a solid hex mesh for click detection.
     /// </summary>
     private static Mesh CreateSolidHexMesh(float outer, float h)
     {
@@ -72,7 +72,7 @@ public class HexGridLayout : MonoBehaviour
 
         for (int i = 0; i < 6; i++)
         {
-            // 각 섹터: 중심(0,top,0) + 외곽 두 꼭짓점으로 삼각형 생성
+            // Each sector: center(0,top,0) + two outer vertices form a triangle
             int next = (i + 1) % 6;
             vertices.Add(new Vector3(0, top, 0));
             vertices.Add(GetHexPoint(outer, top, i ));
@@ -93,8 +93,8 @@ public class HexGridLayout : MonoBehaviour
     }
 
     /// <summary>
-    /// CreateSolidHexMesh 전용 꼭짓점 계산.
-    /// HexRenderer.GetPoint() 와 동일한 공식을 사용한다.
+    /// Vertex calculation for CreateSolidHexMesh.
+    /// Uses the same formula as HexRenderer.GetPoint().
     /// </summary>
     private static Vector3 GetHexPoint(float size, float heightPos, int index)
     {
@@ -118,7 +118,7 @@ public class HexGridLayout : MonoBehaviour
     }
 #endif
 
-    public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate) // 육각형 타일 배치 구조 계산
+    public Vector3 GetPositionForHexFromCoordinate(Vector2Int coordinate) // Calculate hex tile placement
     {
         int column = coordinate.x;
         int row = coordinate.y;
@@ -126,13 +126,13 @@ public class HexGridLayout : MonoBehaviour
         float size = outerSize;
         bool shouldOffset;
 
-            shouldOffset = (row % 2) != 0; // 홀수번째 확인
-            width = Mathf.Sqrt(3f) * size; // 너비
-            heightPos = 2f * size; // 높이
-            horizontalDistance = width; // 가로 이동거리
-            verticalDistance = heightPos * 0.75f; // 세로 이동거리
-            offset = (shouldOffset) ? width * 0.5f : 0; // 홀수 줄 처리 (너비의 0.5만큼 이동)
-            xPosition = (column * horizontalDistance) + offset; 
+            shouldOffset = (row % 2) != 0; // Check odd row
+            width = Mathf.Sqrt(3f) * size; // Width
+            heightPos = 2f * size; // Height
+            horizontalDistance = width; // Horizontal spacing
+            verticalDistance = heightPos * 0.75f; // Vertical spacing
+            offset = (shouldOffset) ? width * 0.5f : 0; // Odd row offset (shift by half width)
+            xPosition = (column * horizontalDistance) + offset;
             yPosition = (row * verticalDistance);
 
         return new Vector3(xPosition, 0, -yPosition);

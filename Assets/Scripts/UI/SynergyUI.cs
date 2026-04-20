@@ -2,16 +2,16 @@ using UnityEngine;
 using TMPro;
 
 /// <summary>
-/// 화면 좌측에 현재 활성 시너지 목록과 단계를 텍스트로 표시한다.
-/// SynergyState SO의 OnSynergyChanged 이벤트를 구독하여 자동 갱신한다.
+/// Displays active synergy list and tiers as text on the left side of screen.
+/// Subscribes to SynergyState SO's OnSynergyChanged event for auto-refresh.
 /// </summary>
 public class SynergyUI : MonoBehaviour
 {
-    [Header("참조")]
-    [Tooltip("시너지 상태 공유 데이터")]
+    [Header("References")]
+    [Tooltip("Shared synergy state data")]
     [SerializeField] private SynergyState synergyState;
 
-    [Tooltip("시너지 정보를 표시할 TMP 텍스트")]
+    [Tooltip("TMP text to display synergy info")]
     [SerializeField] private TextMeshProUGUI synergyText;
 
     private void OnEnable()
@@ -27,35 +27,34 @@ public class SynergyUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 시너지 상태가 변경될 때 호출된다.
-    /// 활성 시너지를 텍스트로 표시한다.
+    /// Called when synergy state changes. Display active synergies as text.
     /// </summary>
     private void UpdateUI()
     {
         if (synergyText == null || synergyState == null) return;
 
         var sb = new System.Text.StringBuilder();
-        sb.AppendLine("<b>[ 시너지 ]</b>");
+        sb.AppendLine("<b>[ Synergy ]</b>");
         sb.AppendLine();
 
         foreach (var entry in synergyState.Entries)
         {
             if (entry.synergy == null) continue;
 
-            // 활성 여부에 따라 색상 변경
+            // Color based on active state
             string color = entry.activeTierIndex >= 0 ? "#FFD700" : "#888888";
             string tierLabel = entry.activeTierIndex >= 0
                 ? $"Tier {entry.activeTierIndex + 1}"
                 : "-";
 
-            // 구간 요구 수 표시 (예: 2/4/6)
+            // Show tier thresholds (e.g., 2/4/6)
             string thresholds = "";
             if (entry.synergy.tiers != null && entry.synergy.tiers.Length > 0)
             {
                 var parts = new string[entry.synergy.tiers.Length];
                 for (int i = 0; i < entry.synergy.tiers.Length; i++)
                 {
-                    // 현재 활성 구간은 강조
+                    // Highlight current active tier
                     if (i == entry.activeTierIndex)
                         parts[i] = $"<b>{entry.synergy.tiers[i].requiredCount}</b>";
                     else
@@ -65,12 +64,12 @@ public class SynergyUI : MonoBehaviour
             }
 
             sb.AppendLine($"<color={color}>{entry.synergy.synergyName}</color>");
-            sb.AppendLine($"  {entry.currentCount}기 | {tierLabel}{thresholds}");
+            sb.AppendLine($"  {entry.currentCount} units | {tierLabel}{thresholds}");
         }
 
-        // 시너지가 없을 때
+        // No synergies placed
         if (synergyState.Entries.Count == 0)
-            sb.AppendLine("<color=#888888>배치된 시너지 없음</color>");
+            sb.AppendLine("<color=#888888>No synergies placed</color>");
 
         synergyText.text = sb.ToString();
     }

@@ -2,7 +2,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 벤치 유닛 목록 관리
+/// Manages bench unit list and slot assignments.
 /// </summary>
 public class BenchManager
 {
@@ -20,8 +20,7 @@ public class BenchManager
     }
 
     /// <summary>
-    /// 비어있는 슬롯을 순서대로 탐색해 반환
-    /// 모든 슬롯이 찼으면 null.
+    /// Return the first empty slot, or null if all slots are occupied.
     /// </summary>
     public BenchTileScript GetEmptySlot()
     {
@@ -34,8 +33,8 @@ public class BenchManager
     }
 
     /// <summary>
-    /// 유닛을 지정한 슬롯에 등록한다.
-    /// IsOccupied 갱신과 이동은 UnitController.PlaceOnBench()가 담당한다.
+    /// Register a unit on the given slot.
+    /// IsOccupied update and positioning are handled by UnitController.PlaceOnBench().
     /// </summary>
     public void AddUnit(UnitController unit, BenchTileScript slot)
     {
@@ -44,8 +43,8 @@ public class BenchManager
     }
 
     /// <summary>
-    /// 유닛을 벤치 목록에서 제거한다.
-    /// IsOccupied 해제는 PlaceOnTile() / PlaceOnBench() 가 담당한다.
+    /// Remove a unit from the bench list.
+    /// IsOccupied release is handled by PlaceOnTile() / PlaceOnBench().
     /// </summary>
     public void RemoveUnit(UnitController unit)
     {
@@ -53,7 +52,7 @@ public class BenchManager
     }
 
     /// <summary>
-    /// 해당 슬롯에 올라있는 유닛을 반환한다. 없으면 null.
+    /// Return the unit occupying the given slot, or null if empty.
     /// </summary>
     public UnitController GetUnitOnSlot(BenchTileScript slot)
     {

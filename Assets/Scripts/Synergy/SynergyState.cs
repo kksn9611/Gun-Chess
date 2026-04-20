@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 현재 활성화된 시너지 상태를 저장하는 공유 데이터 저장소 ScriptableObject.
-/// 프로젝트 전체에서 에셋 1개를 공유한다.
-/// SynergyManager가 데이터를 기록하고, UI와 UnitController가 OnSynergyChanged를 구독한다.
+/// Shared data store ScriptableObject for current active synergy state.
+/// One asset shared project-wide.
+/// SynergyManager writes data; UI and UnitController subscribe to OnSynergyChanged.
 /// </summary>
 [CreateAssetMenu(fileName = "SynergyState", menuName = "Scriptable Objects/SynergyState")]
 public class SynergyState : ScriptableObject
 {
-    /// <summary>현재 활성화된 시너지 목록 (SynergyManager가 갱신)</summary>
+    /// <summary>Current active synergy list (updated by SynergyManager)</summary>
     [SerializeField] private List<SynergyEntry> entries = new List<SynergyEntry>();
 
-    /// <summary>시너지 상태가 변경될 때 발행되는 이벤트</summary>
+    /// <summary>Event fired when synergy state changes</summary>
     public event Action OnSynergyChanged;
 
-    /// <summary>현재 활성 시너지 목록 (읽기 전용)</summary>
+    /// <summary>Current active synergy list (read-only)</summary>
     public IReadOnlyList<SynergyEntry> Entries => entries;
 
     /// <summary>
-    /// SynergyManager가 재계산한 시너지 목록을 기록한다.
-    /// 이전 목록을 교체하고 OnSynergyChanged를 발행한다.
+    /// Write recalculated synergy list from SynergyManager.
+    /// Replaces previous list and fires OnSynergyChanged.
     /// </summary>
     public void UpdateEntries(List<SynergyEntry> newEntries)
     {
@@ -31,8 +31,7 @@ public class SynergyState : ScriptableObject
     }
 
     /// <summary>
-    /// 특정 시너지의 현재 활성 구간 인덱스를 반환한다.
-    /// 등록되지 않은 시너지이면 -1을 반환한다.
+    /// Return the active tier index for a synergy. Returns -1 if not registered.
     /// </summary>
     public int GetActiveTierIndex(SynergyData synergy)
     {
@@ -45,7 +44,7 @@ public class SynergyState : ScriptableObject
     }
 
     /// <summary>
-    /// 게임 시작 또는 라운드 리셋 시 상태를 초기화한다.
+    /// Clear state on game start or round reset.
     /// </summary>
     public void Clear()
     {
@@ -55,18 +54,18 @@ public class SynergyState : ScriptableObject
 }
 
 /// <summary>
-/// 시너지 하나의 현재 활성 상태.
-/// SynergyState의 entries 리스트에 담긴다.
+/// Current active state of a single synergy.
+/// Stored in SynergyState.entries list.
 /// </summary>
 [System.Serializable]
 public struct SynergyEntry
 {
-    [Tooltip("시너지 데이터 참조")]
+    [Tooltip("Synergy data reference")]
     public SynergyData synergy;
 
-    [Tooltip("전장에 배치된 해당 시너지 유닛 수")]
+    [Tooltip("Number of this synergy's units on the field")]
     public int currentCount;
 
-    [Tooltip("현재 활성화된 구간 인덱스 (-1 = 미활성)")]
+    [Tooltip("Currently active tier index (-1 = inactive)")]
     public int activeTierIndex;
 }

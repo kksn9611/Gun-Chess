@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 /// <summary>
-/// 벤치 슬롯 타일 하나의 상태를 관리
+/// Manages the state of a single bench slot tile.
 /// </summary>
 public class BenchTileScript : BaseTile
 {
@@ -10,7 +10,7 @@ public class BenchTileScript : BaseTile
     public int SlotIndex  => slotIndex;
 
     public override Vector2Int GetCoordinate() => new Vector2Int(slotIndex, -1);
-    // BenchLayout.LayoutBench() 에서 타일 생성 직후 호출
+    // Called by BenchLayout.LayoutBench() right after tile creation
     public void Initialize(int index)
     {
         slotIndex = index;

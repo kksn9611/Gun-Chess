@@ -12,7 +12,7 @@ public class TileManager
     private readonly Dictionary<Vector2Int, TileScript> tileMap = new Dictionary<Vector2Int, TileScript>();
 
     /// <summary>
-    /// HexGridLayout.LayoutGrid()에서 타일 생성 시 1회 호출한다.
+    /// Called once per tile during HexGridLayout.LayoutGrid().
     /// </summary>
     public void RegisterTile(Vector2Int coord, TileScript tileScript)
     {
@@ -26,20 +26,19 @@ public class TileManager
     }
 
     /// <summary>
-    /// 모든 타일의 큐브 좌표와 이웃 타일을 계산한다.
-    /// LayoutGrid() 완료 후 1회 호출한다.
+    /// Compute cube coordinates and neighbor lists for all tiles.
+    /// Called once after LayoutGrid() completes.
     /// </summary>
     public void InitializeAllTiles()
     {
         foreach (TileScript tile in tileMap.Values)
             tile.Initialize();
 
-        Debug.Log($"{tileMap.Count}개의 타일 연결");
+        Debug.Log($"{tileMap.Count} tiles connected");
     }
 
     /// <summary>
-    /// 모든 타일의 IsOccupied를 false로 초기화
-    /// 라운드 전환 시 호출
+    /// Reset IsOccupied to false for all tiles. Called on round transition.
     /// </summary>
     public void ClearAllOccupied()
     {

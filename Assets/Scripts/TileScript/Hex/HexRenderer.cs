@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
-[RequireComponent(typeof(MeshRenderer))] // MeshFilter MeshRenderer 유니티가 자동으로 추가
+[RequireComponent(typeof(MeshRenderer))] // MeshFilter & MeshRenderer auto-added by Unity
 public class HexRenderer : MonoBehaviour
 {
     Mesh m_mesh;
@@ -13,20 +13,20 @@ public class HexRenderer : MonoBehaviour
     public float innerSize;
     public float outerSize = 1;
     public float height;
-    public bool isFlatTopped = false; // 육각형 방향 설정 false 고정!!
+    public bool isFlatTopped = false; // Hex orientation — always false!
     public bool IsFlatTopped => isFlatTopped;
     List<Face> m_faces;
 
     void GetComponentsIfNeeded()
     {
-        // 컴포넌트가 비어있다면 GetComponent
+        // Lazy-init components
         if (m_meshFilter == null) m_meshFilter = GetComponent<MeshFilter>();
         if (m_meshRenderer == null) m_meshRenderer = GetComponent<MeshRenderer>();
         if (m_mesh == null)
         {
             m_mesh = new Mesh();
             m_mesh.name = "Hex Mesh";
-            m_meshFilter.sharedMesh = m_mesh; // 에디터에서는 sharedMesh 사용 필수
+            m_meshFilter.sharedMesh = m_mesh; // Must use sharedMesh in editor
         }
     }
 
@@ -40,31 +40,31 @@ public class HexRenderer : MonoBehaviour
     public void DrawMesh()
     {
         GetComponentsIfNeeded();
-        m_mesh.Clear(); // 기존 메쉬 데이터 삭제
+        m_mesh.Clear(); // Clear existing mesh data
 
-        DrawFaces(); // 육각형 계산
-        CombineFaces(); // 계산 후 합치기
+        DrawFaces(); // Calculate hex faces
+        CombineFaces(); // Combine into single mesh
     }
 
-    void DrawFaces() // 육각형 면 계산 함수
+    void DrawFaces() // Calculate hex faces
     {
         m_faces = new List<Face>();
 
-        
-        for (int point = 0; point < 6; point++) // 육각형 뚜껑
+
+        for (int point = 0; point < 6; point++) // Top cap
             m_faces.Add(CreateFace(innerSize, outerSize, height / 2f, height / 2f, point));
 
-        for (int point = 0; point < 6; point++) // 육각형 바닥
+        for (int point = 0; point < 6; point++) // Bottom cap
             m_faces.Add(CreateFace(innerSize, outerSize, -height / 2f, -height / 2f, point, true));
 
-        for (int point = 0; point < 6; point++) // 바깥쪽 벽면
+        for (int point = 0; point < 6; point++) // Outer walls
             m_faces.Add(CreateFace(outerSize, outerSize, height / 2f, -height / 2f, point, true));
 
-        for (int point = 0; point < 6; point++) // 안쪽 벽면
+        for (int point = 0; point < 6; point++) // Inner walls
             m_faces.Add(CreateFace(innerSize, innerSize, height / 2f, -height / 2f, point, false));
     }
 
-    void CombineFaces() // 면 합치기
+    void CombineFaces() // Merge faces into mesh
     {
         List<Vector3> vertices = new List<Vector3>();
         List<int> tris = new List<int>();
@@ -86,19 +86,19 @@ public class HexRenderer : MonoBehaviour
         {
             m_mesh.vertices = vertices.ToArray();
             m_mesh.triangles = tris.ToArray();
-            m_mesh.uv = uvs.ToArray(); //리스트에 담긴 데이터를 배열로
-            m_mesh.RecalculateNormals(); // 표면의 빛 반사 방향을 재계산 빛을 제대로 받기 위해 필수
+            m_mesh.uv = uvs.ToArray(); // List data to arrays
+            m_mesh.RecalculateNormals(); // Recalculate normals for proper lighting
         }
     }
 
-    protected Vector3 GetPoint(float size, float heightPos, int index) // 육각형 점 찍기
+    protected Vector3 GetPoint(float size, float heightPos, int index) // Hex vertex calculation
     {
         float angle_deg = isFlatTopped ? 60 * index : 60 * index - 30;
         float angle_rad = Mathf.PI / 180f * angle_deg;
         return new Vector3(size * Mathf.Cos(angle_rad), heightPos, size * Mathf.Sin(angle_rad));
     }
 
-    // 사각형 면 만들기
+    // Create a quad face
     Face CreateFace(float innerRad, float outerRad, float heightA, float heightB, int point, bool reverse = false)
     {
         Vector3 pointA = GetPoint(innerRad, heightB, point);
@@ -115,7 +115,7 @@ public class HexRenderer : MonoBehaviour
     }
 }
 
-// Face 구조체 (기존과 동일)
+// Face struct (unchanged)
 public struct Face
 {
     public List<Vector3> vertices { get; private set; }
