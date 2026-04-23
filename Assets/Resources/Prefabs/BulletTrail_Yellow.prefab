@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2390229991500300786}
   - component: {fileID: 4233633851725753956}
   m_Layer: 0
-  m_Name: BulletTrail
+  m_Name: BulletTrail_Yellow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,7 +91,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.022064209
+        value: 0.02
         inSlope: 0
         outSlope: 0
         tangentMode: 0

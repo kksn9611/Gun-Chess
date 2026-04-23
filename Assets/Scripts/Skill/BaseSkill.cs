@@ -19,6 +19,8 @@ public abstract class BaseSkill : ScriptableObject
     [Tooltip("Cast time")]
     public float castTime = 1f;
 
+    
+
     /// <summary>
     /// Execute the skill.
     /// </summary>

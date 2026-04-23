@@ -17,12 +17,12 @@ MonoBehaviour:
   cost: 1
   starLevel: 1
   upgradeUnit: {fileID: 0}
-  maxHp: 300
+  maxHp: 500
   maxMp: 50
-  att: 35
+  att: 30
   def: 20
   attRange: 3
-  attSpd: 1
+  attSpd: 0.7
   moveSpd: 2
   synergies:
   - {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}

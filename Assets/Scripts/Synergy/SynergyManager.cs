@@ -80,18 +80,6 @@ public class SynergyManager : MonoBehaviour
             }
         }
 
-        // 벤치 유닛도 순회하여 태그가 있지만 전장에 없는 시너지도 0카운트로 표시
-        //foreach (var unit in BenchManager.Instance.benchUnits)
-        //{
-        //    if (unit == null || unit.Stats.UnitData.synergies == null) continue;
-        //    foreach (var synergy in unit.Stats.UnitData.synergies)
-        //    {
-        //        if (synergy == null) continue;
-        //        if (!synergyCounts.ContainsKey(synergy))
-        //            synergyCounts[synergy] = 0;
-        //    }
-        //}
-
         // 2) Build SynergyEntry list
         List<SynergyEntry> newEntries = new List<SynergyEntry>();
 

@@ -318,7 +318,6 @@ public class UnitAI : MonoBehaviour
 
             // Execute attack — damage, MP gain, events handled by UnitController
             unit.PerformAttack(currentTarget);
-            unit.Visuals.FireWeaponEffect(currentTarget);
 
             // Cast skill if MP is full
             if (unit.Stats.CanCastSkill())

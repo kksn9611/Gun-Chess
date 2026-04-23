@@ -11,6 +11,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitStats))]
 [RequireComponent(typeof(UnitAnimator))]
 [RequireComponent(typeof(UnitMovement))]
+[RequireComponent(typeof(UnitVisuals))]
 public class UnitController : MonoBehaviour
 {
     // Placement //
@@ -58,10 +59,7 @@ public class UnitController : MonoBehaviour
         Stats = GetComponent<UnitStats>();
         Animator = GetComponent<UnitAnimator>();
         Movement = GetComponent<UnitMovement>();
-        if(TryGetComponent<UnitVisuals>(out unitVisuals))
-        {
-            Visuals = unitVisuals;
-        }
+        Visuals = GetComponent<UnitVisuals>();
     }
 
     /// <summary>
@@ -162,7 +160,18 @@ public class UnitController : MonoBehaviour
     /// <summary>Attack target. Apply damage + gain MP + fire events.</summary>
     public void PerformAttack(UnitController target)
     {
+        if (target == null || target.Stats.CurrentHp <= 0) return;
         float att = Stats.CurrentAtt;
+
+        // Passes a lambda expression to be executed when the last bullet hits.
+        Visuals.FireWeaponEffect(target, () => {
+            if (target != null && target.Stats.CurrentHp > 0)
+            {
+                target.TakeDamage(att);
+                OnAttackHit?.Invoke(this, target, att);
+                Stats.GainMp(Stats.MpGainOnAttack);
+            }
+        });
         target.TakeDamage(att);
         OnAttackHit?.Invoke(this, target, att);
         Stats.GainMp(Stats.MpGainOnAttack);
@@ -200,6 +209,7 @@ public class UnitController : MonoBehaviour
     /// <summary>Handle unit death.</summary>
     public void Die()
     {
+        StopAllCoroutines(); // stop CastSkillCoroutine running on this component
         AI.EnterDeadState();
 
         if (currentTile != null)
