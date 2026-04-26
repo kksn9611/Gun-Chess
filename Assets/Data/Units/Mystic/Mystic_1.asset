@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Mystic_1
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Mob
+  unitName: Mystic_1
   unitPrefab: {fileID: 4104458227381271381, guid: c7dda086f49b92a40bc7dcff40990a3c, type: 3}
   cost: 1
   starLevel: 1
@@ -26,6 +26,7 @@ MonoBehaviour:
   moveSpd: 2
   synergies:
   - {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}
+  - {fileID: 11400000, guid: c723b0649a0113340ae37a62e8e33cdb, type: 2}
   skill: {fileID: 11400000, guid: 1e053448ef482c64f90810ee9e3b3353, type: 2}
   mpGainOnAttack: 10
   mpGainOnHit: 2

@@ -1,5 +1,27 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!244 &-5486314839424773256
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 5caa5a990c66ea446aed40afc12be070
+  m_EffectName: Compressor
+  m_MixLevel: b4f18465f17f1bf488d5ab34e32ed375
+  m_Parameters:
+  - m_ParameterName: Threshold
+    m_GUID: 1d1be8c54cdc7934ba197282d7a85299
+  - m_ParameterName: Attack
+    m_GUID: 05bd52118e9aac14b81d0ae006ec9f4d
+  - m_ParameterName: Release
+    m_GUID: 81c304df85da6f64cb259b338d17f459
+  - m_ParameterName: Make up gain
+    m_GUID: 572f306adcbc136469e5dece4088e3bf
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!244 &-368959670403495453
 AudioMixerEffectController:
   m_ObjectHideFlags: 3
@@ -35,6 +57,7 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 8330646490057081065}
+  - {fileID: -5486314839424773256}
   - {fileID: -368959670403495453}
   m_UserColorIndex: 0
   m_Mute: 0
@@ -112,8 +135,10 @@ AudioMixerSnapshotController:
   m_SnapshotID: 52a50b8ffc2b79c4f87ca35e906afcb4
   m_FloatValues:
     4a514470e028b5f4a945cca25ce08c1f: 5000
+    05bd52118e9aac14b81d0ae006ec9f4d: 10
     624eafe2a09c6e549bc81b0f3e655045: 4426
     475e74951060208469c722bb97ba541c: 562
+    1d1be8c54cdc7934ba197282d7a85299: -25
     4b844d663ce60da47970fd73ed8d58cb: 10
     2e7c8f273a5967c4cb5ce2a7fea13eed: 1
     2bd2b078189fb8f4faa2eaacf5b8982d: 0
@@ -122,9 +147,11 @@ AudioMixerSnapshotController:
     2220286963b115f47b81c48e016fae47: 0.85
     de9e0c69368705f468a4986034a87d01: 0
     2af121f949c5d3d41ae83a3b1dedfe2d: 1
+    572f306adcbc136469e5dece4088e3bf: 5
     83ec6efdd508a8b4c855adaf72050c91: 1.5
     eff9b4fe94fd0b949a9b20c45844f0bd: 0
     f49649fe2b9223841abb11fd11585bc1: 3000
+    81c304df85da6f64cb259b338d17f459: 50
   m_TransitionOverrides: {}
 --- !u!244 &8330646490057081065
 AudioMixerEffectController:

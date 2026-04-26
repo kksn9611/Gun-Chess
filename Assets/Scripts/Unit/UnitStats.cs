@@ -44,6 +44,8 @@ public class UnitStats : MonoBehaviour
     public event Action<float, float> OnHpChanged;
     /// <summary>MP changed (currentMP, maxMP)</summary>
     public event Action<float, float> OnMpChanged;
+    /// <summary>Attack speed changed (newAttSpd)</summary>
+    public event Action<float> OnAttSpdChanged;
 
     // Properties //
 
@@ -78,7 +80,6 @@ public class UnitStats : MonoBehaviour
         currentAtt      = data.att;
         currentDef      = data.def;
         currentAttRange = data.attRange;
-        currentAttSpd   = data.attSpd;
         currentMoveSpd  = data.moveSpd;
         currentMaxHp    = data.maxHp;
         currentMaxMp    = data.maxMp;
@@ -87,6 +88,7 @@ public class UnitStats : MonoBehaviour
         skill           = data.skill;
         currentSkillDmgMul = 1f;
 
+        SetAttSpd(data.attSpd);
         SetHp(data.maxHp);
         SetMp(0f);
     }
@@ -99,7 +101,6 @@ public class UnitStats : MonoBehaviour
         currentAtt      = unitData.att;
         currentDef      = unitData.def;
         currentAttRange = unitData.attRange;
-        currentAttSpd   = unitData.attSpd;
         currentMoveSpd  = unitData.moveSpd;
         currentMaxHp    = unitData.maxHp;
         currentMaxMp    = unitData.maxMp;
@@ -107,6 +108,7 @@ public class UnitStats : MonoBehaviour
         mpGainOnHit     = unitData.mpGainOnHit;
         currentSkillDmgMul = 1f;
 
+        SetAttSpd(unitData.attSpd);
         SetHp(unitData.maxHp);
         SetMp(0f);
     }
@@ -128,6 +130,14 @@ public class UnitStats : MonoBehaviour
     {
         if (amount <= 0f) return;
         SetMp(currentMp + amount);
+    }
+
+    // Attack Speed //
+
+    public void SetAttSpd(float value)
+    {
+        currentAttSpd = value;
+        OnAttSpdChanged?.Invoke(currentAttSpd);
     }
 
     // Skill //
@@ -234,7 +244,7 @@ public class UnitStats : MonoBehaviour
                 currentDef += unitData.def * (percentDelta / 100f);
                 break;
             case StatType.AttSpd:
-                currentAttSpd += unitData.attSpd * (percentDelta / 100f);
+                SetAttSpd(currentAttSpd + unitData.attSpd * (percentDelta / 100f));
                 break;
             case StatType.MaxHp:
                 float hpDelta = unitData.maxHp * (percentDelta / 100f);

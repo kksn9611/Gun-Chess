@@ -18,6 +18,7 @@ public abstract class BaseSkill : ScriptableObject
 
     [Tooltip("Cast time")]
     public float castTime = 1f;
+    public float animationSpd = 1f;
 
     
 

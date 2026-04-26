@@ -506,6 +506,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b0d794f5b880db4083e5d81bebad21f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitAnimator
+  attackAnimLength: 1.033
+  skillAnimLength: 0.533
 --- !u!114 &3257807092279346093
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -572,7 +574,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 9cc9e1ccc445b25498d96055418acb29, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.1
+  m_Volume: 0.08
   m_Pitch: 0.85
   Loop: 0
   Mute: 0

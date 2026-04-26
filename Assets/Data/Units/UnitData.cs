@@ -4,7 +4,7 @@
 public class UnitData : ScriptableObject
 {
     [Header("Basic Info")]
-    public string unitName = "Mob";
+    public string unitName;
     public GameObject unitPrefab; // Unit visual
     public int cost = 1;
 

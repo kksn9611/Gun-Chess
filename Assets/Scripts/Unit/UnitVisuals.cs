@@ -49,7 +49,6 @@ public class UnitVisuals : MonoBehaviour
             trailPool.Enqueue(trail);
         }
     }
-
     public void PlaySkillSound()
     {
         audioSource.PlayOneShot(skillSound);

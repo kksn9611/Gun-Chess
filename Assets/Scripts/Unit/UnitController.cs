@@ -161,6 +161,7 @@ public class UnitController : MonoBehaviour
     public void PerformAttack(UnitController target)
     {
         if (target == null || target.Stats.CurrentHp <= 0) return;
+        Animator.PlayAttack();
         float att = Stats.CurrentAtt;
 
         // Passes a lambda expression to be executed when the last bullet hits.
@@ -172,15 +173,14 @@ public class UnitController : MonoBehaviour
                 Stats.GainMp(Stats.MpGainOnAttack);
             }
         });
-        target.TakeDamage(att);
-        OnAttackHit?.Invoke(this, target, att);
-        Stats.GainMp(Stats.MpGainOnAttack);
     }
 
     /// <summary>Skill cast coroutine. Called via yield return from UnitAI.</summary>
     public IEnumerator CastSkillCoroutine()
     {
         OnBeforeSkillCast?.Invoke();
+        Animator.SetSkillSpeed(Stats.Skill.animationSpd);
+        Animator.PlaySkill();
         Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
 
         yield return StartCoroutine(Stats.Skill.Execute(this));

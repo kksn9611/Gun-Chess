@@ -140,6 +140,7 @@ public class UnitAI : MonoBehaviour
     public void EnterDeadState()
     {
         StopAllCoroutines();
+        unit.Animator.ResumeAnimation();
         moveCoroutine = null;
         currentState  = UnitState.Dead;
         OnStateChanged?.Invoke(CurrentState);
@@ -315,10 +316,6 @@ public class UnitAI : MonoBehaviour
                 EnterMoveState();
                 yield break;
             }
-
-            // Execute attack — damage, MP gain, events handled by UnitController
-            unit.PerformAttack(currentTarget);
-
             // Cast skill if MP is full
             if (unit.Stats.CanCastSkill())
             {
@@ -328,6 +325,8 @@ public class UnitAI : MonoBehaviour
                 EnterIdleState();
                 yield break;
             }
+            // Execute attack — damage, MP gain, events handled by UnitController
+            unit.PerformAttack(currentTarget);
 
             // Attack cooldown (refresh attack speed each loop)
             float attackCooldown = 1f / unit.Stats.CurrentAttSpd;

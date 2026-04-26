@@ -12,12 +12,13 @@ public class PowerShotSkill : BaseSkill
     [Tooltip("Damage multiplier relative to ATK (2.0 = 200%)")]
     public float damageMultiplier = 4f;
     public TrailRenderer trail;
-    public float reachTime = 1f;
+    public float reachTime = 0.3f;
 
     public override IEnumerator Execute(UnitController caster)
     {
+        // Use Animation event to stop Animation
         yield return new WaitForSeconds(castTime);
-
+        caster.Animator.ResumeAnimation(); // resumeAnimation
         // Deal multiplied damage to current target
         UnitController target = caster.AI.CurrentTarget;
         if (target == null || target.Stats.CurrentHp <= 0) yield break;
