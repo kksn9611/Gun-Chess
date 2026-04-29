@@ -1,5 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using DG.Tweening;
 
 /// <summary>
 /// Unit Move and Rotation Componenet.
@@ -8,11 +11,16 @@ using System.Collections;
 public class UnitMovement : MonoBehaviour
 {
     private UnitController unit;
-    private Coroutine moveCoroutine;
+    private CancellationTokenSource moveCts;
 
     [Header("Rotation")]
     [SerializeField] private float rotationSpeed = 10f;
+    [Tooltip("Attack rotation adjust")]
     [SerializeField] private float rotationAngle;
+    [SerializeField] private float rotationDuration = 0.2f;
+
+
+    private Tween currentRotationTween;
 
     private void Awake()
     {
@@ -20,26 +28,24 @@ public class UnitMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// Lerp from current position to target tile.
+    /// Async lerp from current position to target tile.
     /// Duration = 1 / moveSpd.
     /// </summary>
-    public IEnumerator LerpToTile(TileScript tile)
+    public async UniTask LerpToTileAsync(TileScript tile)
     {
+        moveCts?.Cancel();
+        moveCts?.Dispose();
+        moveCts = new CancellationTokenSource();
+        CancellationToken ct = moveCts.Token;
+
         Vector3 startPos = transform.position;
         Vector3 endPos = tile.transform.position;
 
         float duration = 1f / unit.Stats.CurrentMoveSpd;
-        float elapsed = 0f;
-
-        while (elapsed < duration)
-        {
-            float t = elapsed / duration;
-            transform.position = Vector3.Lerp(startPos, endPos, t);
-            LookAtDirection(endPos);
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = endPos;
+        LookAtDirection(endPos, ct).Forget();
+        await transform.DOMove(endPos, duration)
+                .SetEase(Ease.Linear)
+                .ToUniTask(cancellationToken: ct);
     }
 
     /// <summary>
@@ -48,11 +54,10 @@ public class UnitMovement : MonoBehaviour
     /// </summary>
     public void StopMovement()
     {
-        if (moveCoroutine != null)
-        {
-            StopCoroutine(moveCoroutine);
-            moveCoroutine = null;
-        }
+        moveCts?.Cancel();
+        moveCts?.Dispose();
+        moveCts = null;
+
         // If interrupted mid-lerp, snap to the current logical tile position
         if (unit.CurrentHexTile != null)
             transform.position = unit.CurrentHexTile.transform.position;
@@ -61,7 +66,7 @@ public class UnitMovement : MonoBehaviour
     /// <summary>
     /// Rotate to target
     /// </summary>
-    public void LookAtTarget(Transform targetTransform)
+    public async UniTask LookAtTarget(Transform targetTransform, CancellationToken ct)
     {
         if (targetTransform == null) return;
 
@@ -73,15 +78,19 @@ public class UnitMovement : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             Quaternion offsetRotation = Quaternion.Euler(0f, rotationAngle, 0f);
-
             Quaternion finalRotation = targetRotation * offsetRotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation, finalRotation, Time.deltaTime * rotationSpeed);
+            
+            // Prevent animation collide
+            currentRotationTween?.Kill();
+
+            currentRotationTween = transform.DORotateQuaternion(finalRotation, rotationDuration).SetEase(Ease.OutQuad);
+            await currentRotationTween.ToUniTask(cancellationToken: ct);
         }
     }
     /// <summary>
     /// Rotate to direction
     /// </summary>
-    public void LookAtDirection(Vector3 targetPosition)
+    public async UniTaskVoid LookAtDirection(Vector3 targetPosition, CancellationToken ct)
     {
         Vector3 direction = targetPosition - transform.position;
         direction.y = 0f; // ignore Y axis
@@ -89,7 +98,12 @@ public class UnitMovement : MonoBehaviour
         if (direction.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+
+            // Prevent animation collide
+            currentRotationTween?.Kill();
+            currentRotationTween = transform.DORotateQuaternion(targetRotation, rotationDuration).SetEase(Ease.OutQuad);
+
+            await currentRotationTween.ToUniTask(cancellationToken: ct);
         }
     }
 }

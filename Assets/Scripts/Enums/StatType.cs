@@ -10,5 +10,7 @@ public enum StatType
     MaxHp,      // Max HP (%)
     MoveSpd,    // Move speed (%)
     MpGain,     // MP gain (%)
-    SkillDmg    // Skill damage multiplier (%)
+    SkillDmg,   // Skill damage multiplier (%)
+    CritChance, // Critical hit chance (%)
+    CritDamage  // Critical hit damage multiplier (%)
 }

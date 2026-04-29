@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 using System.Collections.Generic;
 using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 
 [RequireComponent(typeof(UnitController))]
 public class UnitVisuals : MonoBehaviour
@@ -28,8 +29,12 @@ public class UnitVisuals : MonoBehaviour
     public Queue<TrailRenderer> skillTrailPool = new Queue<TrailRenderer>();
     private static Transform globalPoolContainer;
 
+    private CancellationTokenSource cts;
+
     private void Awake()
     {
+        cts = new CancellationTokenSource();
+
         if (bulletTrailPrefab == null) return;
 
         if (globalPoolContainer == null)
@@ -49,6 +54,13 @@ public class UnitVisuals : MonoBehaviour
             trailPool.Enqueue(trail);
         }
     }
+
+    private void OnDestroy()
+    {
+        cts?.Cancel();
+        cts?.Dispose();
+    }
+
     public void PlaySkillSound()
     {
         audioSource.PlayOneShot(skillSound);
@@ -68,7 +80,7 @@ public class UnitVisuals : MonoBehaviour
         }
         trail = trailPool.Dequeue();
 
-        
+
         trail.transform.position = firePoint.position;
         trail.gameObject.SetActive(true);
         trail.Clear();
@@ -85,80 +97,78 @@ public class UnitVisuals : MonoBehaviour
     public void FireWeaponEffect(UnitController target, Action onLastHit)
     {
         if (target == null || bulletTrailPrefab == null)
-        { 
+        {
             onLastHit?.Invoke();
-            return; 
+            return;
         }
 
-        StartCoroutine(BurstCoroutine(target, onLastHit));
+        BurstAsync(target, onLastHit).Forget();
     }
 
-
-    private IEnumerator BurstCoroutine(UnitController target, Action onLastHit)
+    private async UniTaskVoid BurstAsync(UnitController target, Action onLastHit)
     {
         for (int i = 0; i < burstCount; i++)
         {
-            if (target == null || target.Stats.CurrentHp <= 0) yield break;
+            if (target == null || target.Stats.CurrentHp <= 0) return;
             if (audioSource != null && fireSound != null)
             {
                 audioSource.Play();
             }
-            
+
             Vector3 finalHitPoint = target.Visuals.HitBox.position;
 
             TrailRenderer trail = GetTrail(bulletTrailPrefab, trailPool);
 
             // check last bullet
             bool isLastShot = (i == burstCount - 1);
-            StartCoroutine(SpawnTrail(trail, finalHitPoint, bulletReachTime, isLastShot ? onLastHit : null, (trail) => ReturnTrail(trail,trailPool)));
+            SpawnTrailAsync(trail, finalHitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => ReturnTrail(t, trailPool)).Forget();
 
             // wait until next shot
             if (!isLastShot)
-                yield return new WaitForSeconds(shotInterval);
+                await UniTask.WaitForSeconds(shotInterval, cancellationToken: cts.Token);
         }
     }
 
     public void SpawnProjectile(TrailRenderer trail, Vector3 hitPoint, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
         if (trail == null) return;
-        StartCoroutine(SpawnTrail(trail, hitPoint, reachTime, onHit, returnToPool));
+        SpawnTrailAsync(trail, hitPoint, reachTime, onHit, returnToPool).Forget();
     }
 
     public void SpawnProjectile(TrailRenderer trail, Transform target, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
         if (trail == null) return;
-        StartCoroutine(SpawnTrailHoming(trail, target, reachTime, onHit, returnToPool));
+        SpawnTrailHomingAsync(trail, target, reachTime, onHit, returnToPool).Forget();
     }
 
-    public IEnumerator SpawnTrail(TrailRenderer trail, Vector3 hitPoint, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
+    private async UniTaskVoid SpawnTrailAsync(TrailRenderer trail, Vector3 hitPoint, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
         float time = 0;
         Vector3 startPosition = trail.transform.position;
 
-        // reachtime can't be zero
         if (reachTime <= 0f) reachTime = 0.01f;
 
         while (time < 1)
         {
             trail.transform.position = Vector3.Lerp(startPosition, hitPoint, time);
             time += Time.deltaTime / reachTime;
-            yield return null;
+            await UniTask.Yield(cts.Token);
         }
         trail.transform.position = hitPoint;
 
         onHit?.Invoke();
 
         // wait for trail to fade before returning to pool
-        yield return new WaitForSeconds(trail.time);
+        await UniTask.WaitForSeconds(trail.time, cancellationToken: cts.Token);
 
         returnToPool?.Invoke(trail);
     }
 
-    private IEnumerator SpawnTrailHoming(TrailRenderer trail, Transform target, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
+    // Homing Trail //
+    private async UniTaskVoid SpawnTrailHomingAsync(TrailRenderer trail, Transform target, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
         Vector3 startPos = trail.transform.position;
 
-        // reachtime can't be zero
         if (reachTime <= 0f) reachTime = 0.01f;
 
         // Calculate constant speed from initial distance
@@ -171,7 +181,7 @@ public class UnitVisuals : MonoBehaviour
             Vector3 targetPos = (target != null) ? target.position : trail.transform.position;
             trail.transform.position = Vector3.MoveTowards(trail.transform.position, targetPos, speed * Time.deltaTime);
             elapsed += Time.deltaTime;
-            yield return null;
+            await UniTask.Yield(cts.Token);
         }
 
         if (target != null)
@@ -180,7 +190,7 @@ public class UnitVisuals : MonoBehaviour
             onHit?.Invoke();
         }
 
-        yield return new WaitForSeconds(trail.time);
+        await UniTask.WaitForSeconds(trail.time, cancellationToken: cts.Token);
         returnToPool?.Invoke(trail);
     }
 }

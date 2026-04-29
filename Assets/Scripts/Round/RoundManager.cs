@@ -1,11 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
 /// Manages round progression.
-/// Preparation → Battle → Result → Preparation loop.
+/// Preparation -> Battle -> Result -> Preparation loop.
 /// Saves player unit positions before battle, restores after.
 /// </summary>
 public class RoundManager : MonoBehaviour
@@ -25,6 +26,8 @@ public class RoundManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private UnitSpawner unitSpawner;
 
+    private CancellationTokenSource cts;
+
     public int CurrentRound => currentRound;
 
     /// <summary>Saved field unit positions before battle starts</summary>
@@ -43,23 +46,27 @@ public class RoundManager : MonoBehaviour
     }
     private void OnEnable()
     {
+        cts = new CancellationTokenSource();
         BattleManager.OnBattleEnd += OnBattleEnd;
     }
 
     private void OnDisable()
     {
         BattleManager.OnBattleEnd -= OnBattleEnd;
+        cts?.Cancel();
+        cts?.Dispose();
+        cts = null;
     }
 
-    private IEnumerator Start()
+    private async UniTaskVoid Start()
     {
         // Wait for HexGridLayout / BenchLayout to create tiles
-        yield return new WaitForSeconds(0.3f);
+        await UniTask.WaitForSeconds(0.3f, cancellationToken: cts.Token);
 
         // Initial player unit placement
         SpawnPlayerUnitsForTest();
 
-        // Start round 1 preparation — preview enemy units
+        // Start round 1 preparation -- preview enemy units
         currentRound = 1;
         previousRound = currentRound;
         SpawnEnemiesForPreview(stages[currentRound - 1]);
@@ -67,7 +74,7 @@ public class RoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Bound to Space key via Input System → Invoke Unity Events.
+    /// Bound to Space key via Input System -> Invoke Unity Events.
     /// Starts battle during Preparation phase.
     /// </summary>
     public void OnStartBattle(InputAction.CallbackContext context)
@@ -100,23 +107,23 @@ public class RoundManager : MonoBehaviour
         Debug.Log($"[RoundManager] === Round {currentRound} Battle Start ===");
     }
 
-    // ── Battle End ────────────────────────────────────────────────
+    // Battle End //
 
     private void OnBattleEnd(Team winner)
     {
-        StartCoroutine(HandleBattleResult(winner));
+        HandleBattleResultAsync(winner).Forget();
     }
 
     /// <summary>
     /// Handle battle result.
-    /// Result phase wait → clear enemies → reset tiles → restore players → next round.
+    /// Result phase wait -> clear enemies -> reset tiles -> restore players -> next round.
     /// </summary>
-    private IEnumerator HandleBattleResult(Team winner)
+    private async UniTask HandleBattleResultAsync(Team winner)
     {
         Debug.Log($"[RoundManager] Round {currentRound} result: {winner} wins");
 
         // Result phase wait (allow death animations)
-        yield return new WaitForSeconds(resultPhaseDuration);
+        await UniTask.WaitForSeconds(resultPhaseDuration, cancellationToken: cts.Token);
 
         // Clear enemy units
         ClearEnemyUnits();
@@ -133,9 +140,9 @@ public class RoundManager : MonoBehaviour
         if (currentRound > stages.Length)
         {
             Debug.Log("[RoundManager] === All Stages Cleared! ===");
-            yield return new WaitForSeconds(resultPhaseDuration);
+            await UniTask.WaitForSeconds(resultPhaseDuration, cancellationToken: cts.Token);
             BattleManager.Instance.ResetBattle();
-            yield break;
+            return;
         }
 
         // Preview-spawn enemies for next round
@@ -241,7 +248,7 @@ public class RoundManager : MonoBehaviour
             unit.ResetForNewRound();
             // Register with UnitManager first (Recalculate iterates playerUnits)
             UnitManager.Instance.AddUnit(unit, Team.Player);
-            // Place on saved tile (OnBenchState → Recalculate trigger)
+            // Place on saved tile (OnBenchState -> Recalculate trigger)
             unit.PlaceOnTile(tile);
         }
 
@@ -279,7 +286,7 @@ public class RoundManager : MonoBehaviour
         {
             if (enemy != null && enemy.gameObject != null)
             {
-                enemy.StopAllCoroutines();
+                // OnDestroy on each component cancels their CTS
                 Destroy(enemy.gameObject);
             }
         }

@@ -41,6 +41,9 @@ public class UnitManager : MonoBehaviour
     public IReadOnlyList<UnitController> GetEnemiesOf(Team team)
         => team == Team.Player ? enemyUnitList : playerUnitList;
 
+    public IReadOnlyList<UnitController> GetAlliesOf(Team team)
+        => team == Team.Player ? playerUnitList : enemyUnitList;
+
     /// <summary>
     /// Called on battle start and unit death to check if the battle has ended.
     /// </summary>

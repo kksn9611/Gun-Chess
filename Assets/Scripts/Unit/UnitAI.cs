@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
 /// Unit combat AI.
-/// FSM state transitions and coroutine management.
+/// FSM state transitions and async task management.
 /// References stats/damage data from UnitController on the same GameObject.
 /// </summary>
 [RequireComponent(typeof(UnitController))]
 public class UnitAI : MonoBehaviour
 {
     private UnitController unit;
-    private Coroutine moveCoroutine;
+    private CancellationTokenSource aiCts;
 
     [Header("AI State")]
     [SerializeField] private UnitState currentState = UnitState.Idle; // Unit state
@@ -33,42 +34,46 @@ public class UnitAI : MonoBehaviour
     {
         if (unit != null && unit.IsOnBench) return;
 
-        BattleManager.OnBattleStart += EnterIdleState;
-
-        // Handle units enabled mid-battle
-        if (BattleManager.Instance != null &&
-            BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle &&
-            unit != null && !unit.IsOnBench)
-        {
-            EnterIdleState();
-        }
+        BattleManager.OnBattleStart += OnBattleStartHandler;
     }
     private void OnDisable()
     {
-        BattleManager.OnBattleStart -= EnterIdleState;
+        BattleManager.OnBattleStart -= OnBattleStartHandler;
+    }
+    private void OnBattleStartHandler()
+    {
+        if (unit != null && unit.IsOnBench) return;
+        StartBattleWithStaggerAsync(ResetToken()).Forget();
+    }
+    /// <summary> start battle with random dealy./// </summary>
+    private async UniTaskVoid StartBattleWithStaggerAsync(CancellationToken ct)
+    {
+        int randomDelay = UnityEngine.Random.Range(0, 200);
+        await UniTask.Delay(randomDelay, cancellationToken: ct);
+        EnterIdleState();
+    }
+    private void OnDestroy()
+    {
+        CancelAI();
+    }
+
+    /// <summary>Cancel all running AI tasks.</summary>
+    private void CancelAI()
+    {
+        aiCts?.Cancel();
+        aiCts?.Dispose();
+        aiCts = null;
+    }
+
+    /// <summary>Create a fresh CTS and return its token.</summary>
+    private CancellationToken ResetToken()
+    {
+        CancelAI();
+        aiCts = new CancellationTokenSource();
+        return aiCts.Token;
     }
 
     // FSM Loop //
-
-    // /// <summary>
-    // /// Per-frame processing per state, if needed.
-    // /// </summary>
-    // private void Update()
-    // {
-    //     switch (currentState)
-    //     {
-    //         case UnitState.Idle:
-    //             break;
-    //         case UnitState.Moving:
-    //             break;
-    //         case UnitState.Attacking:
-    //             break;
-    //         case UnitState.Casting:
-    //             break;
-    //         case UnitState.Dead:
-    //             break;
-    //     }
-    // }
 
     // State Transitions //
 
@@ -91,9 +96,9 @@ public class UnitAI : MonoBehaviour
         int distance = HexCoordCal.GetDistance(unit.CurrentCoord, currentTarget.CurrentCoord);
 
         if (distance <= unit.Stats.CurrentAttRange)
-            EnterAttackState(); // Already in range → attack
+            EnterAttackState(); // Already in range -> attack
         else
-            EnterMoveState();   // Out of range → chase
+            EnterMoveState();   // Out of range -> chase
     }
     /// <summary>
     /// Transition to Attack state.
@@ -103,35 +108,34 @@ public class UnitAI : MonoBehaviour
         unit.Movement.StopMovement();
         currentState = UnitState.Attacking;
         OnStateChanged?.Invoke(CurrentState);
-        StartCoroutine(AttackCoroutine());
+        AttackAsync(ResetToken()).Forget();
     }
     /// <summary>
     /// Transition to Move state.
-    /// Stop any existing move coroutine before starting a new one.
+    /// Cancel any existing AI task before starting a new one.
     /// </summary>
     public void EnterMoveState()
     {
         unit.Movement.StopMovement();
         currentState  = UnitState.Moving;
         OnStateChanged?.Invoke(CurrentState);
-        moveCoroutine = StartCoroutine(MoveCoroutine());
+        MoveAsync(ResetToken()).Forget();
     }
     /// <summary>
     /// Transition to Cast state. Returns to Idle after cast completes.
     /// </summary>
     public void EnterCastState()
     {
-        StopAllCoroutines();
-        moveCoroutine = null;
         currentState = UnitState.Casting;
         OnStateChanged?.Invoke(currentState);
-        StartCoroutine(CastAndReturnToIdle());
+        CastAndReturnToIdleAsync(ResetToken()).Forget();
     }
 
     /// <summary>Wrapper: cast skill then return to Idle.</summary>
-    private IEnumerator CastAndReturnToIdle()
+    private async UniTask CastAndReturnToIdleAsync(CancellationToken ct)
     {
-        yield return StartCoroutine(unit.CastSkillCoroutine());
+        await unit.CastSkillAsync();
+        if (ct.IsCancellationRequested) return;
         EnterIdleState();
     }
     /// <summary>
@@ -139,9 +143,9 @@ public class UnitAI : MonoBehaviour
     /// </summary>
     public void EnterDeadState()
     {
-        StopAllCoroutines();
+        CancelAI();
         unit.Animator.ResumeAnimation();
-        moveCoroutine = null;
+        unit.Animator.ResetTriggers();
         currentState  = UnitState.Dead;
         OnStateChanged?.Invoke(CurrentState);
     }
@@ -151,8 +155,7 @@ public class UnitAI : MonoBehaviour
     /// </summary>
     public void ResetState()
     {
-        StopAllCoroutines();
-        moveCoroutine  = null;
+        CancelAI();
         currentState   = UnitState.Idle;
         OnStateChanged?.Invoke(CurrentState);
         currentTarget  = null;
@@ -192,29 +195,29 @@ public class UnitAI : MonoBehaviour
         return closestTarget;
     }
 
-    // Move Coroutine //
+    // Move Async //
 
     /// <summary>
     /// Move toward target one tile at a time.
-    /// On each arrival: validate target → check range → pick destination → pathfind.
+    /// On each arrival: validate target -> check range -> pick destination -> pathfind.
     /// </summary>
-    private IEnumerator MoveCoroutine()
+    private async UniTask MoveAsync(CancellationToken ct)
     {
-        while (true)
+        while (!ct.IsCancellationRequested)
         {
-            // Target died or was removed — return to Idle to find a new target
+            // Target died or was removed -- return to Idle to find a new target
             if (currentTarget == null || currentTarget.Stats.CurrentHp <= 0)
             {
                 EnterIdleState();
-                yield break;
+                return;
             }
 
-            // Re-check range — may have entered attack range after one step
+            // Re-check range -- may have entered attack range after one step
             int distToTarget = HexCoordCal.GetDistance(unit.CurrentCoord, currentTarget.CurrentCoord);
             if (distToTarget <= unit.Stats.CurrentAttRange)
             {
                 EnterAttackState();
-                yield break;
+                return;
             }
 
             // Pick the closest unoccupied neighbor of the target tile
@@ -222,18 +225,18 @@ public class UnitAI : MonoBehaviour
 
             if (destination == null)
             {
-                // All tiles around target are blocked — wait one frame and retry
-                yield return null;
+                // All tiles around target are blocked -- wait one frame and retry
+                await UniTask.Yield(ct);
                 continue;
             }
 
-            // Pathfind — always reflects latest occupancy state
+            // Pathfind -- always reflects latest occupancy state
             List<TileScript> path = Pathfinder.FindPath(unit.CurrentHexTile, destination);
 
             if (path == null || path.Count == 0)
             {
-                // Path completely blocked — wait and retry
-                yield return null;
+                // Path completely blocked -- wait and retry
+                await UniTask.Yield(ct);
                 continue;
             }
 
@@ -242,23 +245,24 @@ public class UnitAI : MonoBehaviour
             if (nextTile.IsOccupied)
             {
                 // Skip this frame, recalculate next frame
-                yield return null;
+                await UniTask.Yield(ct);
                 continue;
             }
 
             // Update tile occupancy
-            //   Release departure tile → allow other units to enter
-            //   Occupy arrival tile → block duplicate entry during lerp
+            //   Release departure tile -> allow other units to enter
+            //   Occupy arrival tile -> block duplicate entry during lerp
             unit.CurrentHexTile.IsOccupied = false;
             nextTile.IsOccupied            = true;
             // Update internal state to new tile before physical move
             unit.SetCurrentTile(nextTile);
 
-            // Physical movement — wait for lerp to complete
-            yield return StartCoroutine(unit.Movement.LerpToTile(nextTile));
+            // Physical movement -- wait for lerp to complete
+            await unit.Movement.LerpToTileAsync(nextTile);
+            if (ct.IsCancellationRequested) return;
 
             currentTarget = FindClosestTarget(); // Re-evaluate closest target
-            yield return new WaitForSeconds(0.05f); // Brief movement delay
+            await UniTask.Delay(50, cancellationToken: ct); // Brief movement delay
         }
     }
     /// <summary>
@@ -290,42 +294,41 @@ public class UnitAI : MonoBehaviour
     }
 
 
-    // Attack Coroutine //
+    // Attack Async //
 
     /// <summary>
     /// Attack based on attack speed, re-search target every searchInterval.
     /// </summary>
-    private IEnumerator AttackCoroutine()
+    private async UniTask AttackAsync(CancellationToken ct)
     {
         float searchInterval = 0.2f;
         float searchTimer    = 0f;
 
-        while (true)
+        while (!ct.IsCancellationRequested)
         {
             // Null / death check
             if (currentTarget == null || currentTarget.Stats.CurrentHp <= 0)
             {
                 EnterIdleState();
-                yield break;
+                return;
             }
 
-            // Target moved out of range → chase
+            // Target moved out of range -> chase
             int distToTarget = HexCoordCal.GetDistance(unit.CurrentCoord, currentTarget.CurrentCoord);
             if (distToTarget > unit.Stats.CurrentAttRange)
             {
                 EnterMoveState();
-                yield break;
+                return;
             }
+            // Look target
+            unit.Movement.LookAtTarget(currentTarget.transform, ct).Forget();
             // Cast skill if MP is full
             if (unit.Stats.CanCastSkill())
             {
-                currentState = UnitState.Casting;
-                OnStateChanged?.Invoke(currentState);
-                yield return StartCoroutine(unit.CastSkillCoroutine());
-                EnterIdleState();
-                yield break;
+                EnterCastState();
+                return;
             }
-            // Execute attack — damage, MP gain, events handled by UnitController
+            // Execute attack -- damage, MP gain, events handled by UnitController
             unit.PerformAttack(currentTarget);
 
             // Attack cooldown (refresh attack speed each loop)
@@ -338,10 +341,6 @@ public class UnitAI : MonoBehaviour
                 cooldownTimer += deltaTime;
                 searchTimer   += deltaTime;
 
-                if (currentTarget != null)
-                {
-                    unit.Movement.LookAtTarget(currentTarget.transform);
-                }
 
                 // Re-search target + refresh attack speed every searchInterval
                 if (searchTimer >= searchInterval)
@@ -353,9 +352,10 @@ public class UnitAI : MonoBehaviour
                     if (searchedTarget != null && searchedTarget != currentTarget)
                     {
                         currentTarget = searchedTarget;
+                        unit.Movement.LookAtTarget(currentTarget.transform, ct).Forget();
                     }
                 }
-                yield return null;
+                await UniTask.Yield(ct);
             }
         }
     }

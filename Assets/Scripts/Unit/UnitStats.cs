@@ -31,6 +31,8 @@ public class UnitStats : MonoBehaviour
     [SerializeField] private float mpGainOnHit;
     [SerializeField] private BaseSkill skill; // null = no skill
     [SerializeField] private float currentSkillDmgMul = 1f; // Skill damage multiplier
+    [SerializeField] private float currentCritChance = 0.25f; // Critical hit chance
+    [SerializeField] private float currentCritDamage = 1.5f;  // Critical hit damage multiplier
 
     // Synergy //
 
@@ -64,6 +66,8 @@ public class UnitStats : MonoBehaviour
     public float    MpGainOnHit    => mpGainOnHit;
     public BaseSkill Skill         => skill;
     public float    SkillDamageMultiplier => currentSkillDmgMul;
+    public float    CurrentCritChance => currentCritChance;
+    public float    CurrentCritDamage => currentCritDamage;
 
     // Initialization //
 
@@ -87,6 +91,8 @@ public class UnitStats : MonoBehaviour
         mpGainOnHit     = data.mpGainOnHit;
         skill           = data.skill;
         currentSkillDmgMul = 1f;
+        currentCritChance = data.critChance;
+        currentCritDamage = data.critDamage;
 
         SetAttSpd(data.attSpd);
         SetHp(data.maxHp);
@@ -107,6 +113,8 @@ public class UnitStats : MonoBehaviour
         mpGainOnAttack  = unitData.mpGainOnAttack;
         mpGainOnHit     = unitData.mpGainOnHit;
         currentSkillDmgMul = 1f;
+        currentCritChance = unitData.critChance;
+        currentCritDamage = unitData.critDamage;
 
         SetAttSpd(unitData.attSpd);
         SetHp(unitData.maxHp);
@@ -138,6 +146,15 @@ public class UnitStats : MonoBehaviour
     {
         currentAttSpd = value;
         OnAttSpdChanged?.Invoke(currentAttSpd);
+    }
+
+    // Critical Hit //
+
+    /// <summary>Roll crit and return modified damage. Returns original damage on non-crit.</summary>
+    public float ApplyCrit(float damage, out bool isCrit)
+    {
+        isCrit = UnityEngine.Random.value < currentCritChance;
+        return isCrit ? damage * currentCritDamage : damage;
     }
 
     // Skill //
@@ -260,6 +277,12 @@ public class UnitStats : MonoBehaviour
                 break;
             case StatType.SkillDmg:
                 currentSkillDmgMul += percentDelta / 100f;
+                break;
+            case StatType.CritChance:
+                currentCritChance += percentDelta / 100f;
+                break;
+            case StatType.CritDamage:
+                currentCritDamage += unitData.critDamage * (percentDelta / 100f);
                 break;
         }
     }

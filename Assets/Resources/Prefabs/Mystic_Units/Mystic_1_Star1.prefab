@@ -361,7 +361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       propertyPath: m_Name
-      value: Mystic_1
+      value: Mystic_1_Star1
       objectReference: {fileID: 0}
     - target: {fileID: 3853268898807207900, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -370,7 +370,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 3a5942e2bec825d4a9b387283477a84f, type: 2}
+      objectReference: {fileID: 22100000, guid: d36febf23e90b6347b7b36ebb3e53ac0, type: 2}
     - target: {fileID: 5866666021909216657, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       propertyPath: m_WarningMessage
       value: 
@@ -479,6 +479,8 @@ MonoBehaviour:
   mpGainOnHit: 0
   skill: {fileID: 11400000, guid: 1e053448ef482c64f90810ee9e3b3353, type: 2}
   currentSkillDmgMul: 1
+  currentCritChance: 0.25
+  currentCritDamage: 1.5
   synergyState: {fileID: 11400000, guid: 75ae85a31b8c5414ab5554eead6078b0, type: 2}
 --- !u!114 &7857666705715451503
 MonoBehaviour:
@@ -539,6 +541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
   rotationSpeed: 10
   rotationAngle: 13
+  rotationDuration: 0.2
 --- !u!114 &9110860316056318244
 MonoBehaviour:
   m_ObjectHideFlags: 0

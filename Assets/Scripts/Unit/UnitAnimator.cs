@@ -58,6 +58,12 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.speed = 1f;
     }
+    /// <summary>Clear stale triggers to prevent animation conflicts on death.</summary>
+    public void ResetTriggers()
+    {
+        animator.ResetTrigger("Attack");
+        animator.ResetTrigger("Skill");
+    }
 
 
     private void OnDestroy()

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e7b83a1f3193441aa21789e08e443c, type: 3}
+  m_Name: "\uB3CC\uACA9\uC18C\uCD1D"
+  m_EditorClassIdentifier: Assembly-CSharp::SynergyData
+  synergyName: "\uAD8C\uCD1D"
+  description: "\uAD8C\uCD1D \uC720\uB2DB. \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0
+    \uD655\uB960\uC744 \uC62C\uB824\uC900\uB2E4.\n\uAD8C\uCD1D \uC720\uB2DB\uC740
+    2\uBC30 \uC801\uC6A9."
+  tiers:
+  - requiredCount: 2
+    behaviors: []
+  - requiredCount: 4
+    behaviors: []
+  - requiredCount: 7
+    behaviors: []

@@ -23,6 +23,8 @@ public class UnitData : ScriptableObject
     public float attRange = 1f;  // Attack range (hex tiles)
     public float attSpd = 1f;  // Attack speed
     public float moveSpd = 3f;    // Movement speed
+    public float critChance = 0.25f; // Critical hit chance (0~1)
+    public float critDamage = 1.5f;  // Critical hit damage multiplier
 
     [Header("Synergy")]
     [Tooltip("Synergies this unit belongs to (can belong to multiple)")]

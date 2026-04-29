@@ -1,4 +1,5 @@
-﻿using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -14,20 +15,21 @@ public class PowerShotSkill : BaseSkill
     public TrailRenderer trail;
     public float reachTime = 0.3f;
 
-    public override IEnumerator Execute(UnitController caster)
+    public override async UniTask Execute(UnitController caster, CancellationToken ct = default)
     {
         // Use Animation event to stop Animation
-        yield return new WaitForSeconds(castTime);
+        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
         caster.Animator.ResumeAnimation(); // resumeAnimation
         // Deal multiplied damage to current target
         UnitController target = caster.AI.CurrentTarget;
-        if (target == null || target.Stats.CurrentHp <= 0) yield break;
+        if (target == null || target.Stats.CurrentHp <= 0) return;
 
         TrailRenderer pooledTrail = caster.Visuals.GetTrail(trail, caster.Visuals.skillTrailPool);
         float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
+        if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
         caster.Visuals.PlaySkillSound();
         caster.Visuals.SpawnProjectile(pooledTrail, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage), (t) => caster.Visuals.ReturnTrail(t, caster.Visuals.skillTrailPool));
         Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} ({damage} damage)");
-        yield return new WaitForSeconds(reachTime);
+        await UniTask.WaitForSeconds(reachTime, cancellationToken: ct);
     }
 }

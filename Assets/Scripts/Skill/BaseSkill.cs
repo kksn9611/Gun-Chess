@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 /// <summary>
 /// Base class for all skills.
@@ -20,10 +21,11 @@ public abstract class BaseSkill : ScriptableObject
     public float castTime = 1f;
     public float animationSpd = 1f;
 
-    
+    [Tooltip("Whether this skill can critically hit")]
+    public bool canCrit = true;
 
     /// <summary>
     /// Execute the skill.
     /// </summary>
-    public abstract IEnumerator Execute(UnitController caster);
+    public abstract UniTask Execute(UnitController caster, CancellationToken ct = default);
 }

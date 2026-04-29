@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -22,6 +24,9 @@ public class UnitController : MonoBehaviour
     [SerializeField] private Vector2Int currentCoord; // Current tile coordinate
     [SerializeField] private Team currentTeam;
     private UnitVisuals unitVisuals;
+
+    private CancellationTokenSource cts;
+
     // Component Cache //
 
     public UnitAI AI { get; private set; }
@@ -60,6 +65,13 @@ public class UnitController : MonoBehaviour
         Animator = GetComponent<UnitAnimator>();
         Movement = GetComponent<UnitMovement>();
         Visuals = GetComponent<UnitVisuals>();
+        cts = new CancellationTokenSource();
+    }
+
+    private void OnDestroy()
+    {
+        cts?.Cancel();
+        cts?.Dispose();
     }
 
     /// <summary>
@@ -87,6 +99,11 @@ public class UnitController : MonoBehaviour
 
         OnUnitSpawned?.Invoke(this);
         Debug.Log($"{data.unitName} @ {currentCoord} ({currentTeam})");
+
+        if (!IsOnBench && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle)
+        {
+            AI.EnterIdleState();
+        }
     }
 
     // Placement //
@@ -109,7 +126,7 @@ public class UnitController : MonoBehaviour
         currentCoord     = newTile.GetCoordinate();
         newTile.IsOccupied = true;
         OnBenchState?.Invoke(false);
-        StartCoroutine(MoveToTileSmoothly(newTile.transform.position, clearCurrent ? 0.1f : 0.2f));
+        MoveToTileSmoothly(newTile.transform.position, clearCurrent ? 0.1f : 0.2f).Forget();
     }
 
     /// <summary>
@@ -130,11 +147,11 @@ public class UnitController : MonoBehaviour
         currentCoord     = slot.GetCoordinate();
         slot.IsOccupied  = true;
         OnBenchState?.Invoke(true);
-        StartCoroutine(MoveToTileSmoothly(slot.transform.position, 0.2f));
+        MoveToTileSmoothly(slot.transform.position, 0.2f).Forget();
     }
 
     /// <summary>Smooth movement during placement.</summary>
-    private IEnumerator MoveToTileSmoothly(Vector3 targetPosition, float duration)
+    private async UniTask MoveToTileSmoothly(Vector3 targetPosition, float duration)
     {
         float elapsed = 0f;
         Vector3 startPosition = transform.position;
@@ -143,7 +160,7 @@ public class UnitController : MonoBehaviour
         {
             transform.position = Vector3.Lerp(startPosition, targetPosition, elapsed / duration);
             elapsed += Time.deltaTime;
-            yield return null;
+            await UniTask.Yield(cts.Token);
         }
         transform.position = targetPosition;
     }
@@ -162,31 +179,40 @@ public class UnitController : MonoBehaviour
     {
         if (target == null || target.Stats.CurrentHp <= 0) return;
         Animator.PlayAttack();
-        float att = Stats.CurrentAtt;
+        float att = Stats.ApplyCrit(Stats.CurrentAtt, out bool isCrit);
 
         // Passes a lambda expression to be executed when the last bullet hits.
         Visuals.FireWeaponEffect(target, () => {
             if (target != null && target.Stats.CurrentHp > 0)
             {
                 target.TakeDamage(att);
-                OnAttackHit?.Invoke(this, target, att);
-                Stats.GainMp(Stats.MpGainOnAttack);
+                if (Stats.CurrentHp > 0)
+                {
+                    OnAttackHit?.Invoke(this, target, att);
+                    Stats.GainMp(Stats.MpGainOnAttack);
+                }
             }
         });
     }
 
-    /// <summary>Skill cast coroutine. Called via yield return from UnitAI.</summary>
-    public IEnumerator CastSkillCoroutine()
+    /// <summary>Skill cast. Called via yield return from UnitAI (bridged with ToCoroutine).</summary>
+    public async UniTask CastSkillAsync()
     {
         OnBeforeSkillCast?.Invoke();
         Animator.SetSkillSpeed(Stats.Skill.animationSpd);
         Animator.PlaySkill();
         Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
 
-        yield return StartCoroutine(Stats.Skill.Execute(this));
+        await Stats.Skill.Execute(this, cts.Token);
 
         Stats.SetMp(0f);
         Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} complete, MP reset");
+    }
+
+    /// <summary>Coroutine wrapper for UnitAI compatibility.</summary>
+    public IEnumerator CastSkillCoroutine()
+    {
+        return CastSkillAsync().ToCoroutine();
     }
 
     // Damage / Death //
@@ -209,7 +235,10 @@ public class UnitController : MonoBehaviour
     /// <summary>Handle unit death.</summary>
     public void Die()
     {
-        StopAllCoroutines(); // stop CastSkillCoroutine running on this component
+        cts?.Cancel();
+        cts?.Dispose();
+        cts = new CancellationTokenSource(); // reset for potential reuse (player units)
+        StopAllCoroutines();
         AI.EnterDeadState();
 
         if (currentTile != null)
@@ -228,7 +257,7 @@ public class UnitController : MonoBehaviour
         UnitManager.Instance.CheckBattleEnd();
 
         Debug.Log($"{gameObject} died");
-        StartCoroutine(DestroyAfterDelay(2f));
+        DestroyAfterDelay(2f).Forget();
     }
 
     /// <summary>Full state reset on round transition.</summary>
@@ -240,9 +269,9 @@ public class UnitController : MonoBehaviour
     }
 
     /// <summary>After delay: player→deactivate, enemy→destroy.</summary>
-    private IEnumerator DestroyAfterDelay(float delay)
+    private async UniTaskVoid DestroyAfterDelay(float delay)
     {
-        yield return new WaitForSeconds(delay);
+        await UniTask.WaitForSeconds(delay, cancellationToken: cts.Token);
         if (currentTeam == Team.Player)
             gameObject.SetActive(false);
         else
