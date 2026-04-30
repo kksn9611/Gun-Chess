@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 public class HPBar : MonoBehaviour
 {
     [SerializeField] private Image fill;
@@ -35,6 +36,7 @@ public class HPBar : MonoBehaviour
         if (fill == null) return;
 
         fill.fillAmount = currentHp / maxHp;
+        
 
         // Hide immediately when HP reaches 0
         if (currentHp <= 0f)

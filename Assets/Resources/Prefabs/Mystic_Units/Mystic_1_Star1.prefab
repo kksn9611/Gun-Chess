@@ -539,7 +539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb4db5a358b2ce94da3b9b9766f48b83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitMovement
-  rotationSpeed: 10
   rotationAngle: 13
   rotationDuration: 0.2
 --- !u!114 &9110860316056318244
@@ -560,6 +559,7 @@ MonoBehaviour:
   bulletReachTime: 0.15
   burstCount: 3
   shotInterval: 0.05
+  shotDelay: 0.03
   audioSource: {fileID: 8575436782274990311}
   fireSound: {fileID: 8300000, guid: 9cc9e1ccc445b25498d96055418acb29, type: 3}
   skillSound: {fileID: 8300000, guid: 220dd996444144145ade39c578355dd4, type: 3}

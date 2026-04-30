@@ -12,22 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Mystic_2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Mystic_1
-  unitPrefab: {fileID: 0}
+  unitName: Mystic_2
+  unitPrefab: {fileID: 8028335539950420324, guid: 148a7908911f0504baf6d4450ca21df1, type: 3}
   cost: 2
   starLevel: 1
   upgradeUnit: {fileID: 0}
   maxHp: 500
-  maxMp: 50
-  att: 50
+  maxMp: 100
+  att: 25
   def: 20
   attRange: 2
-  attSpd: 0.5
+  attSpd: 1
   moveSpd: 2
   critChance: 0.25
   critDamage: 1.5
   synergies:
   - {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}
+  - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
   skill: {fileID: 11400000, guid: 6a75c30fcaac6ce43a93c7e99c3b343d, type: 2}
   mpGainOnAttack: 10
   mpGainOnHit: 2

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -12,21 +12,22 @@ public class HealSkill : BaseSkill
 {
     [Header("Skill Settings")]
     [Tooltip("Heal multiplier relative to ATK")]
-    public float healMultiplier = 2f;
+    public float healMultiplier = 5f;
+
+    public float skillSoundDelay = 1f;
 
     [Tooltip("Number of allies to heal (sorted by lowest HP%)")]
     [Min(1)] public int targetCount = 1;
 
     public override async UniTask Execute(UnitController caster, CancellationToken ct = default)
     {
+        caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
         await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
-        caster.Animator.ResumeAnimation();
 
         List<UnitController> healTargets = FindLowestHpAllies(caster, targetCount);
         if (healTargets.Count == 0) return;
 
         float healAmount = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
-        caster.Visuals.PlaySkillSound();
 
         foreach (UnitController target in healTargets)
         {

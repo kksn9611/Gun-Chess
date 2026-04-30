@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: HealSkill_2target
   m_EditorClassIdentifier: Assembly-CSharp::HealSkill
   skillName: "\uD790"
-  description: "\uACF5\uACA9\uB825\uC758 300%\uB9CC\uD07C 2\uBA85 \uD790"
-  castTime: 1
-  animationSpd: 1
-  canCrit: 1
-  healMultiplier: 3
+  description: "\uACF5\uACA9\uB825\uC758 500%\uB9CC\uD07C \uCCB4\uB825 \uBE44\uC728\uC774
+    \uB0AE\uC740 \uC544\uAD70 2\uBA85 \uD790"
+  castTime: 3
+  animationSpd: 1.2
+  canCrit: 0
+  healMultiplier: 5
+  skillSoundDelay: 1.5
   targetCount: 2

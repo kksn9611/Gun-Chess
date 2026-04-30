@@ -14,7 +14,6 @@ public class UnitMovement : MonoBehaviour
     private CancellationTokenSource moveCts;
 
     [Header("Rotation")]
-    [SerializeField] private float rotationSpeed = 10f;
     [Tooltip("Attack rotation adjust")]
     [SerializeField] private float rotationAngle;
     [SerializeField] private float rotationDuration = 0.2f;

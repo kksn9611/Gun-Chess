@@ -1,8 +1,9 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 [RequireComponent(typeof(UnitController))]
 public class UnitVisuals : MonoBehaviour
@@ -17,6 +18,7 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private float bulletReachTime = 0.15f;
     [SerializeField] private int burstCount = 3;
     [SerializeField] private float shotInterval = 0.05f;
+    [SerializeField] private float shotDelay = 0.05f;
 
     [Header("Sound Setting")]
     [SerializeField] private AudioSource audioSource;
@@ -61,9 +63,21 @@ public class UnitVisuals : MonoBehaviour
         cts?.Dispose();
     }
 
+    public async UniTaskVoid PlaySkillSound(float delay)
+    {
+        if (delay > 0f)
+        {
+            // 유닛이 죽으면 안전하게 취소되도록 cts.Token 추가
+            await UniTask.WaitForSeconds(delay, cancellationToken: cts.Token);
+        }
+        audioSource.PlayOneShot(skillSound);
+    }
     public void PlaySkillSound()
     {
-        audioSource.PlayOneShot(skillSound);
+        if (audioSource != null && skillSound != null)
+        {
+            audioSource.PlayOneShot(skillSound);
+        }
     }
     public TrailRenderer GetTrail(TrailRenderer trail, Queue<TrailRenderer> trailPool)
     {
@@ -102,11 +116,16 @@ public class UnitVisuals : MonoBehaviour
             return;
         }
 
-        BurstAsync(target, onLastHit).Forget();
+        BurstAsync(target,shotDelay,onLastHit).Forget();
     }
 
-    private async UniTaskVoid BurstAsync(UnitController target, Action onLastHit)
+    private async UniTaskVoid BurstAsync(UnitController target, float shotDelay, Action onLastHit)
     {
+
+        if (shotDelay > 0f)
+        {
+            await UniTask.WaitForSeconds(shotDelay, cancellationToken: cts.Token);
+        }
         for (int i = 0; i < burstCount; i++)
         {
             if (target == null || target.Stats.CurrentHp <= 0) return;
@@ -143,54 +162,55 @@ public class UnitVisuals : MonoBehaviour
 
     private async UniTaskVoid SpawnTrailAsync(TrailRenderer trail, Vector3 hitPoint, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
-        float time = 0;
         Vector3 startPosition = trail.transform.position;
 
         if (reachTime <= 0f) reachTime = 0.01f;
-
-        while (time < 1)
+        try
         {
-            trail.transform.position = Vector3.Lerp(startPosition, hitPoint, time);
-            time += Time.deltaTime / reachTime;
-            await UniTask.Yield(cts.Token);
+            await trail.transform.DOMove(hitPoint, reachTime).SetEase(Ease.Linear).ToUniTask(cancellationToken: cts.Token);
+            onHit?.Invoke();
+
+            // wait for trail to fade before returning to pool
+            await UniTask.Delay(System.TimeSpan.FromSeconds(trail.time), cancellationToken: cts.Token);
         }
-        trail.transform.position = hitPoint;
-
-        onHit?.Invoke();
-
-        // wait for trail to fade before returning to pool
-        await UniTask.WaitForSeconds(trail.time, cancellationToken: cts.Token);
-
-        returnToPool?.Invoke(trail);
+        finally
+        {
+            returnToPool?.Invoke(trail);
+        }
     }
 
     // Homing Trail //
     private async UniTaskVoid SpawnTrailHomingAsync(TrailRenderer trail, Transform target, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
     {
         Vector3 startPos = trail.transform.position;
-
-        if (reachTime <= 0f) reachTime = 0.01f;
-
-        // Calculate constant speed from initial distance
-        Vector3 initialTarget = (target != null) ? target.position : startPos;
-        float speed = Vector3.Distance(startPos, initialTarget) / reachTime;
-        float elapsed = 0f;
-
-        while (elapsed < reachTime)
+        try
         {
-            Vector3 targetPos = (target != null) ? target.position : trail.transform.position;
-            trail.transform.position = Vector3.MoveTowards(trail.transform.position, targetPos, speed * Time.deltaTime);
-            elapsed += Time.deltaTime;
-            await UniTask.Yield(cts.Token);
-        }
+            if (reachTime <= 0f) reachTime = 0.01f;
 
-        if (target != null)
+            // Calculate constant speed from initial distance
+            Vector3 initialTarget = (target != null) ? target.position : startPos;
+            float speed = Vector3.Distance(startPos, initialTarget) / reachTime;
+            float elapsed = 0f;
+
+            while (elapsed < reachTime)
+            {
+                Vector3 targetPos = (target != null) ? target.position : trail.transform.position;
+                trail.transform.position = Vector3.MoveTowards(trail.transform.position, targetPos, speed * Time.deltaTime);
+                elapsed += Time.deltaTime;
+                await UniTask.Yield(cts.Token);
+            }
+
+            if (target != null)
+            {
+                trail.transform.position = target.position;
+                onHit?.Invoke();
+            }
+
+            await UniTask.Delay(System.TimeSpan.FromSeconds(trail.time), cancellationToken: cts.Token);
+        }
+        finally
         {
-            trail.transform.position = target.position;
-            onHit?.Invoke();
+            returnToPool?.Invoke(trail);
         }
-
-        await UniTask.WaitForSeconds(trail.time, cancellationToken: cts.Token);
-        returnToPool?.Invoke(trail);
     }
 }
