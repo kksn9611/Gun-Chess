@@ -19,13 +19,13 @@ public class HealSkill : BaseSkill
     [Tooltip("Number of allies to heal (sorted by lowest HP%)")]
     [Min(1)] public int targetCount = 1;
 
-    public override async UniTask Execute(UnitController caster, CancellationToken ct = default)
+    public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
         caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
         await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
 
         List<UnitController> healTargets = FindLowestHpAllies(caster, targetCount);
-        if (healTargets.Count == 0) return;
+        if (healTargets.Count == 0) return false;
 
         float healAmount = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
 
@@ -34,6 +34,7 @@ public class HealSkill : BaseSkill
             target.Stats.SetHp(target.Stats.CurrentHp + healAmount);
             Debug.Log($"[Heal] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} (+{healAmount} HP)");
         }
+        return true;
     }
 
     // Target Search //

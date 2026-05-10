@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -14,47 +13,47 @@ public class UnitVisuals : MonoBehaviour
     public Transform HitBox => hitBox;
 
     [Header("Fire Effect")]
-    [SerializeField] private TrailRenderer bulletTrailPrefab;
     [SerializeField] private float bulletReachTime = 0.15f;
     [SerializeField] private int burstCount = 3;
     [SerializeField] private float shotInterval = 0.05f;
+    [Tooltip("if use the Animation Event, this is ignored")]
     [SerializeField] private float shotDelay = 0.05f;
+    [Tooltip("Fire all pellets simultaneously (shotgun)")]
+    [SerializeField] private bool burstAtOnce = false;
+    [Tooltip("Random spread radius around hitbox (burstAtOnce only)")]
+    [SerializeField] private float spreadRadius = 0.3f;
+    [Tooltip("Wait for Animation Event (OnFireEvent) instead of shotDelay")]
+    [SerializeField] private bool useAnimationEvent = false;
 
     [Header("Sound Setting")]
     [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioClip fireSound;
     [SerializeField] private AudioClip skillSound;
 
-    [Header("Trail Pool")]
-    [SerializeField] private int poolSize = 5;
-    private Queue<TrailRenderer> trailPool = new Queue<TrailRenderer>();
-    public Queue<TrailRenderer> skillTrailPool = new Queue<TrailRenderer>();
-    private static Transform globalPoolContainer;
+    // Trail prefabs from UnitData
+    private TrailRenderer bulletTrailPrefab;
+    private TrailRenderer skillTrailPrefab;
 
     private CancellationTokenSource cts;
+    private UniTaskCompletionSource fireSignal;
 
     private void Awake()
     {
         cts = new CancellationTokenSource();
+    }
 
-        if (bulletTrailPrefab == null) return;
+    /// <summary>
+    /// Initialize trail prefabs from UnitData and prewarm pools.
+    /// Called by UnitController.Initialize().
+    /// </summary>
+    public void Initialize(UnitData data)
+    {
+        bulletTrailPrefab = data.bulletTrailPrefab;
+        skillTrailPrefab  = data.skillTrailPrefab;
 
-        if (globalPoolContainer == null)
-        {
-            GameObject containerObj = GameObject.Find("PoolContainer");
-
-            if (containerObj != null)
-            {
-                globalPoolContainer = containerObj.transform;
-            }
-        }
-
-            for (int i = 0; i < poolSize; i++)
-        {
-            TrailRenderer trail = Instantiate(bulletTrailPrefab, globalPoolContainer);
-            trail.gameObject.SetActive(false);
-            trailPool.Enqueue(trail);
-        }
+        if (bulletTrailPrefab != null && data.poolSize > 0)
+            TrailPoolManager.Instance.Prewarm(bulletTrailPrefab, data.poolSize);
+        if (skillTrailPrefab != null && data.skillPoolSize > 0)
+            TrailPoolManager.Instance.Prewarm(skillTrailPrefab, data.skillPoolSize);
     }
 
     private void OnDestroy()
@@ -67,7 +66,6 @@ public class UnitVisuals : MonoBehaviour
     {
         if (delay > 0f)
         {
-            // 유닛이 죽으면 안전하게 취소되도록 cts.Token 추가
             await UniTask.WaitForSeconds(delay, cancellationToken: cts.Token);
         }
         audioSource.PlayOneShot(skillSound);
@@ -79,32 +77,46 @@ public class UnitVisuals : MonoBehaviour
             audioSource.PlayOneShot(skillSound);
         }
     }
-    public TrailRenderer GetTrail(TrailRenderer trail, Queue<TrailRenderer> trailPool)
+    public void PlaySound()
     {
-        if (trailPool.Count == 0)
+        if (audioSource != null && audioSource.generator != null)
         {
-            int expandSize = 2; // expend by 2
-
-            for (int i = 0; i < expandSize; i++)
-            {
-                TrailRenderer newTrail = Instantiate(trail, globalPoolContainer);
-                newTrail.gameObject.SetActive(false);
-                trailPool.Enqueue(newTrail);
-            }
+            audioSource.Play();
         }
-        trail = trailPool.Dequeue();
-
-
-        trail.transform.position = firePoint.position;
-        trail.gameObject.SetActive(true);
-        trail.Clear();
-        return trail;
     }
 
-    public void ReturnTrail(TrailRenderer trail, Queue<TrailRenderer> returnPool)
+    /// <summary>Called by Animation Event to trigger trail firing.</summary>
+    public void OnFireEvent()
     {
-        trail.gameObject.SetActive(false);
-        returnPool.Enqueue(trail);
+        fireSignal?.TrySetResult();
+    }
+    /// <summary>Skill trail prefab assigned from UnitData.</summary>
+    public TrailRenderer SkillTrailPrefab => skillTrailPrefab;
+
+    /// <summary>
+    /// Get a trail from the centralized pool, positioned at fire point.
+    /// </summary>
+    public TrailRenderer GetTrail(TrailRenderer prefab)
+    {
+        return TrailPoolManager.Instance.Get(prefab, firePoint.position);
+    }
+
+    /// <summary>
+    /// Get a skill trail from the centralized pool, positioned at fire point.
+    /// </summary>
+    public TrailRenderer GetSkillTrail()
+    {
+        if (skillTrailPrefab == null) return null;
+        return TrailPoolManager.Instance.Get(skillTrailPrefab, firePoint.position);
+    }
+
+    /// <summary>
+    /// Return a skill trail to the centralized pool.
+    /// </summary>
+    public void ReturnSkillTrail(TrailRenderer trail)
+    {
+        if (skillTrailPrefab == null) return;
+        TrailPoolManager.Instance.Return(skillTrailPrefab, trail);
     }
 
     // Fire Effect //
@@ -121,30 +133,51 @@ public class UnitVisuals : MonoBehaviour
 
     private async UniTaskVoid BurstAsync(UnitController target, float shotDelay, Action onLastHit)
     {
-
-        if (shotDelay > 0f)
+        // Wait for animation event or shotDelay
+        if (useAnimationEvent)
+        {
+            fireSignal = new UniTaskCompletionSource();
+            await fireSignal.Task.AttachExternalCancellation(cts.Token);
+        }
+        else if (shotDelay > 0f)
         {
             await UniTask.WaitForSeconds(shotDelay, cancellationToken: cts.Token);
         }
-        for (int i = 0; i < burstCount; i++)
+
+        if (target == null || target.Stats.CurrentHp <= 0) return;
+
+        if (burstAtOnce)
         {
-            if (target == null || target.Stats.CurrentHp <= 0) return;
-            if (audioSource != null && fireSound != null)
+            // Shotgun: fire all pellets simultaneously with spread
+            Vector3 center = target.Visuals.HitBox.position;
+
+            for (int i = 0; i < burstCount; i++)
             {
-                audioSource.Play();
+                Vector3 offset = UnityEngine.Random.insideUnitSphere * spreadRadius;
+                offset.y = 0f;
+                Vector3 hitPoint = center + offset;
+
+                TrailRenderer trail = GetTrail(bulletTrailPrefab);
+                bool isLastShot = (i == burstCount - 1);
+                SpawnTrailAsync(trail, hitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t)).Forget();
             }
+        }
+        else
+        {
+            // Sequential burst fire
+            for (int i = 0; i < burstCount; i++)
+            {
+                if (target == null || target.Stats.CurrentHp <= 0) return;
 
-            Vector3 finalHitPoint = target.Visuals.HitBox.position;
+                Vector3 finalHitPoint = target.Visuals.HitBox.position;
+                TrailRenderer trail = GetTrail(bulletTrailPrefab);
 
-            TrailRenderer trail = GetTrail(bulletTrailPrefab, trailPool);
+                bool isLastShot = (i == burstCount - 1);
+                SpawnTrailAsync(trail, finalHitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t)).Forget();
 
-            // check last bullet
-            bool isLastShot = (i == burstCount - 1);
-            SpawnTrailAsync(trail, finalHitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => ReturnTrail(t, trailPool)).Forget();
-
-            // wait until next shot
-            if (!isLastShot)
-                await UniTask.WaitForSeconds(shotInterval, cancellationToken: cts.Token);
+                if (!isLastShot)
+                    await UniTask.WaitForSeconds(shotInterval, cancellationToken: cts.Token);
+            }
         }
     }
 

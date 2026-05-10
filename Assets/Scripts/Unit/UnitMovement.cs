@@ -16,6 +16,8 @@ public class UnitMovement : MonoBehaviour
     [Header("Rotation")]
     [Tooltip("Attack rotation adjust")]
     [SerializeField] private float rotationAngle;
+    [Tooltip("Skill rotation adjust")]
+    [SerializeField] private float skillRotationAngle;
     [SerializeField] private float rotationDuration = 0.2f;
 
 
@@ -86,6 +88,28 @@ public class UnitMovement : MonoBehaviour
             await currentRotationTween.ToUniTask(cancellationToken: ct);
         }
     }
+    /// <summary>
+    /// Rotate to target with skill rotation offset.
+    /// </summary>
+    public async UniTask LookAtTargetSkill(Transform targetTransform, CancellationToken ct)
+    {
+        if (targetTransform == null) return;
+
+        Vector3 direction = targetTransform.position - transform.position;
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.01f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            Quaternion offsetRotation = Quaternion.Euler(0f, skillRotationAngle, 0f);
+            Quaternion finalRotation = targetRotation * offsetRotation;
+
+            currentRotationTween?.Kill();
+            currentRotationTween = transform.DORotateQuaternion(finalRotation, rotationDuration).SetEase(Ease.OutQuad);
+            await currentRotationTween.ToUniTask(cancellationToken: ct);
+        }
+    }
+
     /// <summary>
     /// Rotate to direction
     /// </summary>

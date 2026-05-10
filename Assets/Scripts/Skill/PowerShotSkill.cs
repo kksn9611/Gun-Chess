@@ -1,35 +1,71 @@
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
-/// Single-target skill dealing ATK * multiplier damage to current target.
-/// Cast time based on current attack speed.
+/// Burst-fire skill dealing ATK * multiplier damage per shot.
+/// Supports multiple shots with interval and per-shot delay.
 /// </summary>
 [CreateAssetMenu(fileName = "PowerShot", menuName = "Scriptable Objects/Skill/PowerShotSkill")]
 public class PowerShotSkill : BaseSkill
 {
     [Header("Skill Settings")]
-    [Tooltip("Damage multiplier relative to ATK (2.0 = 200%)")]
+    [Tooltip("Damage multiplier per shot relative to ATK")]
     public float damageMultiplier = 4f;
-    public TrailRenderer trail;
     public float reachTime = 0.3f;
 
-    public override async UniTask Execute(UnitController caster, CancellationToken ct = default)
-    {
-        // Use Animation event to stop Animation
-        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
-        caster.Animator.ResumeAnimation(); // resumeAnimation
-        // Deal multiplied damage to current target
-        UnitController target = caster.AI.CurrentTarget;
-        if (target == null || target.Stats.CurrentHp <= 0) return;
+    [Header("Burst Settings")]
+    [Tooltip("Number of shots to fire")]
+    [Min(1)] public int burstCount = 1;
+    [Tooltip("Time between each shot")]
+    public float shotInterval = 0.3f;
+    [Tooltip("animation delay")]
+    public float shotDelay = 0.1f;
 
-        TrailRenderer pooledTrail = caster.Visuals.GetTrail(trail, caster.Visuals.skillTrailPool);
-        float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
-        if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
-        caster.Visuals.PlaySkillSound();
-        caster.Visuals.SpawnProjectile(pooledTrail, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage), (t) => caster.Visuals.ReturnTrail(t, caster.Visuals.skillTrailPool));
-        Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} ({damage} damage)");
+    public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
+    {
+        // Initial cast wind-up
+        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
+
+        UnitController target = caster.AI.CurrentTarget;
+        if (target == null || target.Stats.CurrentHp <= 0) return false;
+
+        // Fire burst
+        for (int i = 0; i < burstCount; i++)
+        {
+            if (ct.IsCancellationRequested) return false;
+
+            // Re-validate target each shot
+            target = caster.AI.CurrentTarget;
+            if (target == null || target.Stats.CurrentHp <= 0) break;
+
+            // Play attack animation for each shot
+            caster.Animator.PlaySkill();
+
+            // Delay before projectile spawns
+            if (shotDelay > 0f)
+                await UniTask.WaitForSeconds(shotDelay, cancellationToken: ct);
+
+            // Calculate per-shot damage
+            float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
+            if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
+
+            // Spawn projectile
+            TrailRenderer pooledTrail = caster.Visuals.GetSkillTrail();
+            TrailRenderer skillPrefab = caster.Visuals.SkillTrailPrefab;
+            caster.Visuals.PlaySkillSound();
+            caster.Visuals.SpawnProjectile(pooledTrail, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage), (t) => TrailPoolManager.Instance.Return(skillPrefab, t));
+            Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} shot {i + 1}/{burstCount} ({damage} damage)");
+
+            // Wait interval before next shot (skip on last shot)
+            if (i < burstCount - 1)
+                await UniTask.WaitForSeconds(shotInterval, cancellationToken: ct);
+            
+        }
+        // wait for return another animation
+        await UniTask.WaitForSeconds(shotDelay, cancellationToken: ct);
+        // Wait for last projectile to reach target
         await UniTask.WaitForSeconds(reachTime, cancellationToken: ct);
+        return true;
     }
 }

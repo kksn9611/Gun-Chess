@@ -30,6 +30,16 @@ public class UnitData : ScriptableObject
     [Tooltip("Synergies this unit belongs to (can belong to multiple)")]
     public SynergyData[] synergies;
 
+    [Header("Trail / Pool")]
+    [Tooltip("Trail prefab for normal attacks")]
+    public TrailRenderer bulletTrailPrefab;
+    [Tooltip("Trail prefab for skill projectiles (null if skill has no projectile)")]
+    public TrailRenderer skillTrailPrefab;
+    [Tooltip("Pre-warm count for bullet trail pool")]
+    public int poolSize = 5;
+    [Tooltip("Pre-warm count for skill trail pool")]
+    public int skillPoolSize = 3;
+
     [Header("Skill")]
     [Tooltip("Skill used by this unit. null = no skill")]
     public BaseSkill skill;

@@ -131,9 +131,11 @@ public class UnitAI : MonoBehaviour
         CastAndReturnToIdleAsync(ResetToken()).Forget();
     }
 
-    /// <summary>Wrapper: cast skill then return to Idle.</summary>
+    /// <summary>Wrapper: rotate for skill, cast, then return to Idle.</summary>
     private async UniTask CastAndReturnToIdleAsync(CancellationToken ct)
     {
+        if (currentTarget != null)
+            unit.Movement.LookAtTargetSkill(currentTarget.transform, ct).Forget();
         await unit.CastSkillAsync();
         if (ct.IsCancellationRequested) return;
         EnterIdleState();
@@ -156,6 +158,7 @@ public class UnitAI : MonoBehaviour
     public void ResetState()
     {
         CancelAI();
+        unit.Animator.ResetApplyRootMotion();
         currentState   = UnitState.Idle;
         OnStateChanged?.Invoke(CurrentState);
         currentTarget  = null;

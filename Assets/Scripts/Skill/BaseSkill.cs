@@ -25,7 +25,7 @@ public abstract class BaseSkill : ScriptableObject
     public bool canCrit = true;
 
     /// <summary>
-    /// Execute the skill.
+    /// Execute the skill. Returns true if the skill fired, false if canceled.
     /// </summary>
-    public abstract UniTask Execute(UnitController caster, CancellationToken ct = default);
+    public abstract UniTask<bool> Execute(UnitController caster, CancellationToken ct = default);
 }

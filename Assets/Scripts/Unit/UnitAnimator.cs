@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using System.Threading;
+using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 [RequireComponent(typeof(UnitController))]
 [RequireComponent(typeof(Animator))]
@@ -11,6 +14,7 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] private float skillAnimLength = 1.0f;
 
     public float SkillAnimLength => skillAnimLength;
+    private CancellationTokenSource cts;
 
     private void Awake()
     {
@@ -19,6 +23,7 @@ public class UnitAnimator : MonoBehaviour
         stats = GetComponent<UnitStats>();
         ai.OnStateChanged += OnStateChanged;
         stats.OnAttSpdChanged += OnAttSpdChanged;
+        cts = new CancellationTokenSource();
     }
 
     private void OnStateChanged(UnitState state)
@@ -50,17 +55,29 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.SetTrigger("Skill");
     }
-    public void SlowAnimation()
+    public void SlowAnimation(float time)
     {
-        animator.speed = 0f;
+        if (ai.CurrentState == UnitState.Dead) return;
+        PauseAnimationAsync(time).Forget();
+    }
+    private async UniTaskVoid PauseAnimationAsync(float time)
+    {
+        animator.speed = 0.2f;
+        await UniTask.WaitForSeconds(time, cancellationToken: cts.Token).SuppressCancellationThrow();
+        animator.speed = 1f;
     }
     public void ResumeAnimation()
     {
         animator.speed = 1f;
     }
+    public void ResetApplyRootMotion()
+    {
+        animator.applyRootMotion = false;
+    }
     /// <summary>Clear stale triggers to prevent animation conflicts on death.</summary>
     public void ResetTriggers()
     {
+        animator.applyRootMotion = true;
         animator.ResetTrigger("Attack");
         animator.ResetTrigger("Skill");
     }

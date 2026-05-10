@@ -81,6 +81,7 @@ public class UnitController : MonoBehaviour
     public void Initialize(UnitData data, BaseTile spawnTile, Team team)
     {
         Stats.Initialize(data);
+        Visuals.Initialize(data);
         currentTeam  = team;
         currentCoord = spawnTile.GetCoordinate();
         spawnTile.IsOccupied = true;
@@ -203,10 +204,17 @@ public class UnitController : MonoBehaviour
         Animator.PlaySkill();
         Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
 
-        await Stats.Skill.Execute(this, cts.Token);
+        bool fired = await Stats.Skill.Execute(this, cts.Token);
 
-        Stats.SetMp(0f);
-        Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} complete, MP reset");
+        if (fired)
+        {
+            Stats.SetMp(0f);
+            Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} complete, MP reset");
+        }
+        else
+        {
+            Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} canceled, MP retained");
+        }
     }
 
     /// <summary>Coroutine wrapper for UnitAI compatibility.</summary>
