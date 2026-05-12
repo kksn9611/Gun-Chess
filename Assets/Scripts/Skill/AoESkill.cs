@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -17,27 +17,29 @@ public class AoESkill : BaseSkill
 
     [Tooltip("Area shape definition")]
     public AreaShapeData areaShape;
+    public Color color;
 
 
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
-        // Skill speed
         float skillSpeed = caster.Animator.SkillAnimLength / castTime;
         caster.Animator.SetSkillSpeed(skillSpeed);
-        caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
+        // Pivot = primary target HitBox (Circle center), fallback to caster FirePoint
+        UnitController primaryTarget = caster.AI.CurrentTarget;
+
+        Vector3 pivot = primaryTarget != null ? primaryTarget.Visuals.HitBox.position
+            : caster.Visuals.FirePoint.position;
+        var indicator = SkillAreaRenderer.Create(areaShape, caster.Visuals.FirePoint.position, pivot, color);
 
         // Cast wind-up
         await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
-
+        
         if (caster == null || caster.Stats.CurrentHp <= 0) return false;
-
-        // Pivot = primary target position (for Circle center)
-        UnitController primaryTarget = caster.AI.CurrentTarget;
-        Vector3 pivot = primaryTarget != null ? primaryTarget.transform.position : caster.transform.position;
+        indicator.ShowForDuration(0.2f).Forget();
 
         // Collect targets in area
         List<UnitController> targets = AreaTargetingUtility.GetTargetsInArea(areaShape, caster, pivot);
-        if (targets.Count == 0) return false;
+        if (targets.Count == 0) return true;
 
         // Apply damage to all targets
         foreach (UnitController target in targets)

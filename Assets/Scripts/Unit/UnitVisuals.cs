@@ -11,6 +11,7 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform hitBox;
     public Transform HitBox => hitBox;
+    public Transform FirePoint => firePoint;
 
     [Header("Fire Effect")]
     [SerializeField] private float bulletReachTime = 0.15f;
@@ -35,6 +36,7 @@ public class UnitVisuals : MonoBehaviour
 
     private CancellationTokenSource cts;
     private UniTaskCompletionSource fireSignal;
+    private UniTaskCompletionSource skillSignal;
 
     private void Awake()
     {
@@ -90,6 +92,12 @@ public class UnitVisuals : MonoBehaviour
     {
         fireSignal?.TrySetResult();
     }
+    public void OnSkillEvent()
+    {
+        skillSignal?.TrySetResult();
+    }
+
+
     /// <summary>Skill trail prefab assigned from UnitData.</summary>
     public TrailRenderer SkillTrailPrefab => skillTrailPrefab;
 

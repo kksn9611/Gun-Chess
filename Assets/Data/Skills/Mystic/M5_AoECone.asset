@@ -10,20 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a1883d7d48cabfd46b4a9950ca5ee8f3, type: 3}
-  m_Name: AoESkill Cone
+  m_Name: M5_AoECone
   m_EditorClassIdentifier: Assembly-CSharp::AoESkill
   skillName: Test AoE
   description: 
-  castTime: 1.5
-  animationSpd: 1.5
+  castTime: 2.5
+  animationSpd: 1
   canCrit: 1
   damageMultiplier: 4
-  skillSoundDelay: 1
+  skillSoundDelay: 0
   areaShape:
     shapeType: 1
     radius: 0
     range: 8
-    angle: 100
+    angle: 120
     width: 0
     length: 0
   color: {r: 0.78431374, g: 0.07843138, b: 0.2352941, a: 0.39215687}

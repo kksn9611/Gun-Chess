@@ -26,3 +26,4 @@ MonoBehaviour:
     angle: 0
     width: 1
     length: 15
+  color: {r: 0.78431374, g: 0.078431375, b: 0.23529412, a: 0.39215687}
