@@ -16,9 +16,9 @@ MonoBehaviour:
   description: 
   castTime: 1.5
   animationSpd: 1.5
+  useAnimationEvent: 0
   canCrit: 1
   damageMultiplier: 4
-  skillSoundDelay: 1
   areaShape:
     shapeType: 1
     radius: 0
@@ -27,3 +27,4 @@ MonoBehaviour:
     width: 0
     length: 0
   color: {r: 0.78431374, g: 0.07843138, b: 0.2352941, a: 0.39215687}
+  castCount: 1

@@ -18,7 +18,7 @@ MonoBehaviour:
   starLevel: 1
   upgradeUnit: {fileID: 0}
   maxHp: 1000
-  maxMp: 10
+  maxMp: 100
   att: 60
   def: 40
   attRange: 1
@@ -32,6 +32,6 @@ MonoBehaviour:
   skillTrailPrefab: {fileID: 0}
   poolSize: 6
   skillPoolSize: 0
-  skill: {fileID: 11400000, guid: 45254fa157447914da9ab02adb1e84dc, type: 2}
+  skill: {fileID: 11400000, guid: 4673b9d8eac732a4cb2560c700c873cd, type: 2}
   mpGainOnAttack: 10
   mpGainOnHit: 2

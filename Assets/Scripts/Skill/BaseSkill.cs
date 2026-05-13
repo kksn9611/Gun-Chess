@@ -16,13 +16,18 @@ public abstract class BaseSkill : ScriptableObject
     [Tooltip("Skill description")]
     [TextArea(2, 4)]
     public string description = "";
-
-    [Tooltip("Cast time")]
+    
+    [Tooltip("Cast time (if not useAnimationEvent)")]
     public float castTime = 1f;
     public float animationSpd = 1f;
 
+    [Tooltip("Wait for Animation Event instead of castTime delay")]
+    public bool useAnimationEvent = false;
+
     [Tooltip("Whether this skill can critically hit")]
     public bool canCrit = true;
+
+
 
     /// <summary>
     /// Execute the skill. Returns true if the skill fired, false if canceled.

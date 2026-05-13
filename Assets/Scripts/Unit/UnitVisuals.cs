@@ -57,7 +57,6 @@ public class UnitVisuals : MonoBehaviour
         if (skillTrailPrefab != null && data.skillPoolSize > 0)
             TrailPoolManager.Instance.Prewarm(skillTrailPrefab, data.skillPoolSize);
     }
-
     private void OnDestroy()
     {
         cts?.Cancel();
@@ -95,6 +94,12 @@ public class UnitVisuals : MonoBehaviour
     public void OnSkillEvent()
     {
         skillSignal?.TrySetResult();
+    }
+
+    public UniTask WaitForSkillEvent(CancellationToken ct)
+    {
+        skillSignal = new UniTaskCompletionSource();
+        return skillSignal.Task.AttachExternalCancellation(ct);
     }
 
 
@@ -138,7 +143,6 @@ public class UnitVisuals : MonoBehaviour
 
         BurstAsync(target,shotDelay,onLastHit).Forget();
     }
-
     private async UniTaskVoid BurstAsync(UnitController target, float shotDelay, Action onLastHit)
     {
         // Wait for animation event or shotDelay
