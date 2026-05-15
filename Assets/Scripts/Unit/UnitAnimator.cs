@@ -25,7 +25,6 @@ public class UnitAnimator : MonoBehaviour
         stats.OnAttSpdChanged += OnAttSpdChanged;
         cts = new CancellationTokenSource();
     }
-
     private void OnStateChanged(UnitState state)
     {
         animator.SetInteger("State", (int)state);
@@ -54,6 +53,10 @@ public class UnitAnimator : MonoBehaviour
     public void PlaySkill()
     {
         animator.SetTrigger("Skill");
+    }
+    public void PlayStunAnimation()
+    {
+        animator.CrossFade("Stun",0.1f);
     }
     public void SlowAnimation(float time)
     {

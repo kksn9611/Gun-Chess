@@ -14,6 +14,7 @@ using UnityEngine;
 [RequireComponent(typeof(UnitAnimator))]
 [RequireComponent(typeof(UnitMovement))]
 [RequireComponent(typeof(UnitVisuals))]
+[RequireComponent(typeof(UnitCCHandler))]
 public class UnitController : MonoBehaviour
 {
     // Placement //
@@ -23,8 +24,6 @@ public class UnitController : MonoBehaviour
     [SerializeField] private BenchTileScript currentBenchTile; // Bench tile; null = on field
     [SerializeField] private Vector2Int currentCoord; // Current tile coordinate
     [SerializeField] private Team currentTeam;
-    private UnitVisuals unitVisuals;
-
     private CancellationTokenSource cts;
 
     // Component Cache //
@@ -34,6 +33,7 @@ public class UnitController : MonoBehaviour
     public UnitAnimator Animator { get; private set; }
     public UnitMovement Movement { get; private set; }
     public UnitVisuals Visuals { get; private set; }
+    public UnitCCHandler CCHandler { get; private set; }
     // Events //
 
     public Transform uiAnchor;
@@ -65,6 +65,7 @@ public class UnitController : MonoBehaviour
         Animator = GetComponent<UnitAnimator>();
         Movement = GetComponent<UnitMovement>();
         Visuals = GetComponent<UnitVisuals>();
+        CCHandler = GetComponent<UnitCCHandler>();
         cts = new CancellationTokenSource();
     }
 
@@ -217,10 +218,17 @@ public class UnitController : MonoBehaviour
         }
     }
 
-    /// <summary>Coroutine wrapper for UnitAI compatibility.</summary>
-    public IEnumerator CastSkillCoroutine()
+    // Stun, CC //
+    public void OnStunApplied()
     {
-        return CastSkillAsync().ToCoroutine();
+        AI.EnterStunnedState();
+        Animator.PlayStunAnimation();
+        // Visual. stun effect
+    }
+    public void OnStunEnded()
+    {
+        AI.EnterIdleState();
+        // Visual. stun effect off
     }
 
     // Damage / Death //

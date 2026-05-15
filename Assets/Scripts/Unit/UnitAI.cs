@@ -48,7 +48,7 @@ public class UnitAI : MonoBehaviour
     /// <summary> start battle with random dealy./// </summary>
     private async UniTaskVoid StartBattleWithStaggerAsync(CancellationToken ct)
     {
-        int randomDelay = UnityEngine.Random.Range(0, 200);
+        int randomDelay = UnityEngine.Random.Range(0, 300);
         await UniTask.Delay(randomDelay, cancellationToken: ct);
         EnterIdleState();
     }
@@ -151,6 +151,13 @@ public class UnitAI : MonoBehaviour
         currentState  = UnitState.Dead;
         OnStateChanged?.Invoke(CurrentState);
     }
+
+    public void EnterStunnedState()
+    {
+        CancelAI();
+        currentState = UnitState.Stunned;
+        OnStateChanged?.Invoke(currentState);
+    }
     /// <summary>
     /// Reset AI state on round transition.
     /// Called by UnitController.ResetForNewRound().
@@ -194,7 +201,6 @@ public class UnitAI : MonoBehaviour
                     closestTarget = target;
             }
         }
-
         return closestTarget;
     }
 
