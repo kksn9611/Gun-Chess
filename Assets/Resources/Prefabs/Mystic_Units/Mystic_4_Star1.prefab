@@ -431,6 +431,9 @@ PrefabInstance:
       addedObject: {fileID: 9110860316056318244}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 4154024785044063494}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 8575436782274990311}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5bbe245ba7cb41b44bebf25d25d71222, type: 3}
       insertIndex: -1
@@ -564,9 +567,25 @@ MonoBehaviour:
   burstCount: 3
   shotInterval: 0.05
   shotDelay: 0
+  burstAtOnce: 0
+  spreadRadius: 0.3
+  useAnimationEvent: 0
   audioSource: {fileID: 8575436782274990311}
-  fireSound: {fileID: 8300000, guid: 9cc9e1ccc445b25498d96055418acb29, type: 3}
   skillSound: {fileID: 8300000, guid: 220dd996444144145ade39c578355dd4, type: 3}
+--- !u!114 &4154024785044063494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104458227381271381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8be5acb86f194ec6b1bb335a652e529, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnitCCHandler
+  stunTransform: {fileID: 1847790205947476843}
+  stunVfxPrefab: {fileID: 924472698605216444, guid: de83d43f16119144ead45422bab6d636, type: 3}
 --- !u!82 &8575436782274990311
 AudioSource:
   m_ObjectHideFlags: 0

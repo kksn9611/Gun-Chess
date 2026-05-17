@@ -14,6 +14,9 @@ public class AoESkill : BaseSkill
     [Header("Skill Settings")]
     [Tooltip("Damage multiplier relative to ATK")]
     public float damageMultiplier = 3f;
+    [Tooltip("Stun Enable")]
+    public bool isStun = false;
+    public float stunDuration;
 
     [Tooltip("Area shape definition")]
     public AreaShapeData areaShape;
@@ -37,10 +40,11 @@ public class AoESkill : BaseSkill
 
             // Refresh pivot each cast (tracks target movement)
             UnitController primaryTarget = caster.AI.FindClosestTarget();
-            caster.Movement.LookAtTargetSkill(primaryTarget.transform, ct).Forget();
-
+            
             // target check
             if (primaryTarget == null) break;
+            caster.Movement.LookAtTargetSkill(primaryTarget.transform, ct).Forget();
+
 
             Vector3 pivot = (primaryTarget != null && primaryTarget.Stats.CurrentHp > 0)
                 ? primaryTarget.Visuals.HitBox.position
@@ -56,6 +60,7 @@ public class AoESkill : BaseSkill
                 float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
                 if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
                 target.TakeDamage(damage);
+                if (isStun) target.CCHandler.ApplyStun(stunDuration);
             }
             // Multi Cast Logic
             if (i + 1 == castCount) break;

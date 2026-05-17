@@ -100,7 +100,6 @@ public class UnitController : MonoBehaviour
         }
 
         OnUnitSpawned?.Invoke(this);
-        Debug.Log($"{data.unitName} @ {currentCoord} ({currentTeam})");
 
         if (!IsOnBench && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle)
         {
@@ -222,13 +221,10 @@ public class UnitController : MonoBehaviour
     public void OnStunApplied()
     {
         AI.EnterStunnedState();
-        Animator.PlayStunAnimation();
-        // Visual. stun effect
     }
     public void OnStunEnded()
     {
         AI.EnterIdleState();
-        // Visual. stun effect off
     }
 
     // Damage / Death //

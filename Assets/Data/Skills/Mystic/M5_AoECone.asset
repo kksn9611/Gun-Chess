@@ -19,6 +19,8 @@ MonoBehaviour:
   useAnimationEvent: 1
   canCrit: 1
   damageMultiplier: 3
+  isStun: 1
+  stunDuration: 2
   areaShape:
     shapeType: 1
     radius: 0

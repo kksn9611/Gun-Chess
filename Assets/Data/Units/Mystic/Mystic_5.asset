@@ -18,7 +18,7 @@ MonoBehaviour:
   starLevel: 1
   upgradeUnit: {fileID: 0}
   maxHp: 1000
-  maxMp: 100
+  maxMp: 10
   att: 60
   def: 40
   attRange: 1

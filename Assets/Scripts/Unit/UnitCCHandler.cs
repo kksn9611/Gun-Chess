@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 /// <summary>
 /// Unit CC Timer
 /// </summary>
@@ -7,11 +7,18 @@ public class UnitCCHandler : MonoBehaviour
 {
     // Stun, Taunt Control //
     public bool IsStunned {get; private set;}
+    public Transform stunTransform;
     public UnitController TauntSource { get; private set;}
     private UnitController unit;
-
+    [SerializeField] private GameObject stunVfxPrefab;
+    private GameObject stunVfxInstance;
     private float stunTimer;
     private float tauntTimer;
+
+    private void Awake()
+    {
+        unit = GetComponent<UnitController>();
+    }
 
 public void ApplyStun(float duration)
 {   
@@ -21,6 +28,7 @@ public void ApplyStun(float duration)
     if (!IsStunned)
     {
         IsStunned = true;
+        stunVfxInstance = Instantiate(stunVfxPrefab, stunTransform);
         unit.OnStunApplied();
     }
 }
@@ -38,6 +46,7 @@ public void ApplyStun(float duration)
             if(stunTimer <= 0f) 
             {
                 IsStunned = false;
+                Destroy(stunVfxInstance);
                 unit.OnStunEnded();
             }
         }
