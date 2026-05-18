@@ -18,6 +18,8 @@ public class UnitCCHandler : MonoBehaviour
     private void Awake()
     {
         unit = GetComponent<UnitController>();
+        stunVfxInstance = Instantiate(stunVfxPrefab, stunTransform);
+        stunVfxInstance.SetActive(false);
     }
 
 public void ApplyStun(float duration)
@@ -28,7 +30,8 @@ public void ApplyStun(float duration)
     if (!IsStunned)
     {
         IsStunned = true;
-        stunVfxInstance = Instantiate(stunVfxPrefab, stunTransform);
+        if (stunVfxInstance == null) stunVfxInstance = Instantiate(stunVfxPrefab, stunTransform);
+        stunVfxInstance.SetActive(true);
         unit.OnStunApplied();
     }
 }
@@ -46,7 +49,7 @@ public void ApplyStun(float duration)
             if(stunTimer <= 0f) 
             {
                 IsStunned = false;
-                Destroy(stunVfxInstance);
+                stunVfxInstance.SetActive(false);
                 unit.OnStunEnded();
             }
         }

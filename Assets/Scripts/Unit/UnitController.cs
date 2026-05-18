@@ -44,7 +44,7 @@ public class UnitController : MonoBehaviour
     /// <summary>Attack hit (attacker, target, damage)</summary>
     public event Action<UnitController, UnitController, float> OnAttackHit;
     /// <summary>Before taking damage</summary>
-    public event Action<float> OnBeforeTakeDamage;
+    public event Action<UnitController ,float> OnBeforeTakeDamage;
     /// <summary>Before skill cast</summary>
     public event Action OnBeforeSkillCast;
 
@@ -234,7 +234,7 @@ public class UnitController : MonoBehaviour
     {
         if (AI.CurrentState == UnitState.Dead) return;
 
-        OnBeforeTakeDamage?.Invoke(damage);
+        OnBeforeTakeDamage?.Invoke(this,damage);
 
         float actualDamage = damage * (1f - Stats.CurrentDef / 100f);
         Stats.SetHp(Stats.CurrentHp - actualDamage);
