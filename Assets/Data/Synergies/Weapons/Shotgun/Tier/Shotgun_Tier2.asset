@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackTriggerStun
   triggerOnAttack: 1
   triggerOnDamaged: 0
-  stunChance: 1
-  stunDuration: 3
+  stunChance: 0.15
+  stunDuration: 1

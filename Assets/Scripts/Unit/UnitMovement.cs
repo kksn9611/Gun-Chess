@@ -105,7 +105,7 @@ public class UnitMovement : MonoBehaviour
             Quaternion finalRotation = targetRotation * offsetRotation;
 
             currentRotationTween?.Kill();
-            currentRotationTween = transform.DORotateQuaternion(finalRotation, rotationDuration).SetEase(Ease.OutQuad);
+            currentRotationTween = transform.DORotateQuaternion(finalRotation, rotationDuration).SetEase(Ease.Linear);
             await currentRotationTween.ToUniTask(cancellationToken: ct);
         }
     }
@@ -124,7 +124,7 @@ public class UnitMovement : MonoBehaviour
 
             // Prevent animation collide
             currentRotationTween?.Kill();
-            currentRotationTween = transform.DORotateQuaternion(targetRotation, rotationDuration).SetEase(Ease.OutQuad);
+            currentRotationTween = transform.DORotateQuaternion(targetRotation, rotationDuration).SetEase(Ease.Linear);
 
             await currentRotationTween.ToUniTask(cancellationToken: ct);
         }

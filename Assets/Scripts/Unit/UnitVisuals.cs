@@ -17,18 +17,17 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private float bulletReachTime = 0.15f;
     [SerializeField] private int burstCount = 3;
     [SerializeField] private float shotInterval = 0.05f;
-    [Tooltip("if use the Animation Event, this is ignored")]
-    [SerializeField] private float shotDelay = 0.05f;
     [Tooltip("Fire all pellets simultaneously (shotgun)")]
     [SerializeField] private bool burstAtOnce = false;
     [Tooltip("Random spread radius around hitbox (burstAtOnce only)")]
     [SerializeField] private float spreadRadius = 0.3f;
-    [Tooltip("Wait for Animation Event (OnFireEvent) instead of shotDelay")]
-    [SerializeField] private bool useAnimationEvent = false;
 
     [Header("Sound Setting")]
     [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioSource skillAudioSource;
     [SerializeField] private AudioClip skillSound;
+    [Range(0f, 1f)]
+    [SerializeField] private float skillSoundVolume = 1f;
 
     // Trail prefabs from UnitData
     private TrailRenderer bulletTrailPrefab;
@@ -63,20 +62,19 @@ public class UnitVisuals : MonoBehaviour
         cts?.Dispose();
     }
 
+    public void PlaySkillSoundVolume(float volume)
+    {
+        skillAudioSource.volume = volume;
+        skillAudioSource.PlayOneShot(skillSound);
+    }
+
     public async UniTaskVoid PlaySkillSound(float delay)
     {
         if (delay > 0f)
         {
             await UniTask.WaitForSeconds(delay, cancellationToken: cts.Token);
         }
-        audioSource.PlayOneShot(skillSound);
-    }
-    public void PlaySkillSound()
-    {
-        if (audioSource != null && skillSound != null)
-        {
-            audioSource.PlayOneShot(skillSound);
-        }
+        audioSource.PlayOneShot(skillSound, skillSoundVolume);
     }
     public void PlaySound()
     {
@@ -141,20 +139,13 @@ public class UnitVisuals : MonoBehaviour
             return;
         }
 
-        BurstAsync(target,shotDelay,onLastHit).Forget();
+        BurstAsync(target, onLastHit).Forget();
     }
-    private async UniTaskVoid BurstAsync(UnitController target, float shotDelay, Action onLastHit)
+    private async UniTaskVoid BurstAsync(UnitController target, Action onLastHit)
     {
-        // Wait for animation event or shotDelay
-        if (useAnimationEvent)
-        {
-            fireSignal = new UniTaskCompletionSource();
-            await fireSignal.Task.AttachExternalCancellation(cts.Token);
-        }
-        else if (shotDelay > 0f)
-        {
-            await UniTask.WaitForSeconds(shotDelay, cancellationToken: cts.Token);
-        }
+        // Wait for Animation Event (OnFireEvent)
+        fireSignal = new UniTaskCompletionSource();
+        await fireSignal.Task.AttachExternalCancellation(cts.Token);
 
         if (target == null || target.Stats.CurrentHp <= 0) return;
 

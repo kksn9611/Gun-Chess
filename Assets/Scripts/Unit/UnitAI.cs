@@ -136,7 +136,10 @@ public class UnitAI : MonoBehaviour
     {
         if (currentTarget != null)
             unit.Movement.LookAtTargetSkill(currentTarget.transform, ct).Forget();
-        await unit.CastSkillAsync();
+        await unit.CastSkillAsync(ct);
+        if (ct.IsCancellationRequested) return;
+        unit.Movement.StopMovement();
+        await UniTask.WaitForSeconds(0.3f, cancellationToken: ct); // post-cast delay
         if (ct.IsCancellationRequested) return;
         EnterIdleState();
     }

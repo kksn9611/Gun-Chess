@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -22,12 +23,21 @@ public class AoESkill : BaseSkill
     public AreaShapeData areaShape;
     public Color color;
 
+    [Header("VFX")]
+    [Tooltip("Scale applied to castVfxPrefab to match indicator size")]
+    public Vector3 vfxScale = Vector3.one;
+
     [Header("Multi-Cast")]
     [Min(1)] public int castCount = 1;
-
+    [Tooltip("Lock the area from the first cast and reuse it for all subsequent casts")]
+    public bool lockArea = false;
 
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
+        Vector3 lockedPivot = Vector3.zero;
+        Vector3 lockedOrigin = Vector3.zero;
+        bool pivotLocked = false;
+
         for (int i = 0; i < castCount; i++)
         {
             // Each cast waits for animation event or timer
@@ -38,21 +48,62 @@ public class AoESkill : BaseSkill
 
             if (caster == null || caster.Stats.CurrentHp <= 0) return false;
 
-            // Refresh pivot each cast (tracks target movement)
-            UnitController primaryTarget = caster.AI.FindClosestTarget();
-            
-            // target check
-            if (primaryTarget == null) break;
-            caster.Movement.LookAtTargetSkill(primaryTarget.transform, ct).Forget();
+            Vector3 origin;
+            Vector3 pivot;
 
+            if (lockArea && pivotLocked)
+            {
+                // Reuse locked area
+                origin = lockedOrigin;
+                pivot = lockedPivot;
+            }
+            else
+            {
+                // Calculate fresh pivot
+                UnitController primaryTarget = caster.AI.FindClosestTarget();
+                if (primaryTarget == null) break;
+                caster.Movement.LookAtTargetSkill(primaryTarget.transform, ct).Forget();
 
-            Vector3 pivot = (primaryTarget != null && primaryTarget.Stats.CurrentHp > 0)
-                ? primaryTarget.Visuals.HitBox.position
-                : caster.Visuals.FirePoint.position;
+                origin = caster.Visuals.FirePoint.position;
+                pivot = (primaryTarget.Stats.CurrentHp > 0)
+                    ? primaryTarget.Visuals.HitBox.position
+                    : origin;
 
-            var indicator = SkillAreaRenderer.Create(areaShape, caster.Visuals.FirePoint.position, pivot, color);
-            indicator.ShowForDuration(0.3f).Forget();
+                if (lockArea)
+                {
+                    lockedOrigin = origin;
+                    lockedPivot = pivot;
+                    pivotLocked = true;
+                }
+            }
 
+            // skill area indicator code //
+            //var indicator = SkillAreaRenderer.Create(areaShape, origin, pivot, color);
+            //indicator.ShowForDuration(0.3f).Forget();
+
+            // Spawn VFX or indicator
+            if (castVfxPrefab != null)
+            {
+                Vector3 dir = new Vector3(pivot.x - origin.x, 0f, pivot.z - origin.z);
+                Quaternion vfxRot = dir.sqrMagnitude > 0.001f
+                    ? Quaternion.LookRotation(dir)
+                    : Quaternion.identity;
+
+                // Circle: spawn at target base, others: spawn at fire point
+                Vector3 vfxPos = (areaShape.shapeType == AreaShapeType.Circle)
+                    ? new Vector3(pivot.x, 0.1f, pivot.z)
+                    : caster.Visuals.FirePoint.transform.position;
+
+                GameObject vfx = Instantiate(castVfxPrefab, vfxPos, vfxRot);
+                vfx.transform.localScale = vfxScale;
+                Destroy(vfx, 2f);
+            }
+            else
+            {   
+                // skill area indicator code //
+                var indicator = SkillAreaRenderer.Create(areaShape, origin, pivot, color);
+                indicator.ShowForDuration(0.3f).Forget();
+            }
             // Collect and damage targets
             List<UnitController> targets = AreaTargetingUtility.GetTargetsInArea(areaShape, caster, pivot);
             foreach (UnitController target in targets)

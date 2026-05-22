@@ -27,7 +27,8 @@ public abstract class BaseSkill : ScriptableObject
     [Tooltip("Whether this skill can critically hit")]
     public bool canCrit = true;
 
-
+    [Tooltip("Skill Cast Effect")]
+    public GameObject castVfxPrefab;
 
     /// <summary>
     /// Execute the skill. Returns true if the skill fired, false if canceled.

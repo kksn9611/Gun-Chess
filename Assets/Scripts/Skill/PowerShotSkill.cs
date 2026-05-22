@@ -53,7 +53,7 @@ public class PowerShotSkill : BaseSkill
             // Spawn projectile
             TrailRenderer pooledTrail = caster.Visuals.GetSkillTrail();
             TrailRenderer skillPrefab = caster.Visuals.SkillTrailPrefab;
-            caster.Visuals.PlaySkillSound();
+            caster.Visuals.PlaySkillSound(0).Forget();
             caster.Visuals.SpawnProjectile(pooledTrail, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage), (t) => TrailPoolManager.Instance.Return(skillPrefab, t));
             Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} shot {i + 1}/{burstCount} ({damage} damage)");
 

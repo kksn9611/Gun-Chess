@@ -16,9 +16,11 @@ MonoBehaviour:
   description: 
   castTime: 1
   animationSpd: 1
+  useAnimationEvent: 1
   canCrit: 1
   damageMultiplier: 3
-  skillSoundDelay: 0
+  isStun: 0
+  stunDuration: 0
   areaShape:
     shapeType: 2
     radius: 0
@@ -26,4 +28,6 @@ MonoBehaviour:
     angle: 0
     width: 1
     length: 15
-  color: {r: 0.78431374, g: 0.078431375, b: 0.23529412, a: 0.39215687}
+  color: {r: 0.78431374, g: 0.11764706, b: 0.19607843, a: 0.39215687}
+  castCount: 1
+  lockArea: 0

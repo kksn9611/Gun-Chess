@@ -196,25 +196,18 @@ public class UnitController : MonoBehaviour
         });
     }
 
-    /// <summary>Skill cast. Called via yield return from UnitAI (bridged with ToCoroutine).</summary>
-    public async UniTask CastSkillAsync()
+    /// <summary>Skill cast. aiCt is cancelled on stun/death/state change.</summary>
+    public async UniTask CastSkillAsync(CancellationToken aiCt = default)
     {
         OnBeforeSkillCast?.Invoke();
+        Stats.SetMp(0f);
         Animator.SetSkillSpeed(Stats.Skill.animationSpd);
         Animator.PlaySkill();
         Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
 
-        bool fired = await Stats.Skill.Execute(this, cts.Token);
-
-        if (fired)
-        {
-            Stats.SetMp(0f);
-            Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} complete, MP reset");
-        }
-        else
-        {
-            Debug.Log($"[Skill] {Stats.UnitData.unitName} → {Stats.Skill.skillName} canceled, MP retained");
-        }
+        // Link both tokens: unit death (cts) and AI state change (aiCt)
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, aiCt);
+        await Stats.Skill.Execute(this, linked.Token);
     }
 
     // Stun, CC //
