@@ -72,4 +72,27 @@ public static class AreaTargetingUtility
         }
         return hits;
     }
+
+    /// <summary>
+    /// Collect all enemies within a circle at a world position. Team-based, no caster needed.
+    /// </summary>
+    public static List<UnitController> GetTargetsInCircle(Vector3 center, float radius, Team attackerTeam)
+    {
+        List<UnitController> hits = new List<UnitController>();
+        IReadOnlyList<UnitController> enemies = UnitManager.Instance.GetEnemiesOf(attackerTeam);
+        center.y = 0f;
+        float sqrRadius = radius * radius;
+
+        foreach (UnitController enemy in enemies)
+        {
+            if (enemy == null || enemy.AI.CurrentState == UnitState.Dead) continue;
+
+            Vector3 targetPos = enemy.Visuals.HitBox.position;
+            targetPos.y = 0f;
+
+            if ((targetPos - center).sqrMagnitude <= sqrRadius)
+                hits.Add(enemy);
+        }
+        return hits;
+    }
 }

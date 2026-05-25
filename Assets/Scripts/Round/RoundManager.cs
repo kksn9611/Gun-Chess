@@ -128,6 +128,10 @@ public class RoundManager : MonoBehaviour
         // Clear enemy units
         ClearEnemyUnits();
 
+        // Trim pools: remove unused VFX pools, shrink trail pools
+        TrailPoolManager.Instance.Trim();
+        VfxPoolManager.Instance.Trim();
+
         // Reset field tile occupancy (bench untouched)
         TileManager.Instance.ClearAllOccupied();
 

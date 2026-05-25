@@ -33,8 +33,8 @@ public class UnitData : ScriptableObject
     [Header("Trail / Pool")]
     [Tooltip("Trail prefab for normal attacks")]
     public TrailRenderer bulletTrailPrefab;
-    [Tooltip("Trail prefab for skill projectiles (null if skill has no projectile)")]
-    public TrailRenderer skillTrailPrefab;
+    [Tooltip("Projectile prefab for skill (null if skill has no projectile)")]
+    public GameObject skillProjectilePrefab;
     [Tooltip("Pre-warm count for bullet trail pool")]
     public int poolSize = 5;
     [Tooltip("Pre-warm count for skill trail pool")]

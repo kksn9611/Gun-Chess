@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
 /// Centralized trail object pool. Keyed by prefab reference.
-/// Pure C# singleton
+/// Pure C# singleton. Supports maxSize per prefab — Trim() removes excess.
 /// </summary>
 public class TrailPoolManager
 {
@@ -15,6 +15,7 @@ public class TrailPoolManager
     private const int ExpandSize = 2;
 
     private readonly Dictionary<TrailRenderer, Queue<TrailRenderer>> pools = new();
+    private readonly Dictionary<TrailRenderer, int> maxSizes = new();
     private Transform container;
 
     // Container //
@@ -32,13 +33,18 @@ public class TrailPoolManager
     }
 
     /// <summary>
-    /// Pre-warm the pool for a given prefab.
+    /// Pre-warm the pool for a given prefab and set its max size.
     /// </summary>
     public void Prewarm(TrailRenderer prefab, int count)
     {
         if (prefab == null) return;
 
         Queue<TrailRenderer> pool = GetPool(prefab);
+
+        // maxSize = 2x single prewarm count (never accumulates)
+        if (!maxSizes.ContainsKey(prefab))
+            maxSizes[prefab] = count * 2;
+
         for (int i = 0; i < count; i++)
         {
             TrailRenderer trail = Object.Instantiate(prefab, GetContainer());
@@ -60,6 +66,7 @@ public class TrailPoolManager
             Prewarm(prefab, ExpandSize);
 
         TrailRenderer trail = pool.Dequeue();
+        if (trail == null) return Get(prefab, spawnPosition); // retry if destroyed externally
         trail.transform.position = spawnPosition;
         trail.gameObject.SetActive(true);
         trail.Clear();
@@ -79,6 +86,25 @@ public class TrailPoolManager
     }
 
     /// <summary>
+    /// Trim all pools back to their maxSize. Call on round reset.
+    /// </summary>
+    public void Trim()
+    {
+        foreach (var kvp in pools)
+        {
+            int max = maxSizes.TryGetValue(kvp.Key, out int m) ? m : 0;
+            Queue<TrailRenderer> pool = kvp.Value;
+
+            while (pool.Count > max)
+            {
+                TrailRenderer trail = pool.Dequeue();
+                if (trail != null)
+                    Object.Destroy(trail.gameObject);
+            }
+        }
+    }
+
+    /// <summary>
     /// Clear all pools and destroy all pooled objects. Call on game reset.
     /// </summary>
     public void ClearAll()
@@ -93,6 +119,7 @@ public class TrailPoolManager
             }
         }
         pools.Clear();
+        maxSizes.Clear();
     }
 
     // Internal //

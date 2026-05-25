@@ -29,9 +29,9 @@ public class UnitVisuals : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float skillSoundVolume = 1f;
 
-    // Trail prefabs from UnitData
+    // Trail / VFX prefabs from UnitData
     private TrailRenderer bulletTrailPrefab;
-    private TrailRenderer skillTrailPrefab;
+    private GameObject skillProjectilePrefab;
 
     private CancellationTokenSource cts;
     private UniTaskCompletionSource fireSignal;
@@ -48,13 +48,13 @@ public class UnitVisuals : MonoBehaviour
     /// </summary>
     public void Initialize(UnitData data)
     {
-        bulletTrailPrefab = data.bulletTrailPrefab;
-        skillTrailPrefab  = data.skillTrailPrefab;
+        bulletTrailPrefab    = data.bulletTrailPrefab;
+        skillProjectilePrefab = data.skillProjectilePrefab;
 
         if (bulletTrailPrefab != null && data.poolSize > 0)
             TrailPoolManager.Instance.Prewarm(bulletTrailPrefab, data.poolSize);
-        if (skillTrailPrefab != null && data.skillPoolSize > 0)
-            TrailPoolManager.Instance.Prewarm(skillTrailPrefab, data.skillPoolSize);
+        if (skillProjectilePrefab != null && data.skillPoolSize > 0)
+            VfxPoolManager.Instance.Prewarm(skillProjectilePrefab, data.skillPoolSize);
     }
     private void OnDestroy()
     {
@@ -101,8 +101,8 @@ public class UnitVisuals : MonoBehaviour
     }
 
 
-    /// <summary>Skill trail prefab assigned from UnitData.</summary>
-    public TrailRenderer SkillTrailPrefab => skillTrailPrefab;
+    /// <summary>Skill projectile prefab assigned from UnitData.</summary>
+    public GameObject SkillProjectilePrefab => skillProjectilePrefab;
 
     /// <summary>
     /// Get a trail from the centralized pool, positioned at fire point.
@@ -113,21 +113,12 @@ public class UnitVisuals : MonoBehaviour
     }
 
     /// <summary>
-    /// Get a skill trail from the centralized pool, positioned at fire point.
+    /// Get a skill projectile from the pool, positioned at fire point.
     /// </summary>
-    public TrailRenderer GetSkillTrail()
+    public GameObject GetSkillProjectile()
     {
-        if (skillTrailPrefab == null) return null;
-        return TrailPoolManager.Instance.Get(skillTrailPrefab, firePoint.position);
-    }
-
-    /// <summary>
-    /// Return a skill trail to the centralized pool.
-    /// </summary>
-    public void ReturnSkillTrail(TrailRenderer trail)
-    {
-        if (skillTrailPrefab == null) return;
-        TrailPoolManager.Instance.Return(skillTrailPrefab, trail);
+        if (skillProjectilePrefab == null) return null;
+        return VfxPoolManager.Instance.Get(skillProjectilePrefab, firePoint.position, Quaternion.identity);
     }
 
     // Fire Effect //
@@ -194,6 +185,48 @@ public class UnitVisuals : MonoBehaviour
     {
         if (trail == null) return;
         SpawnTrailHomingAsync(trail, target, reachTime, onHit, returnToPool).Forget();
+    }
+
+    /// <summary>Spawn a pooled GameObject projectile that homes toward target.</summary>
+    public void SpawnProjectile(GameObject projectile, GameObject prefabKey, Transform target, float reachTime, Action onHit)
+    {
+        if (projectile == null) return;
+        SpawnProjectileHomingAsync(projectile, prefabKey, target, reachTime, onHit).Forget();
+    }
+
+    private async UniTaskVoid SpawnProjectileHomingAsync(GameObject projectile, GameObject prefabKey, Transform target, float reachTime, Action onHit)
+    {
+        try
+        {
+            if (reachTime <= 0f) reachTime = 0.01f;
+            Vector3 initialTarget = (target != null) ? target.position : projectile.transform.position;
+            float speed = Vector3.Distance(projectile.transform.position, initialTarget) / reachTime;
+            float elapsed = 0f;
+
+            while (elapsed < reachTime)
+            {
+                if (projectile == null) return;
+                Vector3 targetPos = (target != null) ? target.position : projectile.transform.position;
+                if (projectile.transform.position != targetPos)
+                {
+                    projectile.transform.LookAt(targetPos);
+                }
+                projectile.transform.position = Vector3.MoveTowards(projectile.transform.position, targetPos, speed * Time.deltaTime);
+                elapsed += Time.deltaTime;
+                await UniTask.Yield(cts.Token);
+            }
+
+            if (target != null && projectile != null)
+            {
+                projectile.transform.position = target.position;
+                onHit?.Invoke();
+            }
+        }
+        finally
+        {
+            if (projectile != null)
+                VfxPoolManager.Instance.Return(prefabKey, projectile);
+        }
     }
 
     private async UniTaskVoid SpawnTrailAsync(TrailRenderer trail, Vector3 hitPoint, float reachTime, Action onHit, Action<TrailRenderer> returnToPool)
