@@ -479,7 +479,7 @@ MonoBehaviour:
   spreadRadius: 0.3
   audioSource: {fileID: 8575436782274990311}
   skillAudioSource: {fileID: 0}
-  skillSound: {fileID: 8300000, guid: 220dd996444144145ade39c578355dd4, type: 3}
+  skillSound: {fileID: 8300000, guid: 69bb73a2a52ff1b4987d9295f27a46df, type: 3}
   skillSoundVolume: 1
 --- !u!114 &4154024785044063494
 MonoBehaviour:
@@ -506,10 +506,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -336291982042631647, guid: e79af82a4084c3648830bb8ae56f2b87, type: 2}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 9cc9e1ccc445b25498d96055418acb29, type: 3}
+  m_Resource: {fileID: 8300000, guid: 8b289245f1859d3469361f828b719f0a, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.08
-  m_Pitch: 0.85
+  m_Volume: 0.22
+  m_Pitch: 1
   Loop: 0
   Mute: 0
   Spatialize: 0

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Chaos_4
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Chaos_4
-  unitPrefab: {fileID: 8028335539950420324, guid: 8c3eada354ab7694d851c18c4486de2a, type: 3}
+  unitPrefab: {fileID: 4104458227381271381, guid: cd66ad6fff54d0f408e8f0ebcf2d8962, type: 3}
   cost: 4
   starLevel: 1
   upgradeUnit: {fileID: 0}
@@ -33,6 +33,6 @@ MonoBehaviour:
   skillProjectilePrefab: {fileID: 0}
   poolSize: 5
   skillPoolSize: 0
-  skill: {fileID: 11400000, guid: e088f8945798c6943935e07e3c53d132, type: 2}
+  skill: {fileID: 11400000, guid: 72a20c5239bb49249b37fb2f3562cc78, type: 2}
   mpGainOnAttack: 10
   mpGainOnHit: 2

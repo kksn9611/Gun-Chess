@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: C2_AoeCircle
   m_EditorClassIdentifier: Assembly-CSharp::AoESkill
   skillName: C2_AoeCircle
-  description: 
+  description: "\uC6D0\uD615 \uBC94\uC704\uC758 \uC801\uC5D0\uAC8C \uAD11\uC5ED \uB370\uBBF8\uC9C0\uB97C
+    \uC785\uD78C\uB2E4."
   castTime: 0
   animationSpd: 1.2
   useAnimationEvent: 1

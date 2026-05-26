@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2501f3682ea284bbdc504c4f5a6ba7, type: 3}
   m_Name: M2_HealSkill_2target
   m_EditorClassIdentifier: Assembly-CSharp::HealSkill
-  skillName: "\uD790"
-  description: "\uACF5\uACA9\uB825\uC758 500%\uB9CC\uD07C \uCCB4\uB825 \uBE44\uC728\uC774
-    \uB0AE\uC740 \uC544\uAD70 2\uBA85 \uD790"
+  skillName: "M2_\uBA40\uD2F0 \uD790"
+  description: "\uCCB4\uB825 \uBE44\uC728\uC774 \uB0AE\uC740 \uC544\uAD70 2\uBA85\uC744
+    \uD68C\uBCF5\uC2DC\uD0A8\uB2E4."
   castTime: 3
   animationSpd: 1.2
+  useAnimationEvent: 0
   canCrit: 0
+  castVfxPrefab: {fileID: 0}
   healMultiplier: 5
   skillSoundDelay: 1.5
   targetCount: 2

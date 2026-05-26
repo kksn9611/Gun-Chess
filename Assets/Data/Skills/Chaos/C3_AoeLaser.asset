@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: C3_AoeLaser
   m_EditorClassIdentifier: Assembly-CSharp::AoESkill
   skillName: C3_AoeLasor
-  description: 
+  description: "\uC801\uC744 \uAD00\uD1B5\uD558\uB294 \uCD1D\uC54C\uC744 \uBC1C\uC0AC\uD574,
+    \uB370\uBBF8\uC9C0\uB97C \uC900\uB2E4."
   castTime: 1
   animationSpd: 0.5
   useAnimationEvent: 1

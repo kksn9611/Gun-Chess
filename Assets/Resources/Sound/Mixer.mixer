@@ -1,47 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!244 &-5486314839424773256
-AudioMixerEffectController:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_EffectID: 5caa5a990c66ea446aed40afc12be070
-  m_EffectName: Compressor
-  m_MixLevel: b4f18465f17f1bf488d5ab34e32ed375
-  m_Parameters:
-  - m_ParameterName: Threshold
-    m_GUID: 1d1be8c54cdc7934ba197282d7a85299
-  - m_ParameterName: Attack
-    m_GUID: 05bd52118e9aac14b81d0ae006ec9f4d
-  - m_ParameterName: Release
-    m_GUID: 81c304df85da6f64cb259b338d17f459
-  - m_ParameterName: Make up gain
-    m_GUID: 572f306adcbc136469e5dece4088e3bf
-  m_SendTarget: {fileID: 0}
-  m_EnableWetMix: 0
-  m_Bypass: 0
---- !u!244 &-368959670403495453
-AudioMixerEffectController:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_EffectID: b713f2a487b4c2046aeada0a7e6b16d7
-  m_EffectName: ParamEQ
-  m_MixLevel: 060c081992d0e404689bef0396821d40
-  m_Parameters:
-  - m_ParameterName: Center freq
-    m_GUID: f49649fe2b9223841abb11fd11585bc1
-  - m_ParameterName: Octave range
-    m_GUID: 83ec6efdd508a8b4c855adaf72050c91
-  - m_ParameterName: Frequency gain
-    m_GUID: 2220286963b115f47b81c48e016fae47
-  m_SendTarget: {fileID: 0}
-  m_EnableWetMix: 0
-  m_Bypass: 0
 --- !u!243 &-336291982042631647
 AudioMixerGroupController:
   m_ObjectHideFlags: 0
@@ -57,8 +15,6 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 8330646490057081065}
-  - {fileID: -5486314839424773256}
-  - {fileID: -368959670403495453}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0
@@ -69,7 +25,7 @@ AudioMixerController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Test
+  m_Name: Mixer
   m_OutputGroup: {fileID: 0}
   m_MasterGroup: {fileID: 24300002}
   m_Snapshots:

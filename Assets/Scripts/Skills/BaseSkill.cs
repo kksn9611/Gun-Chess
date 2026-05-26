@@ -17,7 +17,7 @@ public abstract class BaseSkill : ScriptableObject
     [TextArea(2, 4)]
     public string description = "";
     
-    [Tooltip("Cast time (if not useAnimationEvent)")]
+    [Tooltip("Cast time (ignored if use AnimationEvent)")]
     public float castTime = 1f;
     public float animationSpd = 1f;
 

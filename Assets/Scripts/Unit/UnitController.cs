@@ -262,7 +262,7 @@ public class UnitController : MonoBehaviour
         UnitManager.Instance.CheckBattleEnd();
 
         Debug.Log($"{gameObject} died");
-        DestroyAfterDelay(2f).Forget();
+        DestroyAfterDelay(3f).Forget();
     }
 
     /// <summary>Full state reset on round transition.</summary>

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: M5_AoeCone
   m_EditorClassIdentifier: Assembly-CSharp::AoESkill
   skillName: "M5_\uBC94\uC704 \uD0C0\uACA9"
-  description: 
+  description: "\uC801\uC5D0\uAC8C \uBC94\uC704 \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uACE0,
+    2\uCD08\uAC04 \uAE30\uC808\uC2DC\uD0A8\uB2E4."
   castTime: 0
   animationSpd: 1.5
   useAnimationEvent: 1

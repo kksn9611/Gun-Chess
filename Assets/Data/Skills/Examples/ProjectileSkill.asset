@@ -20,4 +20,4 @@ MonoBehaviour:
   canCrit: 1
   castVfxPrefab: {fileID: 0}
   damageMultiplier: 4
-  projectileData: {fileID: 0}
+  projectileData: {fileID: 11400000, guid: 81682435c4a002b49b1d96a4fa304ef3, type: 2}

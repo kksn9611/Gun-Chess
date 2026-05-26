@@ -18,12 +18,14 @@ public class ProjectileData : ScriptableObject
     public float stunDuration;
 
     [Header("Explosion")]
-    [Tooltip("Stick to target and explode after delay")]
-    public bool explodeOnDelay;
+    [Tooltip("Enable explosion: sticks to target and explodes after delay")]
+    public bool useExplosion;
     public float explodeDelay = 2f;
     public float explodeRadius = 2f;
-    [Tooltip("Explosion damage multiplier relative to the projectile's damage")]
-    public float explodeDamageMultiplier = 1f;
     [Tooltip("Explosion VFX prefab (spawned at explosion point)")]
     public GameObject explodeVfxPrefab;
+
+    [Header("Sound")]
+    public AudioClip explodeSound;
+    [Range(0f, 1f)] public float explodeSoundVolume = 1f;
 }

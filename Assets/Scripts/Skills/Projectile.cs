@@ -1,6 +1,7 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Audio;
 
 /// <summary>
 /// Attach to projectile prefab. Receives runtime data on fire,
@@ -10,14 +11,16 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     private float damage;
+    private float explosionDamage;
     private Team team;
     private ProjectileData data;
     private Transform target;
 
     /// <summary>Initialize runtime data and fire toward target.</summary>
-    public void Fire(float damage, Team team, ProjectileData data, Transform target)
+    public void Fire(float damage, float explosionDamage, Team team, ProjectileData data, Transform target)
     {
         this.damage = damage;
+        this.explosionDamage = explosionDamage;
         this.team = team;
         this.data = data;
         this.target = target;
@@ -48,7 +51,7 @@ public class Projectile : MonoBehaviour
         {
             transform.position = target.position;
 
-            if (data.explodeOnDelay)
+            if (data.useExplosion)
             {
                 // Stick to target, then explode
                 transform.SetParent(target);
@@ -56,6 +59,7 @@ public class Projectile : MonoBehaviour
                 await UniTask.WaitForSeconds(data.explodeDelay);
                 Explode();
                 transform.SetParent(null);
+                await UniTask.WaitForSeconds(2f); // wait for VFX/sound to finish
             }
             else
             {
@@ -86,15 +90,45 @@ public class Projectile : MonoBehaviour
     {
         Vector3 center = transform.position;
 
-        // Spawn explosion VFX
+        // Spawn explosion VFX or indicator fallback
         if (data.explodeVfxPrefab != null)
         {
             GameObject vfx = Instantiate(data.explodeVfxPrefab, center, Quaternion.identity);
             Destroy(vfx, 3f);
         }
+        else
+        {
+            AreaShapeData circleShape = new AreaShapeData
+            {
+                shapeType = AreaShapeType.Circle,
+                radius = data.explodeRadius
+            };
+            var indicator = SkillAreaRenderer.Create(circleShape, center, center);
+            indicator.ShowForDuration(0.3f).Forget();
+        }
+
+        // Explosion Sound
+        if (data.explodeSound != null)
+        {
+            GameObject sfxObj = new GameObject("ExplosionSFX");
+            AudioSource src = sfxObj.AddComponent<AudioSource>();
+            src.clip = data.explodeSound;
+            src.volume = data.explodeSoundVolume;
+            src.spatialBlend = 0f;
+
+            AudioMixer mixer = Resources.Load<AudioMixer>("Sound/Mixer");
+            if (mixer != null)
+            {
+                AudioMixerGroup[] groups = mixer.FindMatchingGroups("SFX");
+                if (groups.Length > 0)
+                    src.outputAudioMixerGroup = groups[0];
+            }
+
+            src.Play();
+            Destroy(sfxObj, data.explodeSound.length + 0.1f);
+        }
 
         // AoE damage
-        float explosionDamage = damage * data.explodeDamageMultiplier;
         List<UnitController> targets = AreaTargetingUtility.GetTargetsInCircle(center, data.explodeRadius, team);
 
         foreach (UnitController hit in targets)
