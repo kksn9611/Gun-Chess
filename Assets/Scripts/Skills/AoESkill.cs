@@ -110,7 +110,7 @@ public class AoESkill : BaseSkill
             {
                 float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
                 if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
-                target.TakeDamage(damage);
+                target.TakeDamage(damage, caster);
                 if (isStun) target.CCHandler.ApplyStun(stunDuration);
             }
             // Multi Cast Logic

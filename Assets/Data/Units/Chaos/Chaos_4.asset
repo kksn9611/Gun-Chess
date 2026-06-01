@@ -19,7 +19,7 @@ MonoBehaviour:
   upgradeUnit: {fileID: 0}
   maxHp: 400
   maxMp: 50
-  att: 60
+  att: 50
   def: 20
   attRange: 4
   attSpd: 0.5
@@ -28,7 +28,7 @@ MonoBehaviour:
   critDamage: 1.5
   synergies:
   - {fileID: 11400000, guid: 89cdeefaef3e1d542a344761cdd424c4, type: 2}
-  - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
+  - {fileID: 11400000, guid: 7c9cce7b91f87de4485c207f9e3ad476, type: 2}
   bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
   skillProjectilePrefab: {fileID: 0}
   poolSize: 5

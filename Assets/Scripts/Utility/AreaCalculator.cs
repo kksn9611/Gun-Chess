@@ -95,4 +95,29 @@ public static class AreaTargetingUtility
         }
         return hits;
     }
+
+    /// <summary>
+    /// Collect all enemies within an area shape at a world position. Direction-based, no caster needed.
+    /// </summary>
+    public static List<UnitController> GetTargetsInArea(AreaShapeData shape, Vector3 origin, Vector3 forward, Team attackerTeam)
+    {
+        List<UnitController> hits = new List<UnitController>();
+        IReadOnlyList<UnitController> enemies = UnitManager.Instance.GetEnemiesOf(attackerTeam);
+
+        origin.y = 0f;
+        forward.y = 0f;
+        forward.Normalize();
+
+        foreach (UnitController enemy in enemies)
+        {
+            if (enemy == null || enemy.AI.CurrentState == UnitState.Dead) continue;
+
+            Vector3 targetPos = enemy.Visuals.HitBox.position;
+            targetPos.y = 0f;
+
+            if (IsTargetInShape(shape, origin, forward, targetPos, origin))
+                hits.Add(enemy);
+        }
+        return hits;
+    }
 }

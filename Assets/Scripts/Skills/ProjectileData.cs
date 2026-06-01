@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Static configuration for a skill projectile.
@@ -11,7 +11,7 @@ public class ProjectileData : ScriptableObject
     [Tooltip("Projectile prefab (must have Projectile component)")]
     public GameObject prefab;
     public float reachTime = 0.3f;
-    public int poolSize = 3;
+    public int poolSize = 1;
 
     [Header("Status Effect")]
     public bool applyStun;
@@ -21,7 +21,8 @@ public class ProjectileData : ScriptableObject
     [Tooltip("Enable explosion: sticks to target and explodes after delay")]
     public bool useExplosion;
     public float explodeDelay = 2f;
-    public float explodeRadius = 2f;
+    [Tooltip("Explosion area shape (Circle, Cone, Laser). Cone direction is reversed from projectile travel.")]
+    public AreaShapeData explodeArea;
     [Tooltip("Explosion VFX prefab (spawned at explosion point)")]
     public GameObject explodeVfxPrefab;
 

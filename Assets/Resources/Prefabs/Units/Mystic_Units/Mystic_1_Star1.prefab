@@ -488,6 +488,7 @@ MonoBehaviour:
   currentSkillDmgMul: 1
   currentCritChance: 0.25
   currentCritDamage: 1.5
+  currentLifesteal: 0
   synergyState: {fileID: 11400000, guid: 75ae85a31b8c5414ab5554eead6078b0, type: 2}
 --- !u!114 &7857666705715451503
 MonoBehaviour:

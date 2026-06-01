@@ -12,5 +12,6 @@ public enum StatType
     MpGain,     // MP gain (%)
     SkillDmg,   // Skill damage multiplier (%)
     CritChance, // Critical hit chance (%)
-    CritDamage  // Critical hit damage multiplier (%)
+    CritDamage, // Critical hit damage multiplier (%)
+    Lifesteal   // Lifesteal (% of damage dealt healed)
 }

@@ -41,6 +41,8 @@ public class UnitController : MonoBehaviour
 
     /// <summary>Bench ↔ field transition (true = bench)</summary>
     public event Action<bool> OnBenchState;
+    /// <summary>Before attack damage is computed (attacker, target)</summary>
+    public event Action<UnitController, UnitController> OnBeforeAttack;
     /// <summary>Attack hit (attacker, target, damage)</summary>
     public event Action<UnitController, UnitController, float> OnAttackHit;
     /// <summary>Before taking damage</summary>
@@ -179,6 +181,7 @@ public class UnitController : MonoBehaviour
     public void PerformAttack(UnitController target)
     {
         if (target == null || target.Stats.CurrentHp <= 0) return;
+        OnBeforeAttack?.Invoke(this, target);
         Animator.PlayAttack();
         float att = Stats.ApplyCrit(Stats.CurrentAtt, out bool isCrit);
 
@@ -186,7 +189,7 @@ public class UnitController : MonoBehaviour
         Visuals.FireWeaponEffect(target, () => {
             if (target != null && target.Stats.CurrentHp > 0)
             {
-                target.TakeDamage(att);
+                target.TakeDamage(att, this);
                 if (Stats.CurrentHp > 0)
                 {
                     OnAttackHit?.Invoke(this, target, att);
@@ -225,13 +228,26 @@ public class UnitController : MonoBehaviour
     /// <summary>Calculate damage with defense → reduce HP → check death.</summary>
     public void TakeDamage(float damage)
     {
+        TakeDamage(damage, null);
+    }
+
+    /// <summary>Calculate damage with defense → reduce HP → apply lifesteal → check death.</summary>
+    public void TakeDamage(float damage, UnitController source)
+    {
         if (AI.CurrentState == UnitState.Dead) return;
 
-        OnBeforeTakeDamage?.Invoke(this,damage);
+        OnBeforeTakeDamage?.Invoke(this, damage);
 
         float actualDamage = damage * (1f - Stats.CurrentDef / 100f);
         Stats.SetHp(Stats.CurrentHp - actualDamage);
         Stats.GainMp(Stats.MpGainOnHit);
+
+        // Lifesteal: heal source based on actual damage dealt
+        if (source != null && source.Stats.CurrentLifesteal > 0f && source.Stats.CurrentHp > 0f)
+        {
+            float healAmount = actualDamage * source.Stats.CurrentLifesteal;
+            source.Stats.SetHp(source.Stats.CurrentHp + healAmount);
+        }
 
         if (Stats.CurrentHp <= 0f)
             Die();

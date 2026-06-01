@@ -15,4 +15,4 @@ MonoBehaviour:
   triggerOnAttack: 1
   triggerOnDamaged: 0
   stunChance: 0.2
-  stunDuration: 1
+  stunDuration: 2

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: "\uAD8C\uCD1D"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uAD8C\uCD1D"
-  description: "\uAD8C\uCD1D \uC720\uB2DB. \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0
-    \uD655\uB960\uC744 \uC62C\uB824\uC900\uB2E4.\n\uAD8C\uCD1D \uC720\uB2DB\uC740
-    2\uBC30 \uC801\uC6A9."
+  description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960\uC744
+    \uC62C\uB824\uC90D\uB2C8\uB2E4.\n\uAD8C\uCD1D \uC720\uB2DB\uC740 2\uBC30\uB85C
+    \uC801\uC6A9."
   tiers:
-  - requiredCount: 2
+  - requiredCount: 1
     behaviors:
     - {fileID: 11400000, guid: c49b99d6420b9274dadbf5eaee15a01a, type: 2}
     - {fileID: 11400000, guid: 7b7a0f227c96eda4581197f93ecc4c18, type: 2}

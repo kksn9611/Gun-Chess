@@ -18,6 +18,8 @@ public class UnitAI : MonoBehaviour
     [Header("AI State")]
     [SerializeField] private UnitState currentState = UnitState.Idle; // Unit state
     [SerializeField] private UnitController currentTarget; // Current target enemy
+    private int targetRangeOnAttack;
+    public int TargetRangeOnAttack => targetRangeOnAttack;
 
     public event Action<UnitState> OnStateChanged; // State change event
     /// <summary>Current AI state</summary>

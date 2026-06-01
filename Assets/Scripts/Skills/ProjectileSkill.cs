@@ -41,7 +41,7 @@ public class ProjectileSkill : BaseSkill
         Vector3 spawnPos = caster.Visuals.FirePoint.position;
         GameObject go = VfxPoolManager.Instance.Get(projectileData.prefab, spawnPos, Quaternion.identity);
         Projectile projectile = go.GetComponent<Projectile>();
-        projectile.Fire(hitDamage, explodeDamage, caster.CurrentTeam, projectileData, target.Visuals.HitBox);
+        projectile.Fire(hitDamage, explodeDamage, caster.CurrentTeam, projectileData, target.Visuals.HitBox, caster);
 
         return true;
     }

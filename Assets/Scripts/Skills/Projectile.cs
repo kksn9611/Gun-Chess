@@ -15,15 +15,18 @@ public class Projectile : MonoBehaviour
     private Team team;
     private ProjectileData data;
     private Transform target;
+    private UnitController source; // damage source for lifesteal
+    private Vector3 travelDirection; // projectile's incoming direction
 
     /// <summary>Initialize runtime data and fire toward target.</summary>
-    public void Fire(float damage, float explosionDamage, Team team, ProjectileData data, Transform target)
+    public void Fire(float damage, float explosionDamage, Team team, ProjectileData data, Transform target, UnitController source = null)
     {
         this.damage = damage;
         this.explosionDamage = explosionDamage;
         this.team = team;
         this.data = data;
         this.target = target;
+        this.source = source;
         HomingAsync().Forget();
     }
 
@@ -32,8 +35,9 @@ public class Projectile : MonoBehaviour
         float reachTime = data.reachTime;
         if (reachTime <= 0f) reachTime = 0.01f;
 
-        Vector3 initialTarget = (target != null) ? target.position : transform.position;
-        float speed = Vector3.Distance(transform.position, initialTarget) / reachTime;
+        Vector3 spawnPos = transform.position;
+        Vector3 initialTarget = (target != null) ? target.position : spawnPos;
+        float speed = Vector3.Distance(spawnPos, initialTarget) / reachTime;
         float elapsed = 0f;
 
         while (elapsed < reachTime)
@@ -50,6 +54,9 @@ public class Projectile : MonoBehaviour
         if (target != null)
         {
             transform.position = target.position;
+            Vector3 dir = target.position - spawnPos;
+            dir.y = 0f;
+            travelDirection = dir.sqrMagnitude > 0.001f ? dir.normalized : transform.forward;
 
             if (data.useExplosion)
             {
@@ -78,7 +85,7 @@ public class Projectile : MonoBehaviour
         if (unit == null || unit.Stats.CurrentHp <= 0) return;
 
         if (damage > 0f)
-            unit.TakeDamage(damage);
+            unit.TakeDamage(damage, source);
 
         if (data.applyStun)
             unit.CCHandler.ApplyStun(data.stunDuration);
@@ -89,25 +96,24 @@ public class Projectile : MonoBehaviour
     private void Explode()
     {
         Vector3 center = transform.position;
+        Vector3 explodeDir = travelDirection; // spreads backwards
 
         // Spawn explosion VFX or indicator fallback
         if (data.explodeVfxPrefab != null)
         {
-            GameObject vfx = Instantiate(data.explodeVfxPrefab, center, Quaternion.identity);
+            Quaternion vfxRot = (explodeDir.sqrMagnitude > 0.001f)
+                ? Quaternion.LookRotation(explodeDir)
+                : Quaternion.identity;
+            GameObject vfx = Instantiate(data.explodeVfxPrefab, center, vfxRot);
             Destroy(vfx, 3f);
         }
         else
         {
-            AreaShapeData circleShape = new AreaShapeData
-            {
-                shapeType = AreaShapeType.Circle,
-                radius = data.explodeRadius
-            };
-            var indicator = SkillAreaRenderer.Create(circleShape, center, center);
+            var indicator = SkillAreaRenderer.Create(data.explodeArea, center, center + explodeDir);
             indicator.ShowForDuration(0.3f).Forget();
         }
 
-        // Explosion Sound
+        // Sound (2D — no distance falloff, routed to SFX mixer group)
         if (data.explodeSound != null)
         {
             GameObject sfxObj = new GameObject("ExplosionSFX");
@@ -128,12 +134,13 @@ public class Projectile : MonoBehaviour
             Destroy(sfxObj, data.explodeSound.length + 0.1f);
         }
 
-        // AoE damage
-        List<UnitController> targets = AreaTargetingUtility.GetTargetsInCircle(center, data.explodeRadius, team);
+        // AoE damage (direction-based for Cone/Laser, position-based for Circle)
+        List<UnitController> targets = AreaTargetingUtility.GetTargetsInArea(
+            data.explodeArea, center, explodeDir, team);
 
         foreach (UnitController hit in targets)
         {
-            hit.TakeDamage(explosionDamage);
+            hit.TakeDamage(explosionDamage, source);
 
             if (data.applyStun)
                 hit.CCHandler.ApplyStun(data.stunDuration);

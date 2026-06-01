@@ -33,6 +33,7 @@ public class UnitStats : MonoBehaviour
     [SerializeField] private float currentSkillDmgMul = 1f; // Skill damage multiplier
     [SerializeField] private float currentCritChance = 0.25f; // Critical hit chance
     [SerializeField] private float currentCritDamage = 1.5f;  // Critical hit damage multiplier
+    [SerializeField] private float currentLifesteal = 0f;     // Lifesteal ratio (0~1, -> 0% ~ 100%)
 
     // Synergy //
 
@@ -68,6 +69,7 @@ public class UnitStats : MonoBehaviour
     public float    SkillDamageMultiplier => currentSkillDmgMul;
     public float    CurrentCritChance => currentCritChance;
     public float    CurrentCritDamage => currentCritDamage;
+    public float    CurrentLifesteal  => currentLifesteal;
 
     // Initialization //
 
@@ -93,6 +95,7 @@ public class UnitStats : MonoBehaviour
         currentSkillDmgMul = 1f;
         currentCritChance = data.critChance;
         currentCritDamage = data.critDamage;
+        currentLifesteal = 0f;
 
         SetAttSpd(data.attSpd);
         SetHp(data.maxHp);
@@ -115,6 +118,7 @@ public class UnitStats : MonoBehaviour
         currentSkillDmgMul = 1f;
         currentCritChance = unitData.critChance;
         currentCritDamage = unitData.critDamage;
+        currentLifesteal = 0f;
 
         SetAttSpd(unitData.attSpd);
         SetHp(unitData.maxHp);
@@ -283,6 +287,9 @@ public class UnitStats : MonoBehaviour
                 break;
             case StatType.CritDamage:
                 currentCritDamage += unitData.critDamage * (percentDelta / 100f);
+                break;
+            case StatType.Lifesteal:
+                currentLifesteal += percentDelta / 100f;
                 break;
         }
     }
