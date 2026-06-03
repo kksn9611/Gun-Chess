@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mystic_3
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Mystic_3
-  unitPrefab: {fileID: 7339558638033791742, guid: 640a8bf492c04ff439cb7341c91f1477, type: 3}
+  unitPrefab: {fileID: 7339558638033791742, guid: 48bc0aa6bfbf7934eb0c1c5566d01f49, type: 3}
   cost: 3
   starLevel: 1
   upgradeUnit: {fileID: 0}

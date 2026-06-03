@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Mystic_5
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Mystic_5
-  unitPrefab: {fileID: 2736525619550198037, guid: 6a93afd82a7e62247a40ae8a3afa7281, type: 3}
+  unitPrefab: {fileID: 2736525619550198037, guid: 9d8679d86dbd58641a48da71679c6095, type: 3}
   cost: 5
   starLevel: 1
   upgradeUnit: {fileID: 0}
@@ -30,7 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}
   - {fileID: 11400000, guid: dd7a30ba372dd4637abf3bae113a9076, type: 2}
   bulletTrailPrefab: {fileID: 4233633851725753956, guid: 109862a0e7e5fd745bbec2168e085363, type: 3}
-  skillTrailPrefab: {fileID: 0}
+  skillProjectilePrefab: {fileID: 0}
   poolSize: 6
   skillPoolSize: 0
   skill: {fileID: 11400000, guid: 4673b9d8eac732a4cb2560c700c873cd, type: 2}
