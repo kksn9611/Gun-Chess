@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c7e62fb57919e41b4c91904855246d, type: 3}
+  m_Name: UnitPoolDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::UnitPoolDatabase
+  baseUnits:
+  - {fileID: 11400000, guid: 1960dde0ac3a1a149862eb28e71becd0, type: 2}
+  - {fileID: 11400000, guid: de5bed719136a54478b918cdce376834, type: 2}
+  - {fileID: 11400000, guid: 468a33f45ed50f64880e35dba8bc646b, type: 2}
+  - {fileID: 11400000, guid: 1e4cccbd721d7fa49a6d3578cc94f6b6, type: 2}
+  - {fileID: 11400000, guid: 31027a546c881644cae731578cf9a9c0, type: 2}
+  - {fileID: 11400000, guid: 03adf36886a957e42acab429c143bead, type: 2}
+  - {fileID: 11400000, guid: 042e553ce84ae054c93e6bf5baa384b0, type: 2}
+  - {fileID: 11400000, guid: 1141cd08378a8074694c06c27ce3ce33, type: 2}
+  - {fileID: 11400000, guid: 45fbf96731472d947922be96d017f183, type: 2}
+  - {fileID: 11400000, guid: b64dbff238efa844590d6576586b4df4, type: 2}
+  - {fileID: 11400000, guid: 06371fcbeadd4af4e808cf030b53fc35, type: 2}
+  costTable:
+  - cost: 1
+    copies: 20
+  - cost: 2
+    copies: 18
+  - cost: 3
+    copies: 16
+  - cost: 4
+    copies: 12
+  - cost: 5
+    copies: 10

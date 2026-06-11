@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Chaos_E_5
+  m_Controller: {fileID: 9100000, guid: 3a5942e2bec825d4a9b387283477a84f, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: -203655887218126122, guid: 7f2d6f936d6c32f4b9322b911336d49b, type: 3}
+    m_OverrideClip: {fileID: 7400000, guid: 50a46df1fd709d648887ded2d52c6fc1, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 0afd944a148b18f48bff3263caf23039, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c5a88b78df0ce404f8510f20e1eeac1e, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ec75fd50a6dd16b41ba4f23600e304aa, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 2bf9d5a16b2e71c47951632c30bf720f, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 7768d8893c2b7c744aaef0addae463d0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 784335a8b8e13ff4e9ecf0e5aeeefbe2, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a4f05f41730592e43bcf8e89605d683a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 003d58602e70c584489fa28b924d8115, type: 2}

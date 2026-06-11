@@ -26,6 +26,6 @@ MonoBehaviour:
     angle: 60
     width: 0
     length: 0
-  explodeVfxPrefab: {fileID: 7991427297233864019, guid: 45be6ae55237c1e4f99e50848629426d, type: 3}
+  explodeVfxPrefab: {fileID: 7991427297233864019, guid: cdc50b216376acc4789a410d4e971443, type: 3}
   explodeSound: {fileID: 8300000, guid: 9fac843c9daea2c4b9c70269c4c1da88, type: 3}
   explodeSoundVolume: 0.25

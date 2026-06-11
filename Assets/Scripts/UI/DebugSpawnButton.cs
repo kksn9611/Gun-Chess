@@ -32,10 +32,21 @@ public class DebugSpawnButton : MonoBehaviour
             return;
         }
 
+        // Take a copy from the shared pool before spawning
+        if (!UnitPool.Instance.TryAcquire(unitData))
+        {
+            Debug.Log("[DebugSpawn] Pool empty");
+            return;
+        }
+
         UnitController unit = unitSpawner.SpawnUnit(unitData, slot, Team.Player, false);
         if (unit != null)
         {
             BenchManager.Instance.AddUnit(unit, slot);
+        }
+        else
+        {
+            UnitPool.Instance.Return(unitData); // refund on spawn failure
         }
     }
 

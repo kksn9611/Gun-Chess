@@ -165,10 +165,18 @@ public class RoundManager : MonoBehaviour
     {
         foreach (var spawn in playerSpawns)
         {
+            // Take a copy from the shared pool before placing
+            if (!UnitPool.Instance.TryAcquire(spawn.unitData))
+            {
+                Debug.LogWarning($"[RoundManager] Pool empty — failed to place {spawn.unitData.unitName}");
+                continue;
+            }
+
             BenchTileScript slot = BenchManager.Instance.GetEmptySlot();
             if (slot == null)
             {
                 Debug.LogWarning($"[RoundManager] No bench slot — failed to place {spawn.unitData.unitName}");
+                UnitPool.Instance.Return(spawn.unitData); // refund the unplaced copy
                 continue;
             }
 
