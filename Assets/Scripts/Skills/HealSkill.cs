@@ -21,20 +21,32 @@ public class HealSkill : BaseSkill
 
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
-        caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
-        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
-
-        List<UnitController> healTargets = FindLowestHpAllies(caster, targetCount);
-        if (healTargets.Count == 0) return false;
-
-        float healAmount = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
-
-        foreach (UnitController target in healTargets)
+        if (useRootMotion) caster.Animator.SetApplyRootMotion();
+        try
         {
-            target.Stats.SetHp(target.Stats.CurrentHp + healAmount);
-            Debug.Log($"[Heal] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} (+{healAmount} HP)");
+            if (useAnimationEvent)
+                await caster.Visuals.WaitForSkillEvent(ct);
+            else
+            {
+                caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
+                await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
+            }
+            List<UnitController> healTargets = FindLowestHpAllies(caster, targetCount);
+            if (healTargets.Count == 0) return false;
+
+            float healAmount = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
+
+            foreach (UnitController target in healTargets)
+            {
+                target.Stats.SetHp(target.Stats.CurrentHp + healAmount);
+                Debug.Log($"[Heal] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} (+{healAmount} HP)");
+            }
+            return true;
         }
-        return true;
+        finally
+        {
+            if (useRootMotion) caster.Animator.ResetApplyRootMotion();
+        }
     }
 
     // Target Search //

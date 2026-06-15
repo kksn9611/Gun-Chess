@@ -2752,7 +2752,7 @@ MonoBehaviour:
   spreadRadius: 0.3
   audioSource: {fileID: 2675574865446298987}
   skillAudioSource: {fileID: 0}
-  skillSound: {fileID: 8300000, guid: 904d4f9920a392444a17354a92340337, type: 3}
+  skillSound: {fileID: 8300000, guid: c133ee4e3aa86304fa993676b11e6c58, type: 3}
   skillSoundVolume: 1
 --- !u!114 &2183734794639486157
 MonoBehaviour:
@@ -2781,8 +2781,8 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: c06bb4524f6569a4c8eb007598ad2536, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.15
-  m_Pitch: 0.9
+  m_Volume: 0.2
+  m_Pitch: 0.8
   Loop: 0
   Mute: 0
   Spatialize: 0

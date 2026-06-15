@@ -20,7 +20,8 @@ MonoBehaviour:
   useAnimationEvent: 1
   canCrit: 1
   castVfxPrefab: {fileID: 934617562227915448, guid: d89c8e29742f2b647ab1e70ca67b6028, type: 3}
-  damageMultiplier: 0.4
+  useRootMotion: 0
+  damageMultiplier: 0.6
   isStun: 0
   stunDuration: 2
   areaShape:

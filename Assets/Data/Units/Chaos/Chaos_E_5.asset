@@ -17,8 +17,8 @@ MonoBehaviour:
   cost: 5
   starLevel: 1
   upgradeUnit: {fileID: 0}
-  maxHp: 500
-  maxMp: 50
+  maxHp: 600
+  maxMp: 55
   att: 40
   def: 20
   attRange: 4

@@ -40,6 +40,8 @@ public class ProbabilityTable : ScriptableObject
 #if UNITY_EDITOR
     private void OnValidate()
     {
+        // Return onn playing or executing game
+        if (UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode) return;
         if (probabilityByLevel == null) return;
 
         for (int i = 0; i < probabilityByLevel.Count; i++)
@@ -49,18 +51,22 @@ public class ProbabilityTable : ScriptableObject
             if (weights == null || weights.Length == 0) continue;
 
             int sum = 0;
-            foreach (int weight in weights)
+            bool hasNegative = false;
+
+            for (int j = 0; j < weights.Length; j++)
             {
-                sum += weight;
+                if (weights[j] < 0) hasNegative = true;
+                sum += weights[j];
             }
 
             // exception handle
-            if (sum != 100)
+            if (sum != 100 || hasNegative)
             {
                 int difference = 100 - sum;
                 weights[0] += difference;
             }
-            if (weights[0] < 0)
+
+            if (weights[0] < 0 || hasNegative)
             {
                 for (int j = 0; j < weights.Length; j++)
                 {

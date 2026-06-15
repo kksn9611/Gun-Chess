@@ -25,6 +25,7 @@ public class RoundManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private UnitSpawner unitSpawner;
+    [SerializeField] private SynergyManager synergyManager;
 
     private CancellationTokenSource cts;
 
@@ -137,6 +138,12 @@ public class RoundManager : MonoBehaviour
 
         // Restore player units to pre-battle positions
         RestorePlayerPositions();
+
+        // Gain interest gold each round
+        PlayerManager.Instance.GrantInterest();
+
+        // Gain Synergy gold each round
+        synergyManager.GrantRoundIncome();
 
         // Advance to next round
         currentRound++;

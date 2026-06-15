@@ -17,10 +17,10 @@ MonoBehaviour:
   cost: 5
   starLevel: 1
   upgradeUnit: {fileID: 0}
-  maxHp: 1000
+  maxHp: 1250
   maxMp: 100
-  att: 60
-  def: 40
+  att: 55
+  def: 30
   attRange: 1
   attSpd: 0.5
   moveSpd: 1.5

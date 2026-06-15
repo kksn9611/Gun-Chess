@@ -18,8 +18,8 @@ MonoBehaviour:
   starLevel: 1
   upgradeUnit: {fileID: 0}
   maxHp: 500
-  maxMp: 75
-  att: 40
+  maxMp: 55
+  att: 45
   def: 20
   attRange: 4
   attSpd: 0.5

@@ -2653,7 +2653,7 @@ MonoBehaviour:
   spreadRadius: 0.3
   audioSource: {fileID: 7701235304507000859}
   skillAudioSource: {fileID: 0}
-  skillSound: {fileID: 8300000, guid: 95e7639f61b869345aeec28aec3dfa85, type: 3}
+  skillSound: {fileID: 8300000, guid: 922371cc4c16b6b479256d73b02f717d, type: 3}
   skillSoundVolume: 1
 --- !u!114 &5399844851426423915
 MonoBehaviour:

@@ -20,6 +20,7 @@ MonoBehaviour:
   useAnimationEvent: 1
   canCrit: 1
   castVfxPrefab: {fileID: 0}
-  damageMultiplier: 2
+  useRootMotion: 0
+  damageMultiplier: 1
   explosionDamageMultiplier: 4
   projectileData: {fileID: 11400000, guid: 1b880a97ecd64074fba6b8fa7c7225f8, type: 2}

@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
 
@@ -39,7 +40,7 @@ public class UnitAnimator : MonoBehaviour
 
         animator.SetFloat("AttSpd", speedMultiplier);
     }
-    /// <summary>Set skill animation speed based on cast time.</summary>
+    /// <summary>Set skill animation speed.</summary>
     public void SetSkillSpeed(float castSpd)
     {
         if (castSpd <= 0f) castSpd = 0.01f;
@@ -74,6 +75,25 @@ public class UnitAnimator : MonoBehaviour
     {
         animator.speed = 1f;
     }
+
+    /// <summary>
+    /// Apply Root Motion On
+    /// </summary>
+    public void SetApplyRootMotion()
+    {
+        animator.applyRootMotion = true;
+    }
+    /// <summary>
+    /// Apply Root Motion Off (Delay)
+    /// </summary>
+    public async UniTask ResetApplyRootMotion(int time)
+    {
+        await UniTask.Delay(time);
+        animator.applyRootMotion = false;
+    }
+    /// <summary>
+    /// Apply Root Motion Off
+    /// </summary>
     public void ResetApplyRootMotion()
     {
         animator.applyRootMotion = false;

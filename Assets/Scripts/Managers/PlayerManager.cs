@@ -8,7 +8,7 @@ public class PlayerManager : MonoBehaviour
 {
     public static PlayerManager Instance { get; private set; }
 
-    // EXP required to advance from level N to N+1 (TFT-style curve)
+    // EXP required to advance from level N to N+1
     // Index = current level. Max level = expTable.Length + 1.
     private static readonly int[] expTable =
     {
@@ -26,6 +26,10 @@ public class PlayerManager : MonoBehaviour
     [Header("Starting Values")]
     [SerializeField] private int startingGold = 3;
     [SerializeField] private int startingLevel = 1;
+
+    [Header("Interest")]
+    [SerializeField] private int goldPerInterest = 10; // 1 interest per this much gold held
+    [SerializeField] private int interestCap = 50;     // gold above this earns no extra interest
 
     [Header("State (Read-Only)")]
     [SerializeField] private int gold;          // Current gold
@@ -88,6 +92,25 @@ public class PlayerManager : MonoBehaviour
         gold -= amount;
         OnGoldChanged?.Invoke(gold);
         return true;
+    }
+
+
+    // Interest //
+
+    /// <summary>Interest for the current gold: 1 per goldPerInterest held, counting up to interestCap.</summary>
+    public int CalculateInterest()
+    {
+        if (goldPerInterest <= 0) return 0;
+        int counted = Mathf.Min(gold, interestCap); // only gold up to the cap earns interest
+        return counted / goldPerInterest;
+    }
+
+    /// <summary>Grant interest based on current gold and return the amount granted.</summary>
+    public int GrantInterest()
+    {
+        int interest = CalculateInterest();
+        if (interest > 0) AddGold(interest);
+        return interest;
     }
 
 

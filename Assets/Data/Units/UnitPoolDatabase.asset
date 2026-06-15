@@ -13,16 +13,17 @@ MonoBehaviour:
   m_Name: UnitPoolDatabase
   m_EditorClassIdentifier: Assembly-CSharp::UnitPoolDatabase
   baseUnits:
-  - {fileID: 11400000, guid: 1960dde0ac3a1a149862eb28e71becd0, type: 2}
-  - {fileID: 11400000, guid: de5bed719136a54478b918cdce376834, type: 2}
-  - {fileID: 11400000, guid: 468a33f45ed50f64880e35dba8bc646b, type: 2}
-  - {fileID: 11400000, guid: 1e4cccbd721d7fa49a6d3578cc94f6b6, type: 2}
   - {fileID: 11400000, guid: 31027a546c881644cae731578cf9a9c0, type: 2}
   - {fileID: 11400000, guid: 03adf36886a957e42acab429c143bead, type: 2}
   - {fileID: 11400000, guid: 042e553ce84ae054c93e6bf5baa384b0, type: 2}
   - {fileID: 11400000, guid: 1141cd08378a8074694c06c27ce3ce33, type: 2}
   - {fileID: 11400000, guid: 45fbf96731472d947922be96d017f183, type: 2}
+  - {fileID: 11400000, guid: 1960dde0ac3a1a149862eb28e71becd0, type: 2}
+  - {fileID: 11400000, guid: de5bed719136a54478b918cdce376834, type: 2}
+  - {fileID: 11400000, guid: 468a33f45ed50f64880e35dba8bc646b, type: 2}
+  - {fileID: 11400000, guid: 1e4cccbd721d7fa49a6d3578cc94f6b6, type: 2}
   - {fileID: 11400000, guid: b64dbff238efa844590d6576586b4df4, type: 2}
+  - {fileID: 11400000, guid: 045ad5eff5c7d3649b035c8b3375eb50, type: 2}
   - {fileID: 11400000, guid: 06371fcbeadd4af4e808cf030b53fc35, type: 2}
   costTable:
   - cost: 1

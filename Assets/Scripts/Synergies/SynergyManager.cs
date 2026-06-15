@@ -110,4 +110,19 @@ public class SynergyManager : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Round Income Synergy (called by RoundManager)
+    /// </summary>
+    public void GrantRoundIncome()
+    {
+        if (synergyState == null) return;
+        foreach (var entry in synergyState.Entries)
+        {
+            if (entry.activeTierIndex < 0 || entry.synergy == null) continue;
+            var behaviors = entry.synergy.tiers[entry.activeTierIndex].behaviors;
+            if (behaviors == null) continue;
+            foreach (var b in behaviors)
+                if (b is GoldPerRoundBehavior gold) gold.GrantIncome();
+        }
+    }
 }

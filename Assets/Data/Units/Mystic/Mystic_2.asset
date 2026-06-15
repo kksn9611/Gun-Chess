@@ -17,7 +17,7 @@ MonoBehaviour:
   cost: 2
   starLevel: 1
   upgradeUnit: {fileID: 0}
-  maxHp: 600
+  maxHp: 650
   maxMp: 100
   att: 25
   def: 20
@@ -30,7 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 322c3eb826298d941b48c6caa5b6b989, type: 2}
   - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
   bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
-  skillTrailPrefab: {fileID: 0}
+  skillProjectilePrefab: {fileID: 0}
   poolSize: 5
   skillPoolSize: 0
   skill: {fileID: 11400000, guid: 6a75c30fcaac6ce43a93c7e99c3b343d, type: 2}

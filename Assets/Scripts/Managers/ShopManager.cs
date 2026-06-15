@@ -26,6 +26,12 @@ public class ShopManager : MonoBehaviour
 
     public bool IsLocked => isLocked;
     public int FreeRerolls => freeRerolls;
+    public int RerollCost => rerollCost;
+    public int SlotCount => currnetShop.Length;
+
+    /// <summary>Unit shown in a slot, or null if empty / out of range.</summary>
+    public UnitData GetSlotUnit(int index)
+        => (index >= 0 && index < currnetShop.Length) ? currnetShop[index].currnetUnit : null;
 
 
     // Events //

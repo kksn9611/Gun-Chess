@@ -30,6 +30,9 @@ public abstract class BaseSkill : ScriptableObject
     [Tooltip("Skill Cast Effect")]
     public GameObject castVfxPrefab;
 
+    [Tooltip("Apply Root motion?")]
+    public bool useRootMotion = false;
+
     /// <summary>
     /// Execute the skill. Returns true if the skill fired, false if canceled.
     /// </summary>
