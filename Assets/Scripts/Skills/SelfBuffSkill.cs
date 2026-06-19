@@ -17,18 +17,19 @@ public class SelfBuffSkill : BaseSkill
 
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
-        // skill speed calculate
-        float skillSpeed = caster.Animator.SkillAnimLength / castTime;
-        // set Skill speed;
-        caster.Animator.SetSkillSpeed(skillSpeed);
-        caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
-        // Wait for cast animation
-        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
+
+        if (useAnimationEvent)
+            await caster.Visuals.WaitForSkillEvent(ct);
+        else
+        {
+            caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
+            await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
+        }
 
         if (caster == null || caster.Stats.CurrentHp <= 0) return false;
         if (boosts == null || boosts.Length == 0) return false;
 
-        // Apply all stat boosts to self
+        // Apply stat boosts to self
         foreach (var entry in boosts)
         {
             caster.Stats.ApplyStatModifier(entry.statType, entry.percentBoost);

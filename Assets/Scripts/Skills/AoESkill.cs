@@ -26,6 +26,7 @@ public class AoESkill : BaseSkill
     [Header("VFX")]
     [Tooltip("Scale applied to castVfxPrefab to match indicator size")]
     public Vector3 vfxScale = Vector3.one;
+    public float vfxDelay = 0;
 
     [Header("Multi-Cast")]
     [Min(1)] public int castCount = 1;
@@ -96,7 +97,7 @@ public class AoESkill : BaseSkill
 
                 GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, vfxPos, vfxRot);
                 vfx.transform.localScale = vfxScale;
-                ReturnVfxDelayed(castVfxPrefab, vfx, 2f, ct).Forget();
+                ReturnVfxDelayed(castVfxPrefab, vfx, 5f, ct).Forget();
             }
             else
             {   
@@ -104,6 +105,7 @@ public class AoESkill : BaseSkill
                 var indicator = SkillAreaRenderer.Create(areaShape, origin, pivot, color);
                 indicator.ShowForDuration(0.3f).Forget();
             }
+            await UniTask.WaitForSeconds(vfxDelay, cancellationToken: ct);
             // Collect and damage targets
             List<UnitController> targets = AreaTargetingUtility.GetTargetsInArea(areaShape, caster, pivot);
             foreach (UnitController target in targets)

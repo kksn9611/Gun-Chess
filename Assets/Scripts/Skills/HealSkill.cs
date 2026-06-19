@@ -11,10 +11,10 @@ using UnityEngine;
 public class HealSkill : BaseSkill
 {
     [Header("Skill Settings")]
+
+    public float skillSoundDelay = 0f;
     [Tooltip("Heal multiplier relative to ATK")]
     public float healMultiplier = 5f;
-
-    public float skillSoundDelay = 1f;
 
     [Tooltip("Number of allies to heal (sorted by lowest HP%)")]
     [Min(1)] public int targetCount = 1;

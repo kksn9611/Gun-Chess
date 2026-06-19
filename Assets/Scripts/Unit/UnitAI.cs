@@ -276,7 +276,7 @@ public class UnitAI : MonoBehaviour
             if (ct.IsCancellationRequested) return;
 
             currentTarget = FindClosestTarget(); // Re-evaluate closest target
-            await UniTask.Delay(50, cancellationToken: ct); // Brief movement delay
+            await UniTask.Delay(25, cancellationToken: ct); // Brief movement delay
         }
     }
     /// <summary>

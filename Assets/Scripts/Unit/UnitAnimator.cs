@@ -11,7 +11,7 @@ public class UnitAnimator : MonoBehaviour
     private Animator animator;
     private UnitAI ai;
     private UnitStats stats;
-    [Header("These are need if only you need animation speed manually with this")]
+    [Header("These are need if only you need animation speed manually control")]
     [SerializeField] private float attackAnimLength = 1.0f;
     [SerializeField] private float skillAnimLength = 1.0f;
 
