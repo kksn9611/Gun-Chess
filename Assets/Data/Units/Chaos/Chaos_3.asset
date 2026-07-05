@@ -20,7 +20,7 @@ MonoBehaviour:
   maxHp: 600
   maxMp: 100
   att: 20
-  def: 20
+  def: 25
   attRange: 2
   attSpd: 1
   moveSpd: 2
@@ -30,7 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 89cdeefaef3e1d542a344761cdd424c4, type: 2}
   - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
   bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
-  skillTrailPrefab: {fileID: 0}
+  skillProjectilePrefab: {fileID: 0}
   poolSize: 5
   skillPoolSize: 0
   skill: {fileID: 11400000, guid: e088f8945798c6943935e07e3c53d132, type: 2}

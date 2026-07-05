@@ -25,6 +25,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b64dbff238efa844590d6576586b4df4, type: 2}
   - {fileID: 11400000, guid: 045ad5eff5c7d3649b035c8b3375eb50, type: 2}
   - {fileID: 11400000, guid: 06371fcbeadd4af4e808cf030b53fc35, type: 2}
+  - {fileID: 11400000, guid: 247be28f6768f39419d429d9eebb1865, type: 2}
+  - {fileID: 11400000, guid: 207edc76b6f1dc9488a50ce153a6c72d, type: 2}
+  - {fileID: 11400000, guid: faec5c29882619c4ba63491bdde6f10a, type: 2}
+  - {fileID: 11400000, guid: 9efc3594fe021d446965a2d39c169078, type: 2}
+  - {fileID: 11400000, guid: 5f5a4c13be987a04491863319d6e4c80, type: 2}
+  - {fileID: 11400000, guid: f570568d65a774441baf226fceb9d98b, type: 2}
+  - {fileID: 11400000, guid: c5cdc97302fb7934f9111d4f03c7a3df, type: 2}
+  - {fileID: 11400000, guid: d2c54226e8f81ac45a4dea3721193caf, type: 2}
+  - {fileID: 11400000, guid: bc0484a2ac23438469529201d807de24, type: 2}
+  - {fileID: 11400000, guid: 29431147904856c4ea30f20809ac10db, type: 2}
   costTable:
   - cost: 1
     copies: 20
@@ -35,4 +45,4 @@ MonoBehaviour:
   - cost: 4
     copies: 12
   - cost: 5
-    copies: 10
+    copies: 9

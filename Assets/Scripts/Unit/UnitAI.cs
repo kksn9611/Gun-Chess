@@ -280,31 +280,34 @@ public class UnitAI : MonoBehaviour
         }
     }
     /// <summary>
-    /// Return the closest unoccupied neighbor of targetTile.
+    /// Return the closest reachable unoccupied neighbor of targetTile.
+    /// Neighbors are tried in ascending hex-distance order; the first one with a
+    /// valid path wins, so the unit won't fixate on a closer but walled-off tile.
     /// </summary>
     private TileScript GetBestAdjacentTile(TileScript targetTile)
     {
         if (targetTile == null) return null;
 
-        TileScript best     = null;
-        int        bestDist = int.MaxValue;
-
+        // Collect unoccupied neighbors (the unit's own tile is occupied, so it is skipped)
+        List<TileScript> candidates = new List<TileScript>();
         foreach (TileScript neighbor in targetTile.Neighbors)
         {
             if (neighbor.IsOccupied) continue;
-
-            // Already on this neighbor tile
-            if (neighbor == unit.CurrentHexTile) return unit.CurrentHexTile;
-
-            int dist = HexCoordCal.GetDistance(unit.CurrentCoord, neighbor.GridCoordinate);
-
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                best     = neighbor;
-            }
+            candidates.Add(neighbor);
         }
-        return best;
+
+        // Closest first
+        candidates.Sort((a, b) =>
+            HexCoordCal.GetDistance(unit.CurrentCoord, a.GridCoordinate)
+            .CompareTo(HexCoordCal.GetDistance(unit.CurrentCoord, b.GridCoordinate)));
+
+        // Pick the closest neighbor that is actually reachable
+        foreach (TileScript candidate in candidates)
+        {
+            List<TileScript> path = Pathfinder.FindPath(unit.CurrentHexTile, candidate);
+            if (path != null && path.Count > 0) return candidate;
+        }
+        return null;
     }
 
 

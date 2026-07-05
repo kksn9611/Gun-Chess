@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1883d7d48cabfd46b4a9950ca5ee8f3, type: 3}
+  m_Name: D5_AoeCircle
+  m_EditorClassIdentifier: Assembly-CSharp::AoESkill
+  skillName: D5_AoeCircle
+  description: "\uC6D0\uD615 \uBC94\uC704\uC758 \uC801\uC5D0\uAC8C \uAD11\uC5ED \uB370\uBBF8\uC9C0\uB97C
+    \uC785\uD799\uB2C8\uB2E4."
+  castTime: 0
+  animationSpd: 1
+  useAnimationEvent: 1
+  canCrit: 1
+  castVfxPrefab: {fileID: 957587675871740769, guid: d414adae9e8ff464b8e82e9932727903, type: 3}
+  useRootMotion: 0
+  damageMultiplier: 8
+  isStun: 0
+  stunDuration: 2
+  areaShape:
+    shapeType: 0
+    radius: 8
+    range: 0
+    angle: 0
+    width: 0
+    length: 0
+  color: {r: 1, g: 0.5490196, b: 0, a: 0.39215687}
+  vfxScale: {x: 1, y: 1, z: 1}
+  vfxDelay: 1
+  castCount: 1
+  lockArea: 0

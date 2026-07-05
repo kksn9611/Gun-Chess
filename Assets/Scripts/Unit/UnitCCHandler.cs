@@ -23,7 +23,9 @@ public class UnitCCHandler : MonoBehaviour
     }
 
 public void ApplyStun(float duration)
-{   
+{
+    // ignore CC on dead units (e.g. stun applied after a lethal hit)
+    if (unit.AI.CurrentState == UnitState.Dead) return;
     // ignore shorter duration
     if (duration <= stunTimer) return;
     stunTimer = duration;
@@ -38,6 +40,7 @@ public void ApplyStun(float duration)
 
     public void ApplyTaunt(UnitController sourceUnit, float duration)
     {
+        if (unit.AI.CurrentState == UnitState.Dead) return; // ignore CC on dead units
         TauntSource = sourceUnit;
         tauntTimer = Mathf.Max(tauntTimer, duration);
     }
@@ -60,12 +63,16 @@ public void ApplyStun(float duration)
         }
     }
     /// <summary>
-    /// Cleanse (Temp)
+    /// Clear all CC: reset timers, flags, and hide the stun VFX.
+    /// Called on cleanse and on death.
     /// </summary>
     public void ClearCC()
     {
+        stunTimer = 0f;
+        tauntTimer = 0f;
         IsStunned = false;
         TauntSource = null;
+        if (stunVfxInstance != null) stunVfxInstance.SetActive(false);
     }
 
 }

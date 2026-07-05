@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
@@ -45,10 +47,12 @@ public class UnitStats : MonoBehaviour
 
     /// <summary>HP changed (currentHP, maxHP)</summary>
     public event Action<float, float> OnHpChanged;
+    public event Action OnHealed;
     /// <summary>MP changed (currentMP, maxMP)</summary>
     public event Action<float, float> OnMpChanged;
     /// <summary>Attack speed changed (newAttSpd)</summary>
     public event Action<float> OnAttSpdChanged;
+    
 
     // Properties //
 
@@ -78,6 +82,8 @@ public class UnitStats : MonoBehaviour
         unit = GetComponent<UnitController>();
     }
 
+
+
     /// <summary>Copy stats from UnitData. Called by UnitController.Initialize().</summary>
     public void Initialize(UnitData data)
     {
@@ -105,6 +111,7 @@ public class UnitStats : MonoBehaviour
     /// <summary>Reset stats to base values on round transition.</summary>
     public void ResetStats()
     {
+        CancelHealOverTime();
         RemoveAllSynergyBuffs();
 
         currentAtt      = unitData.att;
@@ -144,6 +151,50 @@ public class UnitStats : MonoBehaviour
         SetMp(currentMp + amount);
     }
 
+    // Heal //
+
+    private CancellationTokenSource hotCts; // Heal over Time lifecycle
+
+    /// <summary>Instantly heal by amount (clamped to MaxHp).</summary>
+    public void ApplyHeal(float amount)
+    {
+        if (amount <= 0f || currentHp <= 0f) return;
+        OnHealed?.Invoke();
+        SetHp(currentHp + amount);
+    }
+
+    /// <summary>
+    /// Heal totalAmount gradually over duration, split across tickCount ticks.
+    /// </summary>
+    public void ApplyHealOverTime(float totalAmount, float duration, int tickCount)
+    {
+        if (totalAmount <= 0f || tickCount < 1 || duration <= 0f) return;
+        hotCts ??= new CancellationTokenSource();
+        HealOverTimeAsync(totalAmount, duration, tickCount, hotCts.Token).Forget();
+    }
+
+    /// <summary>Tick loop for ApplyHealOverTime. Stops if the unit dies.</summary>
+    private async UniTaskVoid HealOverTimeAsync(float totalAmount, float duration, int tickCount, CancellationToken ct)
+    {
+        float healPerTick  = totalAmount / tickCount;
+        float tickInterval = duration / tickCount;
+
+        for (int i = 0; i < tickCount; i++)
+        {
+            await UniTask.WaitForSeconds(tickInterval, cancellationToken: ct);
+            if (currentHp <= 0f) return; // stop healing a dead unit
+            ApplyHeal(healPerTick);
+        }
+    }
+
+    /// <summary>Cancel any running Heal over Time.</summary>
+    private void CancelHealOverTime()
+    {
+        hotCts?.Cancel();
+        hotCts?.Dispose();
+        hotCts = null;
+    }
+
     // Attack Speed //
 
     public void SetAttSpd(float value)
@@ -181,6 +232,7 @@ public class UnitStats : MonoBehaviour
     {
         if (synergyState != null)
             synergyState.OnSynergyChanged -= OnSynergyChanged;
+        CancelHealOverTime();
     }
 
     // Synergy Buffs //

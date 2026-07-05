@@ -5224,7 +5224,7 @@ Transform:
   m_GameObject: {fileID: 6278130896875083967}
   serializedVersion: 2
   m_LocalRotation: {x: -0.060859613, y: 0.0000000047990594, z: 0.00000028495086, w: 0.99814636}
-  m_LocalPosition: {x: 0, y: 1.2, z: -0.011555673}
+  m_LocalPosition: {x: 0, y: 0.85, z: -0.011555673}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6320,9 +6320,10 @@ MonoBehaviour:
   shotInterval: 0.05
   burstAtOnce: 0
   spreadRadius: 0.3
+  healEffect: {fileID: 2979407750726019859, guid: 3e462a8b72afb1c4c81a45c1325559ba, type: 3}
   audioSource: {fileID: 7701235304507000859}
-  skillAudioSource: {fileID: 7334729831281692130}
-  skillSound: {fileID: 8300000, guid: 323c9a71ab9802143ba90191665282a5, type: 3}
+  skillAudioSource: {fileID: 0}
+  skillSound: {fileID: 8300000, guid: 83e923e3a9424b34780c03927e8f5083, type: 3}
   skillSoundVolume: 1
 --- !u!114 &5399844851426423915
 MonoBehaviour:
@@ -6351,7 +6352,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: f60f041be53a8d049800695d04b484e6, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.12
+  m_Volume: 0.14
   m_Pitch: 0.85
   Loop: 0
   Mute: 0

@@ -7,6 +7,7 @@ using DG.Tweening;
 [RequireComponent(typeof(UnitController))]
 public class UnitVisuals : MonoBehaviour
 {
+    private UnitController unit;
     [Header("Fire Point")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform hitBox;
@@ -21,6 +22,9 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private bool burstAtOnce = false;
     [Tooltip("Random spread radius around hitbox (burstAtOnce only)")]
     [SerializeField] private float spreadRadius = 0.3f;
+
+    [Header("Heal Effect")]
+    [SerializeField] private GameObject healEffect;
 
     [Header("Sound Setting")]
     [SerializeField] private AudioSource audioSource;
@@ -39,7 +43,25 @@ public class UnitVisuals : MonoBehaviour
 
     private void Awake()
     {
+        if (unit == null)
+        { 
+            unit = GetComponent<UnitController>();
+        }
+        if (healEffect != null)
+        {
+            healEffect = Instantiate(healEffect, this.transform);
+            healEffect.SetActive(false);
+        }
         cts = new CancellationTokenSource();
+    }
+    private void OnEnable()
+    {
+        unit.Stats.OnHealed += PlayHealEffect;
+    }
+
+    private void OnDisable()
+    {
+        unit.Stats.OnHealed -= PlayHealEffect;
     }
 
     /// <summary>
@@ -60,6 +82,20 @@ public class UnitVisuals : MonoBehaviour
     {
         cts?.Cancel();
         cts?.Dispose();
+    }
+
+    public void PlayHealEffect()
+    {
+        if(healEffect == null) return;
+
+        healEffect.SetActive(true);
+        HealEffectDisable().Forget();
+
+    }
+    public async UniTaskVoid HealEffectDisable()
+    {
+        await UniTask.Delay(1500);
+        healEffect.SetActive(false);
     }
 
     public void PlaySkillSoundVolume(float volume)

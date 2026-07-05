@@ -261,6 +261,7 @@ public class UnitController : MonoBehaviour
         cts = new CancellationTokenSource(); // reset for potential reuse (player units)
         StopAllCoroutines();
         AI.EnterDeadState();
+        CCHandler.ClearCC(); // clear stun/taunt and hide CC VFX on death
 
         if (currentTile != null)
         {

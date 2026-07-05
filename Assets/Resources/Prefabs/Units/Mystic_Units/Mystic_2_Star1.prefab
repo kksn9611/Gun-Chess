@@ -5803,6 +5803,7 @@ MonoBehaviour:
   shotInterval: 0.05
   burstAtOnce: 0
   spreadRadius: 0.3
+  healEffect: {fileID: 2979407750726019859, guid: 3e462a8b72afb1c4c81a45c1325559ba, type: 3}
   audioSource: {fileID: 7701235304507000859}
   skillAudioSource: {fileID: 0}
   skillSound: {fileID: 8300000, guid: 922371cc4c16b6b479256d73b02f717d, type: 3}

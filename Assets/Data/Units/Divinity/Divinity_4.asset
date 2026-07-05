@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Divinity_4
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: Divinity_4
+  unitPrefab: {fileID: 2736525619550198037, guid: 68e1c4b9f25f36e4d90b2a933b5ba34f, type: 3}
+  cost: 4
+  starLevel: 1
+  upgradeUnit: {fileID: 0}
+  maxHp: 1100
+  maxMp: 100
+  att: 40
+  def: 30
+  attRange: 1
+  attSpd: 0.5
+  moveSpd: 1.25
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: 31a18de2d7385d5458da7741160797b9, type: 2}
+  - {fileID: 11400000, guid: dd7a30ba372dd4637abf3bae113a9076, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: 109862a0e7e5fd745bbec2168e085363, type: 3}
+  skillProjectilePrefab: {fileID: 0}
+  poolSize: 5
+  skillPoolSize: 1
+  skill: {fileID: 11400000, guid: f70bf2d391954cb4fa0d5c89b642baf4, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2

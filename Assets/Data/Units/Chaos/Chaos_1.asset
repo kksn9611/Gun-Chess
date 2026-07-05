@@ -23,7 +23,7 @@ MonoBehaviour:
   def: 30
   attRange: 1
   attSpd: 0.5
-  moveSpd: 1.5
+  moveSpd: 1.25
   critChance: 0.25
   critDamage: 1.5
   synergies:

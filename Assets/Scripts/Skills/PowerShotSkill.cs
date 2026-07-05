@@ -1,17 +1,23 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 /// <summary>
 /// Burst-fire skill dealing ATK * multiplier damage per shot.
+/// Each shot targets either the current target or a random enemy.
 /// Supports multiple shots with interval and per-shot delay.
 /// </summary>
 [CreateAssetMenu(fileName = "PowerShot", menuName = "Scriptable Objects/Skill/PowerShotSkill")]
 public class PowerShotSkill : BaseSkill
 {
+    public enum ShotTargetMode { CurrentTarget, RandomEnemy } // who each shot aims at
+
     [Header("Skill Settings")]
     [Tooltip("Damage multiplier per shot relative to ATK")]
     public float damageMultiplier = 4f;
+    [Tooltip("Aim at the current target or pick a random enemy per shot")]
+    public ShotTargetMode targetMode = ShotTargetMode.CurrentTarget;
     public float reachTime = 0.3f;
 
     [Header("Burst Settings")]
@@ -24,26 +30,29 @@ public class PowerShotSkill : BaseSkill
 
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
-        // Initial cast wind-up
-        await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
+        // Initial cast wind-up (skipped when animation events drive timing)
+        if (!useAnimationEvent)
+            await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
 
-        UnitController target = caster.AI.CurrentTarget;
-        if (target == null || target.Stats.CurrentHp <= 0) return false;
+        if (PickTarget(caster) == null) return false;
 
         // Fire burst
         for (int i = 0; i < burstCount; i++)
         {
             if (ct.IsCancellationRequested) return false;
 
-            // Re-validate target each shot
-            target = caster.AI.CurrentTarget;
-            if (target == null || target.Stats.CurrentHp <= 0) break;
+            // Re-pick target each shot
+            UnitController target = PickTarget(caster);
+            if (target == null) break;
 
-            // Play attack animation for each shot
+            // Face the target and play attack animation for each shot
+            caster.Movement.LookAtTargetSkill(target.transform, ct).Forget();
             caster.Animator.PlaySkill();
 
-            // Delay before projectile spawns
-            if (shotDelay > 0f)
+            // Wait for the shoot moment: animation event or fixed delay
+            if (useAnimationEvent)
+                await caster.Visuals.WaitForSkillEvent(ct);
+            else if (shotDelay > 0f)
                 await UniTask.WaitForSeconds(shotDelay, cancellationToken: ct);
 
             // Calculate per-shot damage
@@ -57,15 +66,40 @@ public class PowerShotSkill : BaseSkill
             caster.Visuals.SpawnProjectile(projectile, prefabKey, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage, caster));
             Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} shot {i + 1}/{burstCount} ({damage} damage)");
 
-            // Wait interval before next shot (skip on last shot)
-            if (i < burstCount - 1)
+            // Wait interval before next shot (timer mode only; events pace themselves)
+            if (!useAnimationEvent && i < burstCount - 1)
                 await UniTask.WaitForSeconds(shotInterval, cancellationToken: ct);
-            
+
         }
-        // wait for return another animation
-        await UniTask.WaitForSeconds(shotDelay, cancellationToken: ct);
+        // Wait for return animation (timer mode only)
+        if (!useAnimationEvent)
+            await UniTask.WaitForSeconds(shotDelay, cancellationToken: ct);
         // Wait for last projectile to reach target
         await UniTask.WaitForSeconds(reachTime, cancellationToken: ct);
         return true;
+    }
+
+    // Target Search //
+
+    private UnitController PickTarget(UnitController caster)
+    {
+        if (targetMode == ShotTargetMode.CurrentTarget)
+        {
+            UnitController current = caster.AI.CurrentTarget;
+            return (current != null && current.Stats.CurrentHp > 0) ? current : null;
+        }
+
+        // RandomEnemy: pick a random living enemy
+        IReadOnlyList<UnitController> enemies = UnitManager.Instance.GetEnemiesOf(caster.CurrentTeam);
+        List<UnitController> alive = new List<UnitController>();
+        foreach (UnitController enemy in enemies)
+        {
+            if (enemy == null || enemy.AI.CurrentState == UnitState.Dead) continue;
+            if (enemy.Stats.CurrentHp <= 0) continue;
+            alive.Add(enemy);
+        }
+
+        if (alive.Count == 0) return null;
+        return alive[Random.Range(0, alive.Count)];
     }
 }

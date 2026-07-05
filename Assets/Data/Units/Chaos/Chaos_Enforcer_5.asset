@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Chaos_Enforcer_5
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: Chaos_E_5
+  unitPrefab: {fileID: 7339558638033791742, guid: 46eb82600ec52ad4cb5c28218f126854, type: 3}
+  cost: 5
+  starLevel: 1
+  upgradeUnit: {fileID: 0}
+  maxHp: 600
+  maxMp: 55
+  att: 40
+  def: 20
+  attRange: 4
+  attSpd: 0.7
+  moveSpd: 1.25
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: 89cdeefaef3e1d542a344761cdd424c4, type: 2}
+  - {fileID: 11400000, guid: 80f7aebb534de7e44b70952cb9b3f6ef, type: 2}
+  - {fileID: 11400000, guid: 0ed94330ffef91c4aac2cbb304ed0765, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
+  skillProjectilePrefab: {fileID: 0}
+  poolSize: 5
+  skillPoolSize: 0
+  skill: {fileID: 11400000, guid: eab55b2d54e80f14eac9a5a7e22a36b2, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2

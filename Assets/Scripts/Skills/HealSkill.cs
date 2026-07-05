@@ -38,7 +38,7 @@ public class HealSkill : BaseSkill
 
             foreach (UnitController target in healTargets)
             {
-                target.Stats.SetHp(target.Stats.CurrentHp + healAmount);
+                target.Stats.ApplyHeal(healAmount);
                 Debug.Log($"[Heal] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} (+{healAmount} HP)");
             }
             return true;
