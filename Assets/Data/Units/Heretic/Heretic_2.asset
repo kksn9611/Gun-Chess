@@ -10,29 +10,29 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
-  m_Name: Heretic_1
+  m_Name: Heretic_2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Heretic_1
-  unitPrefab: {fileID: 4104458227381271381, guid: ebcaebd676d410d438e3e8a04d589bf8, type: 3}
-  cost: 1
+  unitName: Heretic_2
+  unitPrefab: {fileID: 8028335539950420324, guid: 8b04f9fe725c3eb42beef8b45684c3b1, type: 3}
+  cost: 2
   starLevel: 1
   upgradeUnit: {fileID: 0}
-  maxHp: 450
-  maxMp: 55
-  att: 30
-  def: 20
-  attRange: 4
-  attSpd: 0.5
-  moveSpd: 1.25
+  maxHp: 550
+  maxMp: 125
+  att: 18
+  def: 25
+  attRange: 2
+  attSpd: 1
+  moveSpd: 2
   critChance: 0.25
   critDamage: 1.5
   synergies:
   - {fileID: 11400000, guid: 70e772144a97456478626b8a6e5dd1fa, type: 2}
-  - {fileID: 11400000, guid: 7c9cce7b91f87de4485c207f9e3ad476, type: 2}
+  - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
   bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
   skillProjectilePrefab: {fileID: 0}
   poolSize: 5
   skillPoolSize: 0
-  skill: {fileID: 11400000, guid: 01c9c6ed22ecd3f4fa3e468c503e5e60, type: 2}
+  skill: {fileID: 11400000, guid: 9666406e9c620b04ebfe7e5d25a69918, type: 2}
   mpGainOnAttack: 10
   mpGainOnHit: 2

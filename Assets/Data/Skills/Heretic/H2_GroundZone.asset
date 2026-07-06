@@ -21,7 +21,7 @@ MonoBehaviour:
   canCrit: 1
   castVfxPrefab: {fileID: 0}
   useRootMotion: 0
-  damageMultiplier: 1
+  damageMultiplier: 2
   skillSoundDelay: 0
   projectilePrefab: {fileID: 1941226523401448535, guid: 3876a0c6e93a9b24a8912012b2a5af1b, type: 3}
   reachTime: 0.4
@@ -30,8 +30,8 @@ MonoBehaviour:
   impactVfxScale: {x: 1, y: 1, z: 1}
   impactVfxLifetime: 3
   radius: 3.5
-  duration: 5
-  tickInterval: 1
+  duration: 10
+  tickInterval: 2
   color: {r: 0.6, g: 0, b: 0.8, a: 0.4}
-  poolVfxPrefab: {fileID: 0}
+  poolVfxPrefab: {fileID: 5984480896937644376, guid: 225e3fd3e87ff76468cc4e4643ee4ca4, type: 3}
   vfxScale: {x: 1, y: 1, z: 1}

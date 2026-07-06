@@ -31,7 +31,7 @@ public class UnitData : ScriptableObject
     public SynergyData[] synergies;
 
     [Header("Trail / Pool")]
-    [Tooltip("Trail prefab for normal attacks")]
+    [Tooltip("prefab for normal attacks")]
     public TrailRenderer bulletTrailPrefab;
     [Tooltip("Projectile prefab for skill (null if skill has no projectile)")]
     public GameObject skillProjectilePrefab;

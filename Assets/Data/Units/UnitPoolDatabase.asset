@@ -35,6 +35,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d2c54226e8f81ac45a4dea3721193caf, type: 2}
   - {fileID: 11400000, guid: bc0484a2ac23438469529201d807de24, type: 2}
   - {fileID: 11400000, guid: 29431147904856c4ea30f20809ac10db, type: 2}
+  - {fileID: 11400000, guid: 224c134fd7402ff4c9c39804fead3714, type: 2}
   costTable:
   - cost: 1
     copies: 20
