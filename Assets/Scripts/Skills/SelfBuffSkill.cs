@@ -15,6 +15,10 @@ public class SelfBuffSkill : BaseSkill
 
     public float skillSoundDelay = 1f;
 
+    [Header("Cast VFX")]
+    [Tooltip("Scale applied to castVfxPrefab")]
+    public Vector3 vfxScale = Vector3.one;
+
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
 
@@ -29,6 +33,17 @@ public class SelfBuffSkill : BaseSkill
         if (caster == null || caster.Stats.CurrentHp <= 0) return false;
         if (boosts == null || boosts.Length == 0) return false;
 
+        // Cast VFX parented to the caster so it follows the unit //
+        if (castVfxPrefab != null)
+        {
+            GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, caster.transform.position, Quaternion.identity);
+            vfx.transform.SetParent(caster.transform, worldPositionStays: false);
+            vfx.transform.localPosition = new Vector3(0f, 0.1f, 0f);
+            vfx.transform.localRotation = Quaternion.identity;
+            vfx.transform.localScale = vfxScale;
+            ReturnVfxOnBattleEnd(castVfxPrefab, vfx);
+        }
+
         // Apply stat boosts to self
         foreach (var entry in boosts)
         {
@@ -36,5 +51,17 @@ public class SelfBuffSkill : BaseSkill
             Debug.Log($"[SelfBuff] {caster.Stats.UnitData.unitName} +{entry.percentBoost}% {entry.statType}");
         }
         return true;
+    }
+
+    // Keep the buff VFX alive until the battle ends, then return it to the pool. //
+    private void ReturnVfxOnBattleEnd(GameObject prefab, GameObject instance)
+    {
+        void OnEnd(Team winner)
+        {
+            BattleManager.OnBattleEnd -= OnEnd;
+            if (instance != null)
+                VfxPoolManager.Instance.Return(prefab, instance);
+        }
+        BattleManager.OnBattleEnd += OnEnd;
     }
 }

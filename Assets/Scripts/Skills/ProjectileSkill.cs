@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -33,9 +33,14 @@ public class ProjectileSkill : BaseSkill
 
             if (caster == null || caster.Stats.CurrentHp <= 0) return false;
 
-            // Re-acquire the target every shot
+            // Re-acquire the target every shot; retarget a new enemy if the current one is gone
             UnitController target = caster.AI.CurrentTarget;
-            if (target == null || target.Stats.CurrentHp <= 0) break;
+            if (target == null || target.Stats.CurrentHp <= 0)
+            {
+                target = caster.AI.FindClosestTarget();
+                caster.Movement.LookAtTargetSkill(target.transform, ct).Forget();
+            }
+            if (target == null || target.Stats.CurrentHp <= 0) continue; // no enemies left
 
             // Pre-calculate final damages separately (fresh crit roll per cast)
             float baseDmg = caster.Stats.CurrentAtt * caster.Stats.SkillDamageMultiplier;

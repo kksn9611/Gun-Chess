@@ -63,7 +63,7 @@ public class PowerShotSkill : BaseSkill
             GameObject projectile = caster.Visuals.GetSkillProjectile();
             GameObject prefabKey = caster.Visuals.SkillProjectilePrefab;
             caster.Visuals.PlaySkillSound(0).Forget();
-            caster.Visuals.SpawnProjectile(projectile, prefabKey, target.Visuals.HitBox, reachTime, () => target.TakeDamage(damage, caster));
+            caster.Visuals.SpawnProjectile(projectile, prefabKey, target.Visuals.HitBox, reachTime, () => { target.TakeDamage(damage, caster); caster.RaiseSkillHit(target, damage); });
             Debug.Log($"[PowerShot] {caster.Stats.UnitData.unitName} → {target.Stats.UnitData.unitName} shot {i + 1}/{burstCount} ({damage} damage)");
 
             // Wait interval before next shot (timer mode only; events pace themselves)

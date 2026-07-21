@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7eae227b89bd3d84393ee6b22541eb52, type: 3}
+  m_Name: I_AR1_SelfbuffSkill_AS
+  m_EditorClassIdentifier: Assembly-CSharp::SelfBuffSkill
+  skillName: "I_AR1_\uBC84\uD504"
+  description: "\uC790\uC2E0\uC5D0\uAC8C \uC911\uCCA9 \uAC00\uB2A5\uD55C \uACF5\uACA9
+    \uC18D\uB3C4\uC640 \uBC29\uC5B4\uB825 30% \uBC84\uD504\uB97C \uAC74\uB2E4."
+  castTime: 0
+  animationSpd: 1.5
+  useAnimationEvent: 1
+  canCrit: 0
+  castVfxPrefab: {fileID: 5697101180579792178, guid: 6ce0cd33c8faa0e44b9ea590fc9d2f28, type: 3}
+  useRootMotion: 0
+  boosts:
+  - statType: 2
+    percentBoost: 30
+  - statType: 1
+    percentBoost: 30
+  skillSoundDelay: 0
+  vfxScale: {x: 1, y: 1, z: 1}

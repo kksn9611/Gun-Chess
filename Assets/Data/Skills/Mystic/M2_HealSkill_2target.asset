@@ -19,8 +19,8 @@ MonoBehaviour:
   animationSpd: 1.5
   useAnimationEvent: 1
   canCrit: 0
-  castVfxPrefab: {fileID: 0}
+  castVfxPrefab: {fileID: 1267626628730432487, guid: 11fd2414d9e58ab4db7ae4c3b9bee11d, type: 3}
   useRootMotion: 0
   skillSoundDelay: 1.5
-  healMultiplier: 6
+  healMultiplier: 7
   targetCount: 2

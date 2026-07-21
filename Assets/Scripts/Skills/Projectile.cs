@@ -85,7 +85,10 @@ public class Projectile : MonoBehaviour
         if (unit == null || unit.Stats.CurrentHp <= 0) return;
 
         if (damage > 0f)
+        {
             unit.TakeDamage(damage, source);
+            if (source != null) source.RaiseSkillHit(unit, damage);
+        }
 
         if (data.applyStun)
             unit.CCHandler.ApplyStun(data.stunDuration);
@@ -141,6 +144,7 @@ public class Projectile : MonoBehaviour
         foreach (UnitController hit in targets)
         {
             hit.TakeDamage(explosionDamage, source);
+            if (source != null) source.RaiseSkillHit(hit, explosionDamage);
 
             if (data.applyStun)
                 hit.CCHandler.ApplyStun(data.stunDuration);

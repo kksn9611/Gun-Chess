@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42359182c47dd864e92f67dccbfef1e1, type: 3}
+  m_Name: I_SG2_SelfAoE
+  m_EditorClassIdentifier: Assembly-CSharp::SelfAoESkill
+  skillName: I_SG2_SelfAoE
+  description: 
+  castTime: 1
+  animationSpd: 2
+  useAnimationEvent: 1
+  canCrit: 1
+  castVfxPrefab: {fileID: 8251054824596030187, guid: 584b7ed4887fd85479ff6f9024343e77, type: 3}
+  useRootMotion: 0
+  damageMultiplier: 1.5
+  isStun: 0
+  stunDuration: 0
+  radius: 3.5
+  color: {r: 1, g: 0, b: 0, a: 0.39215687}
+  vfxScale: {x: 2.5, y: 2.5, z: 2.5}
+  vfxDelay: 0
+  castCount: 3

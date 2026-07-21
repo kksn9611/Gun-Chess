@@ -13,7 +13,7 @@ public class DebuffShotSkill : BaseSkill
     public enum ShotTargetMode { CurrentTarget, RandomEnemy } // who each shot aims at
 
     [Header("Skill Settings")]
-    [Tooltip("Stat debuffs to apply on hit (percent is subtracted)")]
+    [Tooltip("Stat debuffs to apply on hit (percent = multiplicative reduction, e.g. 30 = x0.7)")]
     public StatBoostEntry[] debuffs;
     [Tooltip("Aim at the current target or pick a random enemy per shot")]
     public ShotTargetMode targetMode = ShotTargetMode.CurrentTarget;
@@ -82,7 +82,7 @@ public class DebuffShotSkill : BaseSkill
     {
         if (target == null || target.Stats.CurrentHp <= 0) return;
         foreach (var entry in debuffs)
-            target.Stats.ApplyStatModifier(entry.statType, -entry.percentBoost);
+            target.Stats.ApplyStatDebuff(entry.statType, entry.percentBoost);
     }
 
     // Target Search //

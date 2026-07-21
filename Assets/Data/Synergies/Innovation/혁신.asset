@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e7b83a1f3193441aa21789e08e443c, type: 3}
+  m_Name: "\uD601\uC2E0"
+  m_EditorClassIdentifier: Assembly-CSharp::SynergyData
+  synergyName: "\uD601\uC2E0"
+  description: "\uD53C\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uC2E4\uB4DC \uC0DD\uC131,
+    \uACF5\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uCD94\uAC00 \uB370\uBBF8\uC9C0
+    \uBC1C\uC0DD"
+  tiers:
+  - requiredCount: 2
+    behaviors:
+    - {fileID: 11400000, guid: e3797c2d71da6254b88a2bf25b4b0cf8, type: 2}
+    - {fileID: 11400000, guid: e4c7121951b73df4fbd93c888e0d3578, type: 2}
+    - {fileID: 11400000, guid: a4032aa9f4a9d824ba1c828596b2d65d, type: 2}
+  - requiredCount: 4
+    behaviors:
+    - {fileID: 11400000, guid: 221ad4b93babed9438de59ba10664b96, type: 2}
+    - {fileID: 11400000, guid: 66b9391909eefe845b12d362ad3a9064, type: 2}
+    - {fileID: 11400000, guid: 2d2bcbb20cc47f14baab9406e04a5e64, type: 2}
+  - requiredCount: 7
+    behaviors:
+    - {fileID: 11400000, guid: 75c06b14d3585454b871b474228e9f0a, type: 2}
+    - {fileID: 11400000, guid: 3bdd0a5e5939f004f8b36591ace81fff, type: 2}
+    - {fileID: 11400000, guid: a6fea3c9112d8a44e8a0b9dd77d83504, type: 2}

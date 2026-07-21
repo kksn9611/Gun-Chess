@@ -18,7 +18,7 @@ MonoBehaviour:
   - statType: 1
     percentBoost: 60
   - statType: 2
-    percentBoost: 20
+    percentBoost: 30
   - statType: 3
     percentBoost: 30
   - statType: 5

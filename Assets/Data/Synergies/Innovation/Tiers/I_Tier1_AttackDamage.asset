@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce3e3dda3f10a94ebc279277de41f11, type: 3}
+  m_Name: I_Tier1_AttackDamage
+  m_EditorClassIdentifier: Assembly-CSharp::AttackTriggerDamage
+  triggerOnAttack: 1
+  triggerOnSkill: 0
+  triggerOnDamaged: 0
+  damageChance: 0.1
+  damage: 15
+  hitVfxPrefab: {fileID: 8307689965681055727, guid: 22a071f31c0ba134ca7a5e82f5c5ca03, type: 3}
+  vfxScale: {x: 0.5, y: 0.5, z: 0.5}
+  vfxLifetime: 2

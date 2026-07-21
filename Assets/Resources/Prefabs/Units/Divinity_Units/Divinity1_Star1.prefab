@@ -2758,6 +2758,7 @@ MonoBehaviour:
   unitData: {fileID: 0}
   starLevel: 0
   currentHp: 0
+  currentShield: 0
   currentMp: 0
   currentAtt: 0
   currentDef: 0
@@ -2854,6 +2855,7 @@ MonoBehaviour:
   burstAtOnce: 0
   spreadRadius: 0.35
   healEffect: {fileID: 2979407750726019859, guid: 3e462a8b72afb1c4c81a45c1325559ba, type: 3}
+  shieldEffect: {fileID: 871324411638548333, guid: de1bdf6334386804eb36a0d61a9d3f80, type: 3}
   audioSource: {fileID: 2557576446281796846}
   skillAudioSource: {fileID: 0}
   skillSound: {fileID: 8300000, guid: 323c9a71ab9802143ba90191665282a5, type: 3}

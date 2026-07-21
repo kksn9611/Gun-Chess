@@ -21,7 +21,7 @@ MonoBehaviour:
   canCrit: 1
   castVfxPrefab: {fileID: 934617562227915448, guid: d89c8e29742f2b647ab1e70ca67b6028, type: 3}
   useRootMotion: 0
-  damageMultiplier: 0.6
+  damageMultiplier: 0.7
   isStun: 0
   stunDuration: 2
   areaShape:
@@ -33,5 +33,6 @@ MonoBehaviour:
     length: 0
   color: {r: 1, g: 0.5490196, b: 0, a: 0.39215687}
   vfxScale: {x: 1, y: 1, z: 1}
+  vfxDelay: 0
   castCount: 6
   lockArea: 1

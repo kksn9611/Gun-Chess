@@ -26,6 +26,10 @@ public class UnitVisuals : MonoBehaviour
     [Header("Heal Effect")]
     [SerializeField] private GameObject healEffect;
 
+    [Header("Shield Effect")]
+    [SerializeField] private GameObject shieldEffect;
+    [SerializeField] private Vector3 shieldScale = new Vector3 (0.55f, 0.55f, 0.55f);
+
     [Header("Sound Setting")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioSource skillAudioSource;
@@ -52,16 +56,24 @@ public class UnitVisuals : MonoBehaviour
             healEffect = Instantiate(healEffect, this.transform);
             healEffect.SetActive(false);
         }
+        if (shieldEffect != null)
+        {
+            shieldEffect = Instantiate(shieldEffect, this.transform);
+            shieldEffect.transform.localScale = shieldScale;
+            shieldEffect.SetActive(false);
+        }
         cts = new CancellationTokenSource();
     }
     private void OnEnable()
     {
         unit.Stats.OnHealed += PlayHealEffect;
+        unit.Stats.OnShieldChanged += UpdateShieldEffect;
     }
 
     private void OnDisable()
     {
         unit.Stats.OnHealed -= PlayHealEffect;
+        unit.Stats.OnShieldChanged -= UpdateShieldEffect;
     }
 
     /// <summary>
@@ -96,6 +108,12 @@ public class UnitVisuals : MonoBehaviour
     {
         await UniTask.Delay(1500);
         healEffect.SetActive(false);
+    }
+
+    /// <summary>Show the shield VFX while a shield is active, hide it when depleted.</summary>
+    private void UpdateShieldEffect(float currentShield, float maxHp)
+    {
+        if (shieldEffect != null) shieldEffect.SetActive(currentShield > 0f);
     }
 
     public void PlaySkillSoundVolume(float volume)

@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58e5b6ee1ad342a4eb06a05fc583d6cf, type: 3}
+  m_Name: H5_ProjectileSkill
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileSkill
+  skillName: H5_ProjectileSkill
+  description: "\uC801\uC5D0\uAC8C \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uACE0, \uD3ED\uBC1C\uD558\uC5EC
+    \uAD11\uC5ED \uB370\uBBF8\uC9C0\uB97C \uC785\uD799\uB2C8\uB2E4."
+  castTime: 1
+  animationSpd: 1
+  useAnimationEvent: 1
+  canCrit: 1
+  castVfxPrefab: {fileID: 0}
+  useRootMotion: 0
+  damageMultiplier: 4
+  explosionDamageMultiplier: 4
+  projectileData: {fileID: 11400000, guid: 9df5461aff6a2254fbdca3ef1b8c4a6d, type: 2}
+  castCount: 1

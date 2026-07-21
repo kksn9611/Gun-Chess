@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62173de7dacb0624689a19d8e65a0180, type: 3}
+  m_Name: I2_ShieldSkill
+  m_EditorClassIdentifier: Assembly-CSharp::ShieldSkill
+  skillName: I2_ShieldSkill
+  description: "\uC790\uC2E0\uC5D0\uAC8C \uD53C\uD574\uB97C \uB9C9\uB294 \uBCF4\uD638\uB9C9\uC744
+    \uBD80\uC5EC\uD55C\uB2E4."
+  castTime: 1
+  animationSpd: 1
+  useAnimationEvent: 1
+  canCrit: 0
+  castVfxPrefab: {fileID: 0}
+  useRootMotion: 0
+  skillSoundDelay: 0
+  shieldMultiplier: 8
+  targetMode: 0
+  targetCount: 1

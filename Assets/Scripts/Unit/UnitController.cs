@@ -45,6 +45,8 @@ public class UnitController : MonoBehaviour
     public event Action<UnitController, UnitController> OnBeforeAttack;
     /// <summary>Attack hit (attacker, target, damage)</summary>
     public event Action<UnitController, UnitController, float> OnAttackHit;
+    /// <summary>Skill hit (caster, target, damage)</summary>
+    public event Action<UnitController, UnitController, float> OnSkillHit;
     /// <summary>Before taking damage</summary>
     public event Action<UnitController ,float> OnBeforeTakeDamage;
     /// <summary>Before skill cast</summary>
@@ -199,6 +201,13 @@ public class UnitController : MonoBehaviour
         });
     }
 
+    /// <summary>Fire OnSkillHit so skill damage can trigger on-hit synergies (mirrors OnAttackHit for basic attacks).</summary>
+    public void RaiseSkillHit(UnitController target, float damage)
+    {
+        if (target == null || Stats.CurrentHp <= 0) return;
+        OnSkillHit?.Invoke(this, target, damage);
+    }
+
     /// <summary>Skill cast. aiCt is cancelled on stun/death/state change.</summary>
     public async UniTask CastSkillAsync(CancellationToken aiCt = default)
     {
@@ -239,6 +248,7 @@ public class UnitController : MonoBehaviour
         OnBeforeTakeDamage?.Invoke(this, damage);
 
         float actualDamage = damage * (1f - Stats.CurrentDef / 100f);
+        actualDamage = Stats.AbsorbShield(actualDamage); // shield absorbs before HP
         Stats.SetHp(Stats.CurrentHp - actualDamage);
         Stats.GainMp(Stats.MpGainOnHit);
 

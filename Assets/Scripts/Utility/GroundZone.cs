@@ -2,18 +2,22 @@ using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+/// <summary>Per-tick effect a GroundZone applies to units inside it.</summary>
+public enum ZoneEffect { Damage, Heal }
+
 /// <summary>
-/// Persistent ground effect (damage pool). Periodically damages enemies standing inside a circle.
-/// Owns its own lifecycle independent of the casting skill and cleans up on round end.
+/// Persistent ground effect (pool). Periodically damages enemies (or heals allies) standing
+/// inside a circle. Owns its own lifecycle independent of the casting skill; cleans up on round end.
 /// </summary>
 public class GroundZone : MonoBehaviour
 {
     private UnitController source;   // caster; may be destroyed (null-checked before use)
-    private Team targetTeam;         // team whose members take damage
+    private Team targetTeam;         // caster's team (enemies-of for damage, allies-of for heal)
     private Vector3 center;
     private float radius;
-    private float damagePerTick;
+    private float amountPerTick;     // damage or heal per tick
     private bool applyCrit;
+    private ZoneEffect effect;
 
     private SkillAreaRenderer indicator; // fallback visual when no VFX prefab
     private GameObject vfxPrefab;        // pooled VFX prefab (kept for return)
@@ -23,29 +27,31 @@ public class GroundZone : MonoBehaviour
     // Factory //
 
     /// <summary>
-    /// Spawn a damage pool at center. Damages targetTeam's enemies every tickInterval for duration.
+    /// Spawn a pool at center. Applies effect to units inside every tickInterval for duration.
+    /// Damage hits enemies of the caster's team; Heal affects allies of the caster's team.
     /// </summary>
     public static GroundZone Create(UnitController source, Vector3 center, float radius,
-        float damagePerTick, float duration, float tickInterval, bool applyCrit, Color color,
-        GameObject vfxPrefab = null, Vector3 vfxScale = default)
+        float amountPerTick, float duration, float tickInterval, bool applyCrit, Color color,
+        GameObject vfxPrefab = null, Vector3 vfxScale = default, ZoneEffect effect = ZoneEffect.Damage)
     {
-        GameObject go = new GameObject("GroundZone_DoT");
+        GameObject go = new GameObject(effect == ZoneEffect.Heal ? "GroundZone_HoT" : "GroundZone_DoT");
         GroundZone zone = go.AddComponent<GroundZone>();
-        zone.Init(source, center, radius, damagePerTick, duration, tickInterval, applyCrit, color, vfxPrefab, vfxScale);
+        zone.Init(source, center, radius, amountPerTick, duration, tickInterval, applyCrit, color, vfxPrefab, vfxScale, effect);
         return zone;
     }
 
     private void Init(UnitController source, Vector3 center, float radius,
-        float damagePerTick, float duration, float tickInterval, bool applyCrit, Color color,
-        GameObject vfxPrefab, Vector3 vfxScale)
+        float amountPerTick, float duration, float tickInterval, bool applyCrit, Color color,
+        GameObject vfxPrefab, Vector3 vfxScale, ZoneEffect effect)
     {
         this.source        = source;
         this.targetTeam    = source.CurrentTeam;
         this.center        = center;
         this.radius        = radius;
-        this.damagePerTick = damagePerTick;
+        this.amountPerTick = amountPerTick;
         this.applyCrit     = applyCrit;
         this.vfxPrefab     = vfxPrefab;
+        this.effect        = effect;
 
         transform.position = center;
 
@@ -70,7 +76,7 @@ public class GroundZone : MonoBehaviour
 
     // Tick Loop //
 
-    /// <summary>Apply one damage tick every tickInterval until duration elapses.</summary>
+    /// <summary>Apply one effect tick every tickInterval until duration elapses.</summary>
     private async UniTaskVoid TickLoop(float duration, float tickInterval, CancellationToken ct)
     {
         float elapsed = 0f;
@@ -90,15 +96,25 @@ public class GroundZone : MonoBehaviour
         }
     }
 
-    /// <summary>Damage every enemy currently inside the pool.</summary>
+    /// <summary>Apply the effect to every valid unit currently inside the pool.</summary>
     private void ApplyTick()
     {
-        var targets = AreaTargetingUtility.GetTargetsInCircle(center, radius, targetTeam);
-        foreach (UnitController target in targets)
+        if (effect == ZoneEffect.Heal)
         {
-            float damage = damagePerTick;
-            if (applyCrit && source != null) damage = source.Stats.ApplyCrit(damage, out _);
-            target.TakeDamage(damage, source);
+            var allies = AreaTargetingUtility.GetAlliesInCircle(center, radius, targetTeam);
+            foreach (UnitController ally in allies)
+                ally.Stats.ApplyHeal(amountPerTick);
+        }
+        else
+        {
+            var targets = AreaTargetingUtility.GetTargetsInCircle(center, radius, targetTeam);
+            foreach (UnitController target in targets)
+            {
+                float damage = amountPerTick;
+                if (applyCrit && source != null) damage = source.Stats.ApplyCrit(damage, out _);
+                target.TakeDamage(damage, source);
+                if (source != null) source.RaiseSkillHit(target, damage);
+            }
         }
     }
 

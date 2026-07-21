@@ -21,11 +21,13 @@ public class UnitStats : MonoBehaviour
 
     [Header("Combat Stats")]
     [SerializeField] private float currentHp;
+    [SerializeField] private float currentShield; // damage-absorbing shield
     [SerializeField] private float currentMp;
     [SerializeField] private float currentAtt;
     [SerializeField] private float currentDef;
     [SerializeField] private float currentAttRange;
-    [SerializeField] private float currentAttSpd;
+    [SerializeField] private float currentAttSpd; // effective (post-debuff) attack speed shown in Inspector
+    private float attSpdBuffed;                    // additive-layer attack speed (before debuff multiplier)
     [SerializeField] private float currentMoveSpd;
     [SerializeField] private float currentMaxHp;
     [SerializeField] private float currentMaxMp;
@@ -52,28 +54,31 @@ public class UnitStats : MonoBehaviour
     public event Action<float, float> OnMpChanged;
     /// <summary>Attack speed changed (newAttSpd)</summary>
     public event Action<float> OnAttSpdChanged;
-    
+    /// <summary>Shield changed (currentShield, maxHP)</summary>
+    public event Action<float, float> OnShieldChanged;
+
 
     // Properties //
 
     public UnitData UnitData       => unitData;
     public int      StarLevel      => starLevel;
     public float    CurrentHp      => currentHp;
+    public float    CurrentShield  => currentShield;
     public float    CurrentMp      => currentMp;
-    public float    CurrentAtt     => currentAtt;
-    public float    CurrentDef     => currentDef;
-    public float    CurrentMaxHp   => currentMaxHp;
+    public float    CurrentAtt     => currentAtt     * DebuffFactor(StatType.Att);
+    public float    CurrentDef     => currentDef     * DebuffFactor(StatType.Def);
+    public float    CurrentMaxHp   => currentMaxHp   * DebuffFactor(StatType.MaxHp);
     public float    CurrentAttRange => currentAttRange;
     public float    CurrentAttSpd  => currentAttSpd;
-    public float    CurrentMoveSpd => currentMoveSpd;
+    public float    CurrentMoveSpd => currentMoveSpd * DebuffFactor(StatType.MoveSpd);
     public float    CurrentMaxMp   => currentMaxMp;
-    public float    MpGainOnAttack => mpGainOnAttack;
-    public float    MpGainOnHit    => mpGainOnHit;
+    public float    MpGainOnAttack => mpGainOnAttack * DebuffFactor(StatType.MpGain);
+    public float    MpGainOnHit    => mpGainOnHit    * DebuffFactor(StatType.MpGain);
     public BaseSkill Skill         => skill;
-    public float    SkillDamageMultiplier => currentSkillDmgMul;
-    public float    CurrentCritChance => currentCritChance;
-    public float    CurrentCritDamage => currentCritDamage;
-    public float    CurrentLifesteal  => currentLifesteal;
+    public float    SkillDamageMultiplier => currentSkillDmgMul * DebuffFactor(StatType.SkillDmg);
+    public float    CurrentCritChance => currentCritChance * DebuffFactor(StatType.CritChance);
+    public float    CurrentCritDamage => currentCritDamage * DebuffFactor(StatType.CritDamage);
+    public float    CurrentLifesteal  => currentLifesteal  * DebuffFactor(StatType.Lifesteal);
 
     // Initialization //
 
@@ -95,6 +100,8 @@ public class UnitStats : MonoBehaviour
         currentMoveSpd  = data.moveSpd;
         currentMaxHp    = data.maxHp;
         currentMaxMp    = data.maxMp;
+        currentShield   = 0f;
+        debuffFactors.Clear();
         mpGainOnAttack  = data.mpGainOnAttack;
         mpGainOnHit     = data.mpGainOnHit;
         skill           = data.skill;
@@ -113,6 +120,10 @@ public class UnitStats : MonoBehaviour
     {
         CancelHealOverTime();
         RemoveAllSynergyBuffs();
+
+        currentShield   = 0f;
+        OnShieldChanged?.Invoke(currentShield, unitData.maxHp);
+        debuffFactors.Clear();
 
         currentAtt      = unitData.att;
         currentDef      = unitData.def;
@@ -136,8 +147,8 @@ public class UnitStats : MonoBehaviour
 
     public void SetHp(float value)
     {
-        currentHp = Mathf.Clamp(value, 0f, currentMaxHp);
-        OnHpChanged?.Invoke(currentHp, currentMaxHp);
+        currentHp = Mathf.Clamp(value, 0f, CurrentMaxHp);
+        OnHpChanged?.Invoke(currentHp, CurrentMaxHp);
     }
     public void SetMp(float value)
     {
@@ -195,11 +206,32 @@ public class UnitStats : MonoBehaviour
         hotCts = null;
     }
 
+    // Shield //
+
+    /// <summary>Add a damage-absorbing shield (stacks additively).</summary>
+    public void ApplyShield(float amount)
+    {
+        if (amount <= 0f || currentHp <= 0f) return;
+        currentShield += amount;
+        OnShieldChanged?.Invoke(currentShield, currentMaxHp);
+    }
+
+    /// <summary>Absorb incoming damage with the shield. Returns the leftover to apply to HP.</summary>
+    public float AbsorbShield(float amount)
+    {
+        if (currentShield <= 0f || amount <= 0f) return amount;
+        float absorbed = Mathf.Min(currentShield, amount);
+        currentShield -= absorbed;
+        OnShieldChanged?.Invoke(currentShield, currentMaxHp);
+        return amount - absorbed;
+    }
+
     // Attack Speed //
 
     public void SetAttSpd(float value)
     {
-        currentAttSpd = value;
+        attSpdBuffed  = value;
+        currentAttSpd = attSpdBuffed * DebuffFactor(StatType.AttSpd); // bake the debuff into the shown field
         OnAttSpdChanged?.Invoke(currentAttSpd);
     }
 
@@ -317,7 +349,7 @@ public class UnitStats : MonoBehaviour
                 currentDef += unitData.def * (percentDelta / 100f);
                 break;
             case StatType.AttSpd:
-                SetAttSpd(currentAttSpd + unitData.attSpd * (percentDelta / 100f));
+                SetAttSpd(attSpdBuffed + unitData.attSpd * (percentDelta / 100f));
                 break;
             case StatType.MaxHp:
                 float hpDelta = unitData.maxHp * (percentDelta / 100f);
@@ -344,5 +376,41 @@ public class UnitStats : MonoBehaviour
                 currentLifesteal += percentDelta / 100f;
                 break;
         }
+    }
+
+    // Multiplicative Debuffs //
+    // Separate layer from additive buffs: effective = additiveCurrent * product(debuff factors).
+
+    private readonly Dictionary<StatType, float> debuffFactors = new Dictionary<StatType, float>();
+
+    /// <summary>Reduce a stat multiplicatively (percent > 0 = reduction). Stacks with other debuffs.</summary>
+    public void ApplyStatDebuff(StatType stat, float percent)
+    {
+        float factor = Mathf.Clamp01(1f - percent / 100f);
+        float current = debuffFactors.TryGetValue(stat, out float f) ? f : 1f;
+        debuffFactors[stat] = current * factor;
+        NotifyDebuffSideEffect(stat);
+    }
+
+    /// <summary>Undo a previously applied multiplicative debuff.</summary>
+    public void RemoveStatDebuff(StatType stat, float percent)
+    {
+        float factor = 1f - percent / 100f;
+        if (factor <= 0f) return; // total reduction can't be inverted
+        if (debuffFactors.TryGetValue(stat, out float f))
+        {
+            debuffFactors[stat] = f / factor;
+            NotifyDebuffSideEffect(stat);
+        }
+    }
+
+    /// <summary>Current multiplicative debuff factor for a stat (1 = no debuff).</summary>
+    private float DebuffFactor(StatType stat) => debuffFactors.TryGetValue(stat, out float f) ? f : 1f;
+
+    /// <summary>Refire side effects for stats that aren't read purely through their getter.</summary>
+    private void NotifyDebuffSideEffect(StatType stat)
+    {
+        if (stat == StatType.AttSpd) SetAttSpd(attSpdBuffed); // rebake effective attSpd with new factor
+        else if (stat == StatType.MaxHp) SetHp(currentHp);    // re-clamp to debuffed max
     }
 }

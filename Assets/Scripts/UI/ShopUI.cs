@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -91,7 +91,7 @@ public class ShopUI : MonoBehaviour
     {
         if (rerollLabel == null || shop == null) return;
         rerollLabel.text = freeRerolls > 0
-            ? $"Reroll\n({freeRerolls} free)"
-            : $"Reroll\n{shop.RerollCost}g";
+            ? $"새로고침 ({freeRerolls} 무료!)"
+            : $"새로고침 {shop.RerollCost}골드";
     }
 }

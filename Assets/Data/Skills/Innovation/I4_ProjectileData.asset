@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e039d2ad58e52049abeb4d77be8a674, type: 3}
+  m_Name: I4_ProjectileData
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectileData
+  prefab: {fileID: 7653787099927154482, guid: 32cc8017a07158848a79e9d7e7e706ee, type: 3}
+  reachTime: 0.2
+  poolSize: 2
+  applyStun: 0
+  stunDuration: 0
+  useExplosion: 1
+  explodeDelay: 0
+  explodeArea:
+    shapeType: 1
+    radius: 0
+    range: 7.5
+    angle: 80
+    width: 0
+    length: 0
+  explodeVfxPrefab: {fileID: 7991427297233864019, guid: 51bfa1cd0800cd740ac0b830cd10219f, type: 3}
+  explodeSound: {fileID: 8300000, guid: 9fac843c9daea2c4b9c70269c4c1da88, type: 3}
+  explodeSoundVolume: 0.2

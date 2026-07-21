@@ -22,6 +22,10 @@ public class HealOverTimeSkill : BaseSkill
     [Tooltip("Number of heal ticks across the duration")]
     [Min(1)] public int tickCount = 3;
 
+    [Header("Cast VFX")]
+    [Tooltip("Scale applied to castVfxPrefab")]
+    public Vector3 vfxScale = Vector3.one;
+
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
         // Cast wind-up: animation event or fixed castTime
@@ -35,10 +39,34 @@ public class HealOverTimeSkill : BaseSkill
 
         if (caster == null || caster.Stats.CurrentHp <= 0) return false;
 
+        // Cast VFX on the caster //
+        if (castVfxPrefab != null)
+        {
+            Vector3 pos = caster.transform.position;
+            Vector3 vfxPos = new Vector3(pos.x, 0.1f, pos.z);
+            GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, vfxPos, Quaternion.identity);
+            vfx.transform.localScale = vfxScale;
+            ReturnVfxDelayed(castVfxPrefab, vfx, 5f, ct).Forget();
+        }
+
         // Fire the HoT and return; UnitStats owns the tick loop
         float totalHeal = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
         caster.Stats.ApplyHealOverTime(totalHeal, duration, tickCount);
         Debug.Log($"[HoT] {caster.Stats.UnitData.unitName} starts healing {totalHeal} over {duration}s ({tickCount} ticks)");
         return true;
+    }
+
+    private async UniTaskVoid ReturnVfxDelayed(GameObject prefab, GameObject instance, float delay, CancellationToken ct)
+    {
+        try
+        {
+            await UniTask.WaitForSeconds(delay, cancellationToken: ct);
+        }
+        catch (System.OperationCanceledException) { }
+        finally
+        {
+            if (instance != null)
+                VfxPoolManager.Instance.Return(prefab, instance);
+        }
     }
 }

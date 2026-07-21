@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Heretic_3
+  m_Controller: {fileID: 9100000, guid: 3a5942e2bec825d4a9b387283477a84f, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 0afd944a148b18f48bff3263caf23039, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 44deab79f9065cd46a297f2b14a1f102, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: ec75fd50a6dd16b41ba4f23600e304aa, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 942e1cbad429c7144b4c8f840982f2e1, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 7768d8893c2b7c744aaef0addae463d0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 877476bd9f01892429b906a10176d658, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a4f05f41730592e43bcf8e89605d683a, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: da8e7cf614c5c184eb55970a004634db, type: 2}

@@ -19,6 +19,10 @@ public class HealSkill : BaseSkill
     [Tooltip("Number of allies to heal (sorted by lowest HP%)")]
     [Min(1)] public int targetCount = 1;
 
+    [Header("Cast VFX")]
+    [Tooltip("Scale applied to castVfxPrefab")]
+    public Vector3 vfxScale = Vector3.one;
+
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
         if (useRootMotion) caster.Animator.SetApplyRootMotion();
@@ -31,7 +35,19 @@ public class HealSkill : BaseSkill
                 caster.Visuals.PlaySkillSound(skillSoundDelay).Forget();
                 await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
             }
-            List<UnitController> healTargets = FindLowestHpAllies(caster, targetCount);
+            if (caster == null || caster.Stats.CurrentHp <= 0) return false;
+
+            // Cast VFX on the caster //
+            if (castVfxPrefab != null)
+            {
+                Vector3 pos = caster.transform.position;
+                Vector3 vfxPos = new Vector3(pos.x, 0.1f, pos.z);
+                GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, vfxPos, Quaternion.identity);
+                vfx.transform.localScale = vfxScale;
+                ReturnVfxDelayed(castVfxPrefab, vfx, 5f, ct).Forget();
+            }
+
+            List<UnitController> healTargets = AreaTargetingUtility.FindLowestHpAllies(caster, targetCount);
             if (healTargets.Count == 0) return false;
 
             float healAmount = caster.Stats.CurrentAtt * healMultiplier * caster.Stats.SkillDamageMultiplier;
@@ -49,38 +65,17 @@ public class HealSkill : BaseSkill
         }
     }
 
-    // Target Search //
-
-    private List<UnitController> FindLowestHpAllies(UnitController caster, int count)
+    private async UniTaskVoid ReturnVfxDelayed(GameObject prefab, GameObject instance, float delay, CancellationToken ct)
     {
-        IReadOnlyList<UnitController> allies = UnitManager.Instance.GetAlliesOf(caster.CurrentTeam);
-        List<UnitController> damaged = new List<UnitController>();
-
-        foreach (UnitController ally in allies)
+        try
         {
-            if (ally == null || ally.AI.CurrentState == UnitState.Dead) continue;
-            if (ally.Stats.CurrentHp >= ally.Stats.CurrentMaxHp) continue;
-            damaged.Add(ally);
+            await UniTask.WaitForSeconds(delay, cancellationToken: ct);
         }
-
-        // Sort by HP% ascending
-        damaged.Sort((a, b) =>
+        catch (System.OperationCanceledException) { }
+        finally
         {
-            float pctA = a.Stats.CurrentHp / a.Stats.CurrentMaxHp;
-            float pctB = b.Stats.CurrentHp / b.Stats.CurrentMaxHp;
-            return pctA.CompareTo(pctB);
-        });
-
-        // Take up to count targets; fallback to self if no one is damaged
-        if (damaged.Count == 0)
-        {
-            damaged.Add(caster);
-            return damaged;
+            if (instance != null)
+                VfxPoolManager.Instance.Return(prefab, instance);
         }
-
-        if (damaged.Count > count)
-            damaged.RemoveRange(count, damaged.Count - count);
-
-        return damaged;
     }
 }

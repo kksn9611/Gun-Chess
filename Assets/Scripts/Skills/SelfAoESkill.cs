@@ -71,6 +71,7 @@ public class SelfAoESkill : BaseSkill
                 float damage = caster.Stats.CurrentAtt * damageMultiplier * caster.Stats.SkillDamageMultiplier;
                 if (canCrit) damage = caster.Stats.ApplyCrit(damage, out _);
                 target.TakeDamage(damage, caster);
+                caster.RaiseSkillHit(target, damage);
                 if (isStun) target.CCHandler.ApplyStun(stunDuration);
             }
 

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e039d2ad58e52049abeb4d77be8a674, type: 3}
   m_Name: H3_ProjectileData
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileData
-  prefab: {fileID: 0}
+  prefab: {fileID: 8780727661788297695, guid: 177ba225e0766064fbf163485717c9ca, type: 3}
   reachTime: 0.3
   poolSize: 1
   applyStun: 0
@@ -26,6 +26,6 @@ MonoBehaviour:
     angle: 0
     width: 0
     length: 0
-  explodeVfxPrefab: {fileID: 0}
+  explodeVfxPrefab: {fileID: 3721618641171204267, guid: 7f047943ac0f54d439febe380b333fba, type: 3}
   explodeSound: {fileID: 0}
   explodeSoundVolume: 1

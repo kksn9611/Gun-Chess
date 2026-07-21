@@ -19,7 +19,7 @@ MonoBehaviour:
   upgradeUnit: {fileID: 0}
   maxHp: 550
   maxMp: 125
-  att: 18
+  att: 17
   def: 25
   attRange: 2
   attSpd: 1

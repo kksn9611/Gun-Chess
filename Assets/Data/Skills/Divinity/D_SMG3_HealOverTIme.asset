@@ -21,6 +21,6 @@ MonoBehaviour:
   castVfxPrefab: {fileID: 0}
   useRootMotion: 0
   skillSoundDelay: 0
-  healMultiplier: 15
+  healMultiplier: 16
   duration: 10
   tickCount: 5

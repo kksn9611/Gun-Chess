@@ -4,6 +4,7 @@ using DG.Tweening;
 public class HPBar : MonoBehaviour
 {
     [SerializeField] private Image fill;
+    [SerializeField] private Image shieldFill; // shield overlay (scaled to maxHp)
     [SerializeField] private RawImage tickImage;
 
     private UnitController targetUnit;
@@ -14,6 +15,7 @@ public class HPBar : MonoBehaviour
     {
         targetUnit = target;
         targetUnit.Stats.OnHpChanged += UpdateHp;
+        targetUnit.Stats.OnShieldChanged += UpdateShield;
         targetUnit.OnBenchState += BarStateChanged;
         mainCam = Camera.main;
         targetAnchor = uiAnchor;
@@ -23,6 +25,7 @@ public class HPBar : MonoBehaviour
 
         // Set initial fill and ticks
         UpdateHp(targetUnit.Stats.CurrentHp, targetUnit.Stats.CurrentMaxHp);
+        UpdateShield(targetUnit.Stats.CurrentShield, targetUnit.Stats.CurrentMaxHp);
     }
 
     /// <summary>Show/hide bar on bench ↔ field transition.</summary>
@@ -53,6 +56,13 @@ public class HPBar : MonoBehaviour
         }
     }
 
+    /// <summary>Update the shield overlay, scaled to maxHp like the HP fill.</summary>
+    public void UpdateShield(float currentShield, float maxHp)
+    {
+        if (shieldFill == null) return;
+        shieldFill.fillAmount = maxHp > 0f ? Mathf.Clamp01(currentShield / maxHp) : 0f;
+    }
+
     private void LateUpdate()
     {
         // Destroy bar only when unit is fully destroyed
@@ -81,6 +91,7 @@ public class HPBar : MonoBehaviour
         if (targetUnit != null)
         {
             targetUnit.Stats.OnHpChanged -= UpdateHp;
+            targetUnit.Stats.OnShieldChanged -= UpdateShield;
             targetUnit.OnBenchState -= BarStateChanged;
         }
     }
