@@ -43,6 +43,10 @@ public class DebugSpawnButton : MonoBehaviour
         if (unit != null)
         {
             BenchManager.Instance.AddUnit(unit, slot);
+
+            // Unit added -> check for a 3-copy merge (board + bench)
+            if (MergeManager.Instance != null)
+                MergeManager.Instance.CheckMerge(unitData);
         }
         else
         {

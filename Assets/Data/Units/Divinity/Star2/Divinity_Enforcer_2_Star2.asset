@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Divinity_Enforcer_2_Star2
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: Divinity_Enforcer_2
+  unitPrefab: {fileID: 4104458227381271381, guid: e3f8d401be6f1bc469b520bda1ccad0c, type: 3}
+  cost: 2
+  starLevel: 2
+  upgradeUnit: {fileID: 0}
+  maxHp: 765
+  maxMp: 75
+  att: 68
+  def: 20
+  attRange: 4
+  attSpd: 0.5
+  moveSpd: 1.25
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: 31a18de2d7385d5458da7741160797b9, type: 2}
+  - {fileID: 11400000, guid: 7c9cce7b91f87de4485c207f9e3ad476, type: 2}
+  - {fileID: 11400000, guid: 0ed94330ffef91c4aac2cbb304ed0765, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
+  skillProjectilePrefab: {fileID: 0}
+  poolSize: 5
+  skillPoolSize: 1
+  skill: {fileID: 11400000, guid: ec8cd24f15dd92141a2943dd5abe95ed, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2

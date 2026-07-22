@@ -23,6 +23,7 @@ public class BattleManager : MonoBehaviour
     // Events //
     public static event Action OnBattleStart;   // Fires on StartBattle(); activates all unit AI
     public static event Action<Team> OnBattleEnd; // Fires on EndBattle(); passes winning team
+    public static event Action OnPreparationStart; // Fires on ResetBattle(); Preparation phase begins
 
     /// <summary>
     /// Start battle and fire OnBattleStart event.
@@ -64,5 +65,6 @@ public class BattleManager : MonoBehaviour
     {
         CurrentPhase = Phase.Preparation;
         Debug.Log("[BattleManager] Reset to Preparation phase");
+        OnPreparationStart?.Invoke();
     }
 }

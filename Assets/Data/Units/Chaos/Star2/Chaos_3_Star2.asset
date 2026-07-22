@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Chaos_3_Star2
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: Chaos_3
+  unitPrefab: {fileID: 8028335539950420324, guid: 8c3eada354ab7694d851c18c4486de2a, type: 3}
+  cost: 3
+  starLevel: 2
+  upgradeUnit: {fileID: 0}
+  maxHp: 1020
+  maxMp: 100
+  att: 34
+  def: 25
+  attRange: 2
+  attSpd: 1
+  moveSpd: 2
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: 89cdeefaef3e1d542a344761cdd424c4, type: 2}
+  - {fileID: 11400000, guid: 52b798bb6bde2524d9bbab626961b639, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
+  skillProjectilePrefab: {fileID: 0}
+  poolSize: 5
+  skillPoolSize: 0
+  skill: {fileID: 11400000, guid: e088f8945798c6943935e07e3c53d132, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2

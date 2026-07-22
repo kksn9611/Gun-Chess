@@ -156,6 +156,11 @@ public class ShopManager : MonoBehaviour
         currnetShop[slotIndex].currnetUnit = null;
         currnetShop[slotIndex].isPurchased = true;
         OnShopChanged?.Invoke();
+
+        // Unit added -> check for a 3-copy merge (board + bench)
+        if (MergeManager.Instance != null)
+            MergeManager.Instance.CheckMerge(unit);
+
         return true;
     }
 

@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Innovation_1_Star2
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: Innovation_1
+  unitPrefab: {fileID: 7339558638033791742, guid: 12a089f334cfc6d4ab89f27793c0d1cf, type: 3}
+  cost: 1
+  starLevel: 2
+  upgradeUnit: {fileID: 0}
+  maxHp: 850
+  maxMp: 50
+  att: 34
+  def: 20
+  attRange: 3
+  attSpd: 1
+  moveSpd: 2
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: e7207f00580a0b1409e6c167e595ec36, type: 2}
+  - {fileID: 11400000, guid: 80f7aebb534de7e44b70952cb9b3f6ef, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
+  skillProjectilePrefab: {fileID: 5083330694576680963, guid: c0f9c2f5ebd43194680dbc84e1b79c0e, type: 3}
+  poolSize: 5
+  skillPoolSize: 12
+  skill: {fileID: 11400000, guid: 70c18af726a5b1442b50be6904580e69, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2
