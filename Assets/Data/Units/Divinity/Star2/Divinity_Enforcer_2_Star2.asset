@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Divinity_Enforcer_2_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Divinity_Enforcer_2
-  unitPrefab: {fileID: 4104458227381271381, guid: e3f8d401be6f1bc469b520bda1ccad0c, type: 3}
+  unitPrefab: {fileID: 4104458227381271381, guid: 942531a5bb311c543aa624922e9f1098, type: 3}
   cost: 2
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 88804d797a3705f4a92efa7b87147d4e, type: 2}
   maxHp: 765
   maxMp: 75
   att: 68

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Mystic_1_Star3
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Mystic_1
-  unitPrefab: {fileID: 4104458227381271381, guid: 22f8dd8f221553742a73d4dbc0bf6c17, type: 3}
+  unitPrefab: {fileID: 4104458227381271381, guid: 81b2e7e40ba48ee468e4640b0e5b3803, type: 3}
   cost: 1
   starLevel: 3
   upgradeUnit: {fileID: 0}
-  maxHp: 935
+  maxHp: 1589.5
   maxMp: 50
-  att: 59.5
+  att: 101.2
   def: 20
   attRange: 3
   attSpd: 0.7

@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Chaos_Enforcer_4_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Chaos_E_4
-  unitPrefab: {fileID: 8028335539950420324, guid: 45a6b4320266b0e408e29b5912ac58d0, type: 3}
+  unitPrefab: {fileID: 8028335539950420324, guid: 551df448d69a1c443a251dbc7dc6b791, type: 3}
   cost: 4
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 4337574bf5ed94844bee5ba00b5b1702, type: 2}
   maxHp: 1020
   maxMp: 100
   att: 40.8

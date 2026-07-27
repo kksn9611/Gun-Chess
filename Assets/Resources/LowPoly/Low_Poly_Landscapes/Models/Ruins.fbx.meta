@@ -1,0 +1,229 @@
+fileFormatVersion: 2
+guid: ea4dc08f18590bb4b99cefae7ddc1557
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Bloc_01
+    100002: Bloc_02
+    100004: Bloc_03
+    100006: Bloc_04
+    100008: Bloc_05
+    100010: column_01
+    100012: column_02
+    100014: Frame_01
+    100016: Left
+    100018: Right
+    100020: Roof_01
+    100022: Roof_02
+    100024: Ruin_01
+    100026: Ruin_02
+    100028: //RootNode
+    100030: Strair_01
+    100032: Strair_02
+    100034: Strair_03
+    100036: Window_01
+    400000: Bloc_01
+    400002: Bloc_02
+    400004: Bloc_03
+    400006: Bloc_04
+    400008: Bloc_05
+    400010: column_01
+    400012: column_02
+    400014: Frame_01
+    400016: Left
+    400018: Right
+    400020: Roof_01
+    400022: Roof_02
+    400024: Ruin_01
+    400026: Ruin_02
+    400028: //RootNode
+    400030: Strair_01
+    400032: Strair_02
+    400034: Strair_03
+    400036: Window_01
+    2100000: Ruins_02_MAT
+    2100002: Ruins_01_MAT
+    2100004: Ruins_03_MAT
+    2100006: Ruins_04_MAT
+    2300000: Bloc_01
+    2300002: Bloc_02
+    2300004: Bloc_03
+    2300006: Bloc_04
+    2300008: Bloc_05
+    2300010: column_01
+    2300012: column_02
+    2300014: Frame_01
+    2300016: Left
+    2300018: Right
+    2300020: Roof_01
+    2300022: Roof_02
+    2300024: Ruin_01
+    2300026: Ruin_02
+    2300028: Strair_01
+    2300030: Strair_02
+    2300032: Strair_03
+    2300034: Window_01
+    3300000: Bloc_01
+    3300002: Bloc_02
+    3300004: Bloc_03
+    3300006: Bloc_04
+    3300008: Bloc_05
+    3300010: column_01
+    3300012: column_02
+    3300014: Frame_01
+    3300016: Left
+    3300018: Right
+    3300020: Roof_01
+    3300022: Roof_02
+    3300024: Ruin_01
+    3300026: Ruin_02
+    3300028: Strair_01
+    3300030: Strair_02
+    3300032: Strair_03
+    3300034: Window_01
+    4300000: Ruin_02
+    4300002: Roof_02
+    4300004: Roof_01
+    4300006: Frame_01
+    4300008: Window_01
+    4300010: Left
+    4300012: Right
+    4300014: Ruin_01
+    4300016: column_02
+    4300018: column_01
+    4300020: Strair_03
+    4300022: Strair_02
+    4300024: Strair_01
+    4300026: Bloc_05
+    4300028: Bloc_04
+    4300030: Bloc_03
+    4300032: Bloc_02
+    4300034: Bloc_01
+    6400000: Bloc_01
+    6400002: Bloc_02
+    6400004: Bloc_03
+    6400006: Bloc_04
+    6400008: Bloc_05
+    6400010: column_01
+    6400012: column_02
+    6400014: Frame_01
+    6400016: Left
+    6400018: Right
+    6400020: Roof_01
+    6400022: Roof_02
+    6400024: Ruin_01
+    6400026: Ruin_02
+    6400028: Strair_01
+    6400030: Strair_02
+    6400032: Strair_03
+    6400034: Window_01
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ruins_01_MAT
+    second: {fileID: 2100000, guid: 2a245bf7201c41d4380da25451edfb3d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ruins_02_MAT
+    second: {fileID: 2100000, guid: c74ae3aacd1304f48a621c03ad5289a9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ruins_03_MAT
+    second: {fileID: 2100000, guid: 8826c63f80017ea4abff0ad93f57fb22, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Ruins_04_MAT
+    second: {fileID: 2100000, guid: 19d86dd3a33c5794a89365a992aa3774, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 1
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 1
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 154686
+  packageName: Low Poly Landscapes
+  packageVersion: 1.0
+  assetPath: Assets/LowPoly/Low_Poly_Landscapes/Models/Ruins.fbx
+  uploadId: 351334

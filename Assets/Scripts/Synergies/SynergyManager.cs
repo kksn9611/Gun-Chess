@@ -58,17 +58,17 @@ public class SynergyManager : MonoBehaviour
     {
         if (synergyState == null) return;
 
-        // 1) Tally field unit synergies (same UnitData counted once)
+        // 1) Tally field unit synergies (same champion counted once across star tiers)
         Dictionary<SynergyData, int> synergyCounts = new Dictionary<SynergyData, int>();
-        HashSet<UnitData> countedUnitData = new HashSet<UnitData>();
+        HashSet<string> countedUnits = new HashSet<string>();
 
         foreach (var unit in UnitManager.Instance.playerUnits)
         {
             if (unit == null || unit.IsOnBench) continue;
             if (unit.Stats.UnitData == null || unit.Stats.UnitData.synergies == null) continue;
 
-            // Count each UnitData only once even if multiple units share it
-            if (!countedUnitData.Add(unit.Stats.UnitData)) continue;
+            // Count each champion once by unitName — star tiers share a name, so duplicates don't stack
+            if (!countedUnits.Add(unit.Stats.UnitData.unitName)) continue;
 
             foreach (var synergy in unit.Stats.UnitData.synergies)
             {
@@ -111,18 +111,31 @@ public class SynergyManager : MonoBehaviour
         }
     }
     /// <summary>
-    /// Round Income Synergy (called by RoundManager)
+    /// Total gold granted by active synergy tiers this round. Calc-only (no side effects),
+    /// so UI can preview the same value RoundManager grants.
     /// </summary>
-    public void GrantRoundIncome()
+    public int CalculateRoundIncome()
     {
-        if (synergyState == null) return;
+        if (synergyState == null) return 0;
+
+        int total = 0;
         foreach (var entry in synergyState.Entries)
         {
             if (entry.activeTierIndex < 0 || entry.synergy == null) continue;
             var behaviors = entry.synergy.tiers[entry.activeTierIndex].behaviors;
             if (behaviors == null) continue;
             foreach (var b in behaviors)
-                if (b is GoldPerRoundBehavior gold) gold.GrantIncome();
+                if (b is GoldPerRoundBehavior gold) total += gold.goldPerRound;
         }
+        return total;
+    }
+
+    /// <summary>
+    /// Round Income Synergy (called by RoundManager). Grants CalculateRoundIncome() to the player.
+    /// </summary>
+    public void GrantRoundIncome()
+    {
+        int income = CalculateRoundIncome();
+        if (income > 0 && PlayerManager.Instance != null) PlayerManager.Instance.AddGold(income);
     }
 }

@@ -27,6 +27,9 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int startingGold = 3;
     [SerializeField] private int startingLevel = 1;
 
+    [Header("Round Income")]
+    [SerializeField] private int baseTurnGold = 2; // base gold granted each turn
+
     [Header("Interest")]
     [SerializeField] private int goldPerInterest = 10; // 1 interest per this much gold held
     [SerializeField] private int interestCap = 50;     // gold above this earns no extra interest
@@ -37,6 +40,7 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int currentExp;    // EXP accumulated toward next level
 
     public int Gold => gold;
+    public int BaseTurnGold => baseTurnGold; // flat gold granted each turn
     public int CurrentLevel => currentLevel;
     public int CurrentExp => currentExp;
     /// <summary>EXP required to reach next level; 0 if at max level.</summary>
@@ -92,6 +96,14 @@ public class PlayerManager : MonoBehaviour
         gold -= amount;
         OnGoldChanged?.Invoke(gold);
         return true;
+    }
+
+
+    /// <summary>Grant the flat base gold for the turn and return the amount granted.</summary>
+    public int GrantTurnGold()
+    {
+        if (baseTurnGold > 0) AddGold(baseTurnGold);
+        return baseTurnGold;
     }
 
 

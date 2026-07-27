@@ -62,7 +62,7 @@ public class RoundManager : MonoBehaviour
     private async UniTaskVoid Start()
     {
         // Wait for HexGridLayout / BenchLayout to create tiles
-        await UniTask.WaitForSeconds(0.3f, cancellationToken: cts.Token);
+        await UniTask.WaitForSeconds(0.5f, cancellationToken: cts.Token);
 
         // Initial player unit placement
         SpawnPlayerUnitsForTest();
@@ -139,8 +139,11 @@ public class RoundManager : MonoBehaviour
         // Restore player units to pre-battle positions
         RestorePlayerPositions();
 
-        // Gain interest gold each round
+        // Gain interest gold each round (calculated on held gold before this round's income)
         PlayerManager.Instance.GrantInterest();
+
+        // Gain base turn gold — after interest so it doesn't inflate the interest calculation
+        PlayerManager.Instance.GrantTurnGold();
 
         // Gain Synergy gold each round
         synergyManager.GrantRoundIncome();

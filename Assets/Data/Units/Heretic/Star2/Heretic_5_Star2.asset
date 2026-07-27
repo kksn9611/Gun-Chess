@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Heretic_5_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Heretic_5
-  unitPrefab: {fileID: 4104458227381271381, guid: f7bcd6ee6ff09b3418ab0bf837df7f79, type: 3}
+  unitPrefab: {fileID: 4104458227381271381, guid: 3bb6f8542973e12478d4cdf5cb4a5c7d, type: 3}
   cost: 5
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 4fb7b877314fc23489abb6a98c813bef, type: 2}
   maxHp: 1020
   maxMp: 75
   att: 59.5

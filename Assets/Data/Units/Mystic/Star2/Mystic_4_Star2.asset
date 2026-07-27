@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Mystic_4_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Mystic_4
-  unitPrefab: {fileID: 4104458227381271381, guid: 8743940df1786bd4b802160f5176c32e, type: 3}
+  unitPrefab: {fileID: 4104458227381271381, guid: 9702d3bc7d829944c8e4ea3d5c063cd3, type: 3}
   cost: 4
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 6de3a627b5f690640a480c690f3c12e2, type: 2}
   maxHp: 1020
   maxMp: 30
   att: 76.5

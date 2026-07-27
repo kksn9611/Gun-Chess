@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Innovation_1_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Innovation_1
-  unitPrefab: {fileID: 7339558638033791742, guid: 12a089f334cfc6d4ab89f27793c0d1cf, type: 3}
+  unitPrefab: {fileID: 7339558638033791742, guid: 8283238bff49a6646b9a7f3aa856b860, type: 3}
   cost: 1
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 7e917f38c0742714ca42379bab9c7560, type: 2}
   maxHp: 850
   maxMp: 50
   att: 34

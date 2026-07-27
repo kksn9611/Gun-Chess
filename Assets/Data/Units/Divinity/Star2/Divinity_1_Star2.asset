@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Divinity_1_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Divinity_1
-  unitPrefab: {fileID: 2736525619550198037, guid: 0c95abf5bd80c3347b38bc88b563ff0c, type: 3}
+  unitPrefab: {fileID: 2736525619550198037, guid: 9f2488b2407b50147ac63f6377ab8d7e, type: 3}
   cost: 1
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: ad1c235d4c8bc7041bde3fb18778024a, type: 2}
   maxHp: 1020
   maxMp: 75
   att: 51

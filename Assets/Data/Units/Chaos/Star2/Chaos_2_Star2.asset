@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Chaos_2_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: Chaos_2
-  unitPrefab: {fileID: 7339558638033791742, guid: 282409e3cdf35c541a5fc6cf254cfd97, type: 3}
+  unitPrefab: {fileID: 7339558638033791742, guid: b834fd8bea326224cb7084e1450818b9, type: 3}
   cost: 2
   starLevel: 2
-  upgradeUnit: {fileID: 0}
+  upgradeUnit: {fileID: 11400000, guid: 7827e9a0810e25f4d91daba4ac3ec99a, type: 2}
   maxHp: 850
   maxMp: 50
   att: 34

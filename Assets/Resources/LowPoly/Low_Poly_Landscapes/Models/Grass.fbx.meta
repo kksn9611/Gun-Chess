@@ -1,0 +1,193 @@
+fileFormatVersion: 2
+guid: 0539c53af7c500640a416b92ae69d15e
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Grass_01
+    100004: Grass_010
+    100006: Grass_011
+    100008: Grass_012
+    100010: Grass_013
+    100012: Grass_014
+    100014: Grass_015
+    100016: Grass_02
+    100018: Grass_03
+    100020: Grass_04
+    100022: Grass_05
+    100024: Grass_06
+    100026: Grass_07
+    100028: Grass_08
+    100030: Grass_09
+    400000: //RootNode
+    400002: Grass_01
+    400004: Grass_010
+    400006: Grass_011
+    400008: Grass_012
+    400010: Grass_013
+    400012: Grass_014
+    400014: Grass_015
+    400016: Grass_02
+    400018: Grass_03
+    400020: Grass_04
+    400022: Grass_05
+    400024: Grass_06
+    400026: Grass_07
+    400028: Grass_08
+    400030: Grass_09
+    2100000: Grass_MAT
+    2300000: Grass_01
+    2300002: Grass_010
+    2300004: Grass_011
+    2300006: Grass_012
+    2300008: Grass_013
+    2300010: Grass_014
+    2300012: Grass_015
+    2300014: Grass_02
+    2300016: Grass_03
+    2300018: Grass_04
+    2300020: Grass_05
+    2300022: Grass_06
+    2300024: Grass_07
+    2300026: Grass_08
+    2300028: Grass_09
+    3300000: Grass_01
+    3300002: Grass_010
+    3300004: Grass_011
+    3300006: Grass_012
+    3300008: Grass_013
+    3300010: Grass_014
+    3300012: Grass_015
+    3300014: Grass_02
+    3300016: Grass_03
+    3300018: Grass_04
+    3300020: Grass_05
+    3300022: Grass_06
+    3300024: Grass_07
+    3300026: Grass_08
+    3300028: Grass_09
+    4300000: Grass_015
+    4300002: Grass_014
+    4300004: Grass_013
+    4300006: Grass_012
+    4300008: Grass_011
+    4300010: Grass_010
+    4300012: Grass_09
+    4300014: Grass_08
+    4300016: Grass_07
+    4300018: Grass_06
+    4300020: Grass_05
+    4300022: Grass_04
+    4300024: Grass_03
+    4300026: Grass_02
+    4300028: Grass_01
+    6400000: Grass_01
+    6400002: Grass_010
+    6400004: Grass_011
+    6400006: Grass_012
+    6400008: Grass_013
+    6400010: Grass_014
+    6400012: Grass_015
+    6400014: Grass_02
+    6400016: Grass_03
+    6400018: Grass_04
+    6400020: Grass_05
+    6400022: Grass_06
+    6400024: Grass_07
+    6400026: Grass_08
+    6400028: Grass_09
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Grass_MAT
+    second: {fileID: 2100000, guid: 98c70cde68c61ef49b7fd7bbf390b4b6, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 1
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 1
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 154686
+  packageName: Low Poly Landscapes
+  packageVersion: 1.0
+  assetPath: Assets/LowPoly/Low_Poly_Landscapes/Models/Grass.fbx
+  uploadId: 351334

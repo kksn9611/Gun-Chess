@@ -1,0 +1,187 @@
+fileFormatVersion: 2
+guid: dcbab8b24a23304428d403e61400556f
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: Pin_01
+    100002: Pin_02
+    100004: Pin_03
+    100006: Pin_04
+    100008: Pin_05
+    100010: Pin_06
+    100012: Pin_07
+    100014: Tree_01
+    100016: Tree_02
+    100018: Tree_03
+    100020: Tree_04
+    100022: Tree_05
+    100024: Tree_06
+    100026: //RootNode
+    400000: Pin_01
+    400002: Pin_02
+    400004: Pin_03
+    400006: Pin_04
+    400008: Pin_05
+    400010: Pin_06
+    400012: Pin_07
+    400014: Tree_01
+    400016: Tree_02
+    400018: Tree_03
+    400020: Tree_04
+    400022: Tree_05
+    400024: Tree_06
+    400026: //RootNode
+    2100000: Trunk_01_MAT
+    2100002: Leafs_01_MAT
+    2300000: Pin_01
+    2300002: Pin_02
+    2300004: Pin_03
+    2300006: Pin_04
+    2300008: Pin_05
+    2300010: Pin_06
+    2300012: Pin_07
+    2300014: Tree_01
+    2300016: Tree_02
+    2300018: Tree_03
+    2300020: Tree_04
+    2300022: Tree_05
+    2300024: Tree_06
+    3300000: Pin_01
+    3300002: Pin_02
+    3300004: Pin_03
+    3300006: Pin_04
+    3300008: Pin_05
+    3300010: Pin_06
+    3300012: Pin_07
+    3300014: Tree_01
+    3300016: Tree_02
+    3300018: Tree_03
+    3300020: Tree_04
+    3300022: Tree_05
+    3300024: Tree_06
+    4300000: Tree_06
+    4300002: Tree_05
+    4300004: Tree_04
+    4300006: Tree_03
+    4300008: Tree_02
+    4300010: Tree_01
+    4300012: Pin_01
+    4300014: Pin_02
+    4300016: Pin_03
+    4300018: Pin_04
+    4300020: Pin_05
+    4300022: Pin_06
+    4300024: Pin_07
+    6400000: Pin_01
+    6400002: Pin_02
+    6400004: Pin_03
+    6400006: Pin_04
+    6400008: Pin_05
+    6400010: Pin_06
+    6400012: Pin_07
+    6400014: Tree_01
+    6400016: Tree_02
+    6400018: Tree_03
+    6400020: Tree_04
+    6400022: Tree_05
+    6400024: Tree_06
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Leafs_01_MAT
+    second: {fileID: 2100000, guid: e8e7613db5391a94aa6b925f16829972, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Trunk_01_MAT
+    second: {fileID: 2100000, guid: 3c70323a452e8c94f9149784503ddf78, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importVisibility: 0
+    importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    swapUVChannels: 1
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 0
+    normalImportMode: 1
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 0
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 154686
+  packageName: Low Poly Landscapes
+  packageVersion: 1.0
+  assetPath: Assets/LowPoly/Low_Poly_Landscapes/Models/Trees.fbx
+  uploadId: 351334
