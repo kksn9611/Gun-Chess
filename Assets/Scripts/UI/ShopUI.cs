@@ -13,7 +13,7 @@ public class ShopUI : MonoBehaviour
 
     [Header("Slots")]
     [SerializeField] private Button[] slotButtons;
-    [SerializeField] private TextMeshProUGUI[] slotLabels;
+    [SerializeField] private ShopSlotUI[] slotUIs;
 
     [Header("Controls")]
     [SerializeField] private Button rerollButton;
@@ -77,8 +77,7 @@ public class ShopUI : MonoBehaviour
             bool filled = unit != null;
 
             if (slotButtons[i] != null) slotButtons[i].interactable = filled;
-            if (slotLabels[i] != null)
-                slotLabels[i].text = filled ? $"{unit.unitName}\n{unit.cost}g" : "-";
+            if (i < slotUIs.Length && slotUIs[i] != null) slotUIs[i].SetUnit(unit);
         }
     }
 

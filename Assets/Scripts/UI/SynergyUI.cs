@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -37,7 +38,7 @@ public class SynergyUI : MonoBehaviour
         sb.AppendLine("<b>[ Synergy ]</b>");
         sb.AppendLine();
 
-        foreach (var entry in synergyState.Entries)
+        foreach (var entry in SortedEntries())
         {
             if (entry.synergy == null) continue;
 
@@ -72,5 +73,39 @@ public class SynergyUI : MonoBehaviour
             sb.AppendLine("<color=#888888>No synergies placed</color>");
 
         synergyText.text = sb.ToString();
+    }
+
+    // Sorting //
+
+    /// <summary>
+    /// Entries ordered for display by the active tier's Inspector sort keys:
+    /// sortPrimary asc, then sortSecondary asc as tiebreak (lower shown first).
+    /// </summary>
+    private List<SynergyEntry> SortedEntries()
+    {
+        var sorted = new List<SynergyEntry>(synergyState.Entries);
+        sorted.Sort((a, b) =>
+        {
+            GetSortKeys(a, out int ap, out int asec);
+            GetSortKeys(b, out int bp, out int bsec);
+            int byPrimary = ap.CompareTo(bp); // primary key
+            if (byPrimary != 0) return byPrimary;
+            return asec.CompareTo(bsec);       // tiebreak
+        });
+        return sorted;
+    }
+
+    /// <summary>Sort keys from the entry's active tier (falls back to tier 0 while inactive).</summary>
+    private static void GetSortKeys(SynergyEntry entry, out int primary, out int secondary)
+    {
+        primary = 0; secondary = 0;
+        var synergy = entry.synergy;
+        if (synergy == null || synergy.tiers == null || synergy.tiers.Length == 0) return;
+
+        int idx = entry.activeTierIndex >= 0
+            ? Mathf.Min(entry.activeTierIndex, synergy.tiers.Length - 1)
+            : 0; // inactive: use the first tier's keys
+        primary   = synergy.tiers[idx].sortPrimary;
+        secondary = synergy.tiers[idx].sortSecondary;
     }
 }

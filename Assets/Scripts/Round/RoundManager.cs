@@ -97,6 +97,13 @@ public class RoundManager : MonoBehaviour
             return;
         }
 
+        // Block start while over the board limit (e.g. auto-bench couldn't fit the excess)
+        if (BoardManager.Instance != null && BoardManager.Instance.FieldCount > BoardManager.Instance.Capacity)
+        {
+            Debug.LogWarning($"[RoundManager] Over board capacity: {BoardManager.Instance.FieldCount}/{BoardManager.Instance.Capacity}");
+            return;
+        }
+
         // 1) Save player unit positions (field units only)
         SavePlayerUnitPositions();
 

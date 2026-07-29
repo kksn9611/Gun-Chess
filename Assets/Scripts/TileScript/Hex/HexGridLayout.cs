@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class HexGridLayout : MonoBehaviour
 {
@@ -10,6 +10,8 @@ public class HexGridLayout : MonoBehaviour
 
     [Header("Material")]
     public Material material;
+    [SerializeField] private Material overlayMaterial; // glowing placement overlay (transparent)
+    [SerializeField] private float overlayScale = 0.93f; // overlay size relative to tile (fits inside)
 
     private void Start()
     {
@@ -54,6 +56,24 @@ public class HexGridLayout : MonoBehaviour
                 // Add MeshCollider for raycast (mouse click) detection
                 MeshCollider col = tile.AddComponent<MeshCollider>();
                 col.sharedMesh = CreateSolidHexMesh(outerSize, height);
+
+                // Glowing placement overlay — hidden until a unit is picked up
+                if (overlayMaterial != null)
+                {
+                    GameObject overlay = new GameObject("Overlay", typeof(HexRenderer), typeof(TileOverlay));
+                    overlay.transform.SetParent(tile.transform, false);
+                    overlay.transform.localPosition = new Vector3(0f, height / 2f + 0.01f, 0f); // above tile top
+
+                    HexRenderer overlayRenderer = overlay.GetComponent<HexRenderer>();
+                    overlayRenderer.outerSize = outerSize * overlayScale; // inset inside the tile
+                    overlayRenderer.innerSize = 0f; // solid top cap
+                    overlayRenderer.height    = 0f; // flat
+                    overlayRenderer.SetMaterial(overlayMaterial);
+                    overlayRenderer.DrawMesh();
+
+                    tileScript.SetOverlay(overlay.GetComponent<TileOverlay>());
+                    overlay.SetActive(false);
+                }
             }
         }
         TileManager.Instance.InitializeAllTiles(); // Initialize all tile coordinates

@@ -6,6 +6,7 @@ public class UnitData : ScriptableObject
     [Header("Basic Info")]
     public string unitName;
     public GameObject unitPrefab; // Unit visual
+    public Sprite portrait;       // Shop/UI portrait
     public int cost = 1;
 
     [Header("Upgrade")]

@@ -43,6 +43,28 @@ public class MergeManager : MonoBehaviour
         // spawn is deferred until the merge projectiles land.
     }
 
+    /// <summary>True if buying one more copy of this unit would complete a merge (used for bench-full purchases).</summary>
+    public bool WouldMergeOnAdd(UnitData data)
+    {
+        if (data == null || data.upgradeUnit == null) return false; // final tier never merges
+        return CollectPlayerCopies(data).Count >= MergeCount - 1;
+    }
+
+    /// <summary>
+    /// Complete a merge driven by a purchase whose new copy is folded in virtually (bench full).
+    /// Consumes the owned copies into the upgrade; the purchased copy is conserved into it without ever
+    /// being placed. State-identical to a normal 3-copy merge. Only call when WouldMergeOnAdd() is true.
+    /// </summary>
+    public void MergeFromPurchase(UnitData data)
+    {
+        if (data == null || data.upgradeUnit == null) return;
+
+        List<UnitController> copies = CollectPlayerCopies(data);
+        if (copies.Count < MergeCount - 1) return; // not actually a completing purchase
+
+        Merge(data, copies); // consumes the owned copies; the purchased copy is the virtual third
+    }
+
     /// <summary>Re-evaluate every owned unit type for merges. Called when the Preparation phase begins.</summary>
     public void CheckAllMerges()
     {

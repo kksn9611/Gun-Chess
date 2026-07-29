@@ -21,7 +21,7 @@ MonoBehaviour:
   maxMp: 55
   att: 51
   def: 20
-  attRange: 4
+  attRange: 5
   attSpd: 0.5
   moveSpd: 1.25
   critChance: 0.25

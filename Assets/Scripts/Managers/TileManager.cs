@@ -11,6 +11,9 @@ public class TileManager
 
     private readonly Dictionary<Vector2Int, TileScript> tileMap = new Dictionary<Vector2Int, TileScript>();
 
+    /// <summary>All registered field tiles (used for overlay/placement sweeps).</summary>
+    public IEnumerable<TileScript> AllTiles => tileMap.Values;
+
     /// <summary>
     /// Called once per tile during HexGridLayout.LayoutGrid().
     /// </summary>

@@ -131,6 +131,26 @@ public class SynergyManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Total bonus board slots from active synergy tiers. Calc-only (no side effects),
+    /// so BoardManager can fold it into the placement limit.
+    /// </summary>
+    public int CalculateBoardBonus()
+    {
+        if (synergyState == null) return 0;
+
+        int total = 0;
+        foreach (var entry in synergyState.Entries)
+        {
+            if (entry.activeTierIndex < 0 || entry.synergy == null) continue;
+            var behaviors = entry.synergy.tiers[entry.activeTierIndex].behaviors;
+            if (behaviors == null) continue;
+            foreach (var b in behaviors)
+                if (b is BoardCapacityBehavior cap) total += cap.bonusSlots;
+        }
+        return total;
+    }
+
+    /// <summary>
     /// Round Income Synergy (called by RoundManager). Grants CalculateRoundIncome() to the player.
     /// </summary>
     public void GrantRoundIncome()

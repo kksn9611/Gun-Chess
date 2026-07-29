@@ -47,12 +47,11 @@ public class HPBar : MonoBehaviour
 
         if (tickImage != null)
         {
-            float hpPerTick = 100f; // 1 tick per 100 HP
+            float hpPerTick = 250f; // 1 tick per 100 HP
 
-            // e.g., maxHp 500 → tickCount = 5
             float tickCount = maxHp / hpPerTick;
 
-            tickImage.uvRect = new Rect(0, 0, tickCount-1f, 1);
+            tickImage.uvRect = new Rect(0, 0, tickCount, 1);
         }
     }
 

@@ -215,7 +215,7 @@ public class UnitController : MonoBehaviour
         Stats.SetMp(0f);
         Animator.SetSkillSpeed(Stats.Skill.animationSpd);
         Animator.PlaySkill();
-        Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
+        //Debug.Log($"[Skill] {Stats.UnitData.unitName} → casting {Stats.Skill.skillName}!");
 
         // Link both tokens: unit death (cts) and AI state change (aiCt)
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, aiCt);

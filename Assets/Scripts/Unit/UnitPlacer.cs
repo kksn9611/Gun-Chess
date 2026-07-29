@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
@@ -15,11 +16,18 @@ public class UnitPlacer : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] private Material highlightMaterial;
 
+    [Header("Placement Overlay")]
+    [SerializeField] private Color overlayPlaceableColor = new Color(1f, 1f, 1f, 1f); // valid drop targets
+    [SerializeField] private Color overlayHoverColor     = new Color(1f, 1f, 1f, 1f);   // tile under cursor
+    [SerializeField] private float overlayColorLerpTime  = 0.5f;                             // hover fade duration (s)
+
     private UnitController heldUnit;      // Currently held unit
     private BaseTile       originalTile;  // Original tile before pickup (hex or bench)
 
     private BaseTile hoveredTile;                // Tile under mouse cursor
     private Material hoveredOriginalMaterial;   // Original material before highlight
+
+    private readonly List<BaseTile> activeOverlayTiles = new List<BaseTile>(); // overlays lit for current drag
 
     // Ground plane raycast for unit dragging
     private readonly Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
@@ -97,24 +105,36 @@ public class UnitPlacer : MonoBehaviour
 
         ClearHover();
 
-        if (tile != null && IsValidDropTarget(tile) && highlightMaterial != null)
+        if (tile != null && IsValidDropTarget(tile))
         {
+            hoveredTile = tile;
+
+            // Existing material-swap highlight (kept alongside the overlay)
             MeshRenderer mr = tile.GetComponent<MeshRenderer>();
-            if (mr != null)
+            if (mr != null && highlightMaterial != null)
             {
                 hoveredOriginalMaterial = mr.sharedMaterial;
                 mr.sharedMaterial       = highlightMaterial;
-                hoveredTile             = tile;
             }
+
+            // Overlay hover tint (only while dragging a unit)
+            if (heldUnit != null && tile.Overlay != null)
+                tile.Overlay.AnimateColor(overlayHoverColor, overlayColorLerpTime);
         }
     }
 
     private void ClearHover()
     {
         if (hoveredTile == null) return;
+
         MeshRenderer mr = hoveredTile.GetComponent<MeshRenderer>();
         if (mr != null && hoveredOriginalMaterial != null)
             mr.sharedMaterial = hoveredOriginalMaterial;
+
+        // Fade overlay back to base tint if it's currently lit
+        if (heldUnit != null && hoveredTile.Overlay != null)
+            hoveredTile.Overlay.AnimateColor(overlayPlaceableColor, overlayColorLerpTime);
+
         hoveredTile             = null;
         hoveredOriginalMaterial = null;
     }
@@ -145,6 +165,7 @@ public class UnitPlacer : MonoBehaviour
 
         heldUnit     = unit;
         originalTile = tile;
+        ShowPlacementOverlays();
     }
 
     /// <summary>
@@ -222,7 +243,12 @@ public class UnitPlacer : MonoBehaviour
             }
             else
             {
-                // Move: held → empty hex
+                // Move: held → empty hex (blocked when the board is at capacity)
+                if (BoardManager.Instance != null && !BoardManager.Instance.HasRoom)
+                {
+                    CancelPlacement();
+                    return;
+                }
                 BenchManager.Instance.RemoveUnit(heldUnit);
                 UnitManager.Instance.AddUnit(heldUnit, heldUnit.CurrentTeam);
                 heldUnit.PlaceOnTile(hexTarget);
@@ -245,6 +271,7 @@ public class UnitPlacer : MonoBehaviour
 
         heldUnit     = null;
         originalTile = null;
+        HidePlacementOverlays();
     }
 
     private void CancelPlacement()
@@ -258,6 +285,38 @@ public class UnitPlacer : MonoBehaviour
         }
         heldUnit     = null;
         originalTile = null;
+        HidePlacementOverlays();
+    }
+
+    // Placement Overlays //
+
+    /// <summary>Light overlays on every valid drop target for the held unit.</summary>
+    private void ShowPlacementOverlays()
+    {
+        activeOverlayTiles.Clear();
+        foreach (BaseTile tile in TileManager.Instance.AllTiles) // field hexes
+            LightOverlay(tile);
+        foreach (BaseTile tile in BenchManager.Instance.AllTiles) // bench slots
+            LightOverlay(tile);
+    }
+
+    /// <summary>Show and base-tint one tile's overlay if it's a valid drop target.</summary>
+    private void LightOverlay(BaseTile tile)
+    {
+        if (tile == null || tile.Overlay == null) return;
+        if (!IsValidDropTarget(tile)) return;
+
+        tile.Overlay.Show();
+        tile.Overlay.SetColor(overlayPlaceableColor);
+        activeOverlayTiles.Add(tile);
+    }
+
+    /// <summary>Hide all overlays lit for the current drag.</summary>
+    private void HidePlacementOverlays()
+    {
+        foreach (BaseTile tile in activeOverlayTiles)
+            if (tile != null && tile.Overlay != null) tile.Overlay.Hide();
+        activeOverlayTiles.Clear();
     }
 /// <summary>
     /// Check if tile is a valid drop target.

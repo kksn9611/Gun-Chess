@@ -11,6 +11,8 @@ public class BenchLayout : MonoBehaviour
 
     [Header("Material")]
     [SerializeField] private Material tileMaterial;
+    [SerializeField] private Material overlayMaterial; // glowing placement overlay (transparent)
+    [SerializeField] private float    overlayScale = 0.93f; // overlay size relative to slot (fits inside)
 
     // ─────────────────────────────────────────────────────────────
 
@@ -61,6 +63,24 @@ public class BenchLayout : MonoBehaviour
             BoxCollider col = tile.AddComponent<BoxCollider>();
             col.size   = new Vector3(outerSize * 2f, Mathf.Max(tileHeight, 0.05f), outerSize * 2f);
             col.center = Vector3.zero;
+
+            // Glowing placement overlay — hidden until a unit is picked up
+            if (overlayMaterial != null)
+            {
+                GameObject overlay = new GameObject("Overlay", typeof(BenchTileRenderer), typeof(TileOverlay));
+                overlay.transform.SetParent(tile.transform, false);
+                overlay.transform.localPosition = new Vector3(0f, tileHeight / 2f + 0.01f, 0f); // above slot top
+
+                BenchTileRenderer overlayRenderer = overlay.GetComponent<BenchTileRenderer>();
+                overlayRenderer.outerSize = outerSize * overlayScale; // inset inside the slot
+                overlayRenderer.innerSize = 0f; // solid top cap
+                overlayRenderer.height    = 0f; // flat
+                overlayRenderer.SetMaterial(overlayMaterial);
+                overlayRenderer.DrawMesh();
+
+                benchTileScript.SetOverlay(overlay.GetComponent<TileOverlay>());
+                overlay.SetActive(false);
+            }
         }
     }
 

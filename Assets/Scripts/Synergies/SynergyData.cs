@@ -9,6 +9,10 @@ public class SynergyData : ScriptableObject
     [Header("Basic Info")]
     [Tooltip("Synergy name")]
     public string synergyName = "New Synergy";
+    [Tooltip("Icon shown in UI")]
+    public Sprite icon;
+    [Tooltip("Icon shown in the synergy panel while no tier is active")]
+    public Sprite inactiveIcon;
 
     [Header("Description")]
     [TextArea(2, 4)]
@@ -43,6 +47,14 @@ public struct SynergyTier
 {
     [Tooltip("Required synergy unit count")]
     public int requiredCount;
+
+    [Tooltip("Icon shown while this tier is the active one")]
+    public Sprite icon;
+
+    [Tooltip("Primary sort key for the synergy panel (lower shown first)")]
+    public int sortPrimary;
+    [Tooltip("Tiebreak used when sortPrimary is equal (lower shown first)")]
+    public int sortSecondary;
 
     [Tooltip("Effect assets applied at this tier (StatBoost, special effects, etc.)")]
     public SynergyBehavior[] behaviors;

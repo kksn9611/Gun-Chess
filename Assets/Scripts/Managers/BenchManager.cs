@@ -14,6 +14,9 @@ public class BenchManager
     private readonly List<UnitController> benchUnitList = new List<UnitController>();
     public IReadOnlyList<UnitController> benchUnits => benchUnitList;
 
+    /// <summary>All registered bench slots (used for overlay/placement sweeps).</summary>
+    public IEnumerable<BenchTileScript> AllTiles => benchList.Values;
+
     public void RegisterTile(int slotIndex, BenchTileScript tileScript)
     {
         benchList[slotIndex] = tileScript;

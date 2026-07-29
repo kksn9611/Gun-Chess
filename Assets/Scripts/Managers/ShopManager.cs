@@ -125,9 +125,14 @@ public class ShopManager : MonoBehaviour
         UnitData unit = currnetShop[slotIndex].currnetUnit;
         if (unit == null) return false; // empty or already bought
 
-        // Need a free bench slot before spending anything
         BenchTileScript benchSlot = BenchManager.Instance.GetEmptySlot();
-        if (benchSlot == null)
+
+        // Bench full is allowed only if this purchase merges on arrival (the new copy is consumed instantly)
+        bool mergeOnBuy = benchSlot == null
+                       && MergeManager.Instance != null
+                       && MergeManager.Instance.WouldMergeOnAdd(unit);
+
+        if (benchSlot == null && !mergeOnBuy)
         {
             Debug.Log("[Shop] No empty bench slot");
             return false;
@@ -138,6 +143,18 @@ public class ShopManager : MonoBehaviour
         {
             Debug.Log("[Shop] Not enough gold");
             return false;
+        }
+
+        if (mergeOnBuy)
+        {
+            // Bench full: fold the purchased copy straight into the merge without placing it.
+            // The reserved pool copy is conserved into the upgrade (not returned) — same as a normal merge.
+            currnetShop[slotIndex].currnetUnit = null;
+            currnetShop[slotIndex].isPurchased = true;
+            OnShopChanged?.Invoke();
+
+            MergeManager.Instance.MergeFromPurchase(unit);
+            return true;
         }
 
         // The copy was already reserved when it appeared; just spawn it onto the bench
