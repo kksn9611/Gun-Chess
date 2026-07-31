@@ -13,20 +13,37 @@ MonoBehaviour:
   m_Name: "\uC2E0\uBE44"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uC2E0\uBE44"
+  icon: {fileID: 0}
+  inactiveIcon: {fileID: 0}
   description: "\uC2E0\uBE44 \uC720\uB2DB\uC740 \uAC15\uD55C \uC2A4\uD399\uC744 \uAC00\uC9D1\uB2C8\uB2E4."
   tiers:
   - requiredCount: 1
+    icon: {fileID: 0}
+    sortPrimary: 3
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 86f0c91622256254483d228137601df3, type: 2}
   - requiredCount: 2
+    icon: {fileID: 0}
+    sortPrimary: 3
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: e039d258d53671d4cbe9f78a1a2ecc67, type: 2}
   - requiredCount: 3
+    icon: {fileID: 0}
+    sortPrimary: 2
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: fe1e21622180be742b8c81063dfb64fb, type: 2}
   - requiredCount: 4
+    icon: {fileID: 0}
+    sortPrimary: 2
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 074b4993e783e0a469bb86f27d5ee971, type: 2}
   - requiredCount: 5
+    icon: {fileID: 0}
+    sortPrimary: 1
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 394e757a5e22aed438c66486d12ac465, type: 2}

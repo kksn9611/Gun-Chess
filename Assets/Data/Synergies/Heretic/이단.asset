@@ -13,15 +13,26 @@ MonoBehaviour:
   m_Name: "\uC774\uB2E8"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uC774\uB2E8"
+  icon: {fileID: 0}
+  inactiveIcon: {fileID: 0}
   description: "\uBAA8\uB4E0 \uAE30\uBCF8 \uB2A5\uB825\uCE58\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4.
     (\uACF5\uACA9, \uBC29\uC5B4, \uACF5\uC774\uC18D, HP, MP)"
   tiers:
   - requiredCount: 2
+    icon: {fileID: 0}
+    sortPrimary: 3
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: be874d4414f21064c97606c3bc07d88c, type: 2}
   - requiredCount: 3
+    icon: {fileID: 0}
+    sortPrimary: 2
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 95d0864ab9b957c4fbf0898484e5ecc7, type: 2}
   - requiredCount: 4
+    icon: {fileID: 0}
+    sortPrimary: 1
+    sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 0e4707ed69349524084cf329e76c401c, type: 2}
