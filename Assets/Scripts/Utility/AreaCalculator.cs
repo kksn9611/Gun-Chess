@@ -122,40 +122,41 @@ public static class AreaTargetingUtility
     // Heal Targeting //
 
     /// <summary>
-    /// Return up to count living allies sorted by lowest HP%. Skips full-HP allies;
-    /// falls back to the caster if no ally is damaged (never returns empty).
+    /// Return up to count living allies sorted by lowest HP%. By default skips full-HP allies
+    /// (heal targeting) and falls back to the caster if none are damaged. Pass includeFullHp=true
+    /// for shield targeting, which picks the lowest-HP allies regardless of full HP.
     /// </summary>
-    public static List<UnitController> FindLowestHpAllies(UnitController caster, int count)
+    public static List<UnitController> FindLowestHpAllies(UnitController caster, int count, bool includeFullHp = false)
     {
         IReadOnlyList<UnitController> allies = UnitManager.Instance.GetAlliesOf(caster.CurrentTeam);
-        List<UnitController> damaged = new List<UnitController>();
+        List<UnitController> candidates = new List<UnitController>();
 
         foreach (UnitController ally in allies)
         {
             if (ally == null || ally.AI.CurrentState == UnitState.Dead) continue;
-            if (ally.Stats.CurrentHp >= ally.Stats.CurrentMaxHp) continue;
-            damaged.Add(ally);
+            if (!includeFullHp && ally.Stats.CurrentHp >= ally.Stats.CurrentMaxHp) continue; // heal: skip full HP
+            candidates.Add(ally);
         }
 
         // Sort by HP% ascending
-        damaged.Sort((a, b) =>
+        candidates.Sort((a, b) =>
         {
             float pctA = a.Stats.CurrentHp / a.Stats.CurrentMaxHp;
             float pctB = b.Stats.CurrentHp / b.Stats.CurrentMaxHp;
             return pctA.CompareTo(pctB);
         });
 
-        // Fallback to self if no one is damaged
-        if (damaged.Count == 0)
+        // Fallback to self if there are no candidates (e.g. heal mode with no one damaged)
+        if (candidates.Count == 0)
         {
-            damaged.Add(caster);
-            return damaged;
+            candidates.Add(caster);
+            return candidates;
         }
 
-        if (damaged.Count > count)
-            damaged.RemoveRange(count, damaged.Count - count);
+        if (candidates.Count > count)
+            candidates.RemoveRange(count, candidates.Count - count);
 
-        return damaged;
+        return candidates;
     }
 
     /// <summary>

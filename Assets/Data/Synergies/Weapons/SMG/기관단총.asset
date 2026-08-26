@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17e7b83a1f3193441aa21789e08e443c, type: 3}
+  m_Name: "\uAE30\uAD00\uB2E8\uCD1D"
+  m_EditorClassIdentifier: Assembly-CSharp::SynergyData
+  synergyName: "\uAE30\uAD00\uB2E8\uCD1D"
+  icon: {fileID: 21300000, guid: 87a2f26357ed5fd4e9ce7fb70e7fcb51, type: 3}
+  inactiveIcon: {fileID: 21300000, guid: 8a1205b2222458b409da9433cc3395c9, type: 3}
+  isWeapon: 1
+  description: "\uBC29\uC5B4\uB825\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  tiers:
+  - requiredCount: 2
+    description: 
+    icon: {fileID: 21300000, guid: b8971bb8f0b27664b85dfb4e84b464af, type: 3}
+    sortPrimary: 3
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: 12b0e4dda6f12b4489d91cb5dce08430, type: 2}
+  - requiredCount: 4
+    description: 
+    icon: {fileID: 21300000, guid: 0b4012e684ca9cc4db70cb1c69c861b9, type: 3}
+    sortPrimary: 2
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: 9835669dbf282f6478f0e0b212a1e8cb, type: 2}
+  - requiredCount: 6
+    description: 
+    icon: {fileID: 21300000, guid: 6108f955fad025245be8ef13e57a40cf, type: 3}
+    sortPrimary: 1
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: f05758edda575a548ac63fd2e04ebaae, type: 2}
+  - requiredCount: 7
+    description: 
+    icon: {fileID: 21300000, guid: 4b0ff1e01f208144d9da1199d47e3528, type: 3}
+    sortPrimary: 0
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: 936993e4bcba73a4d9128f2aa592260a, type: 2}

@@ -13,6 +13,7 @@ public class PowerShotSkill : BaseSkill
 {
     public enum ShotTargetMode { CurrentTarget, RandomEnemy } // who each shot aims at
 
+    public float vfxReturnDelay = 5f;
     [Header("Skill Settings")]
     [Tooltip("Damage multiplier per shot relative to ATK")]
     public float damageMultiplier = 4f;
@@ -28,6 +29,10 @@ public class PowerShotSkill : BaseSkill
     [Tooltip("animation delay")]
     public float shotDelay = 0.1f;
 
+    [Header("Cast VFX")]
+    [Tooltip("Scale applied to castVfxPrefab")]
+    public Vector3 vfxScale = Vector3.one;
+
     public override async UniTask<bool> Execute(UnitController caster, CancellationToken ct = default)
     {
         // Initial cast wind-up (skipped when animation events drive timing)
@@ -35,6 +40,14 @@ public class PowerShotSkill : BaseSkill
             await UniTask.WaitForSeconds(castTime, cancellationToken: ct);
 
         if (PickTarget(caster) == null) return false;
+
+        // Cast VFX on the caster //
+        if (castVfxPrefab != null)
+        {
+            GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, caster.transform.position, Quaternion.identity);
+            vfx.transform.localScale = vfxScale;
+            ReturnVfxDelayed(castVfxPrefab, vfx, vfxReturnDelay, ct).Forget();
+        }
 
         // Fire burst
         for (int i = 0; i < burstCount; i++)
@@ -101,5 +114,26 @@ public class PowerShotSkill : BaseSkill
 
         if (alive.Count == 0) return null;
         return alive[Random.Range(0, alive.Count)];
+    }
+
+    // Return the VFX to the pool after the delay, or immediately when the battle ends
+    // (whichever comes first) so a long effect never outlives the round. Returns exactly once.
+    private async UniTaskVoid ReturnVfxDelayed(GameObject prefab, GameObject instance, float delay, CancellationToken ct)
+    {
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct);
+        void OnBattleEnd(Team winner) => linked.Cancel(); // cut the delay short at round end
+        BattleManager.OnBattleEnd += OnBattleEnd;
+
+        try
+        {
+            await UniTask.WaitForSeconds(delay, cancellationToken: linked.Token);
+        }
+        catch (System.OperationCanceledException) { }
+        finally
+        {
+            BattleManager.OnBattleEnd -= OnBattleEnd;
+            if (instance != null)
+                VfxPoolManager.Instance.Return(prefab, instance);
+        }
     }
 }

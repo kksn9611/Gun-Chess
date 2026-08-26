@@ -13,25 +13,32 @@ MonoBehaviour:
   m_Name: "\uB3CC\uACA9\uC18C\uCD1D"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uB3CC\uACA9\uC18C\uCD1D"
-  icon: {fileID: 21300000, guid: d701a07ee499f434b9543012aaf50a0f, type: 3}
-  inactiveIcon: {fileID: 21300000, guid: 7097a4a24f3587c45addcaf2c41354c6, type: 3}
+  icon: {fileID: 21300000, guid: 200596ad8f9125c48a7397fb79b09c17, type: 3}
+  inactiveIcon: {fileID: 21300000, guid: 7f5b0c0b5d20bf147995f2adea638767, type: 3}
+  isWeapon: 1
   description: "\uACF5\uACA9 \uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   tiers:
-  - requiredCount: 1
-    icon: {fileID: 21300000, guid: 7618caf777d3de44d862276d5d960ff9, type: 3}
+  - requiredCount: 2
+    icon: {fileID: 21300000, guid: 21b5d9e07cbe70144b799ff0eb8a7df5, type: 3}
     sortPrimary: 3
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 984abaa7bdaa50e4ea7882818595bcf0, type: 2}
   - requiredCount: 4
-    icon: {fileID: 21300000, guid: 85b360706490935478f20a2ab49a134c, type: 3}
+    icon: {fileID: 21300000, guid: 61b9d3cc5114dc74e9011ef931e95dc2, type: 3}
     sortPrimary: 2
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 19fc3c0b1ad6ab040b48bd80867d317b, type: 2}
-  - requiredCount: 7
-    icon: {fileID: 21300000, guid: 0b512cd04ed22fc4c82a469b15172321, type: 3}
+  - requiredCount: 6
+    icon: {fileID: 21300000, guid: 69fe7b4f38509314eb756998bdbfd3fb, type: 3}
     sortPrimary: 1
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 3afefd53965d3f44caa990ec1692e336, type: 2}
+  - requiredCount: 7
+    icon: {fileID: 21300000, guid: edb3f2c00b92a9e46aa158b2b3ef567a, type: 3}
+    sortPrimary: 0
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: 12b36c4b3dbe83349b81e2b70971de73, type: 2}

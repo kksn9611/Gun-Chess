@@ -10,7 +10,7 @@ public class TileOverlay : MonoBehaviour
 {
     private MeshRenderer meshRenderer;
     private MaterialPropertyBlock mpb;
-    private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
+    private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
 
     private Color currentColor;         // last applied tint (lerp start)
     private Coroutine colorRoutine;     // running color transition
@@ -61,7 +61,7 @@ public class TileOverlay : MonoBehaviour
         colorRoutine = null;
     }
 
-    // Push a color through the property block (per-tile, shared material) //
+    // Push an emission color through the property block (per-tile, shared material) //
     private void ApplyColor(Color color)
     {
         currentColor = color;
@@ -69,7 +69,7 @@ public class TileOverlay : MonoBehaviour
         if (mpb == null)          mpb          = new MaterialPropertyBlock();
 
         meshRenderer.GetPropertyBlock(mpb);
-        mpb.SetColor(BaseColorId, color);
+        mpb.SetColor(EmissionColorId, color);
         meshRenderer.SetPropertyBlock(mpb);
     }
 }

@@ -15,5 +15,5 @@ MonoBehaviour:
   triggerOnAttack: 0
   triggerOnSkill: 0
   triggerOnDamaged: 1
-  shieldChance: 0.2
-  shieldPercentMaxHp: 0.1
+  shieldChance: 0.1
+  shieldPercentMaxHp: 0.07

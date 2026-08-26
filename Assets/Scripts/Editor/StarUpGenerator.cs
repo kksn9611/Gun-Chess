@@ -11,9 +11,13 @@ using UnityEngine;
 public static class StarUpGenerator
 {
     private const string GeoPath   = "Visual/Geometry/geo"; // objects to enable + reskin live under here
-    private const float   ScaleMul = 1.1f;                  // root scale multiplier
+    private const float   ScaleMul = 1.1f;                  // legacy root scale multiplier (superseded by absolute scales)
     private static readonly Vector3 ShieldScale = new Vector3(0.6f, 0.6f, 0.6f);
     private const string SilverMatPath = "Assets/Resources/Materials/Others/Silver.mat";
+
+    // Current absolute per-star root scales (design: Star1 1.2 / Star2 1.35 / Star3 1.5).
+    private const float Star2AbsScale = 1.35f;
+    private const float Star3AbsScale = 1.5f;
 
     // Shared US_Soldier armor pieces to enable on star-up (helmet/holster stay off, per Mystic).
     private static readonly HashSet<string> EnableObjects = new HashSet<string>
@@ -50,7 +54,7 @@ public static class StarUpGenerator
         "M_Backpack", "M_Pouch", "M_Elbow_Pad_Metal", "M_Leg_Guard_Metal", "M_Helmet_Frame",
     };
 
-    // All five factions carry Star2 folders to promote to Star3.
+    // All factions carrying Star2 folders to promote to Star3.
     private static readonly string[] Star3Factions =
     {
         "Assets/Resources/Prefabs/Units/Mystic_Units",
@@ -58,7 +62,11 @@ public static class StarUpGenerator
         "Assets/Resources/Prefabs/Units/Divinity_Units",
         "Assets/Resources/Prefabs/Units/Heretic_Units",
         "Assets/Resources/Prefabs/Units/Innovation_Units",
+        "Assets/Resources/Prefabs/Units/Elite_Units",
     };
+
+    private const string ElitePrefabRoot = "Assets/Resources/Prefabs/Units/Elite_Units";
+    private const string EliteDataRoot   = "Assets/Data/Units/Elite";
 
 
     // Batch driver //
@@ -110,8 +118,9 @@ public static class StarUpGenerator
         return sb.ToString();
     }
 
-    /// <summary>Copy a Star1 prefab to star2Path and apply the star-up recipe. Returns a one-line report.</summary>
-    public static string GenerateOne(string star1Path, string star2Path, Material silver)
+    /// <summary>Copy a Star1 prefab to star2Path and apply the star-up recipe. Returns a one-line report.
+    /// rootScale > 0 sets an absolute root scale; otherwise the legacy ScaleMul multiplier is used.</summary>
+    public static string GenerateOne(string star1Path, string star2Path, Material silver, float rootScale = 0f)
     {
         if (silver == null) silver = AssetDatabase.LoadAssetAtPath<Material>(SilverMatPath);
         if (!AssetDatabase.CopyAsset(star1Path, star2Path)) return $"[CopyFail] {star1Path} -> {star2Path}";
@@ -120,7 +129,7 @@ public static class StarUpGenerator
         try
         {
             root.name = Path.GetFileNameWithoutExtension(star2Path);
-            root.transform.localScale = root.transform.localScale * ScaleMul;
+            root.transform.localScale = rootScale > 0f ? Vector3.one * rootScale : root.transform.localScale * ScaleMul;
 
             UnitVisuals vis = root.GetComponentInChildren<UnitVisuals>(true);
             if (vis != null)
@@ -197,8 +206,9 @@ public static class StarUpGenerator
         return sb.ToString();
     }
 
-    /// <summary>Copy a Star2 prefab to star3Path and apply the Star3 recipe. Returns a one-line report.</summary>
-    public static string GenerateStar3One(string star2Path, string star3Path, Material gold)
+    /// <summary>Copy a Star2 prefab to star3Path and apply the Star3 recipe. Returns a one-line report.
+    /// rootScale > 0 overrides the default Star3Scale.</summary>
+    public static string GenerateStar3One(string star2Path, string star3Path, Material gold, float rootScale = 0f)
     {
         if (gold == null) gold = AssetDatabase.LoadAssetAtPath<Material>(GoldMatPath);
         if (!AssetDatabase.CopyAsset(star2Path, star3Path)) return $"[CopyFail] {star2Path} -> {star3Path}";
@@ -207,7 +217,7 @@ public static class StarUpGenerator
         try
         {
             root.name = Path.GetFileNameWithoutExtension(star3Path);
-            root.transform.localScale = Vector3.one * Star3Scale;
+            root.transform.localScale = Vector3.one * (rootScale > 0f ? rootScale : Star3Scale);
 
             UnitVisuals vis = root.GetComponentInChildren<UnitVisuals>(true);
             if (vis != null)
@@ -319,6 +329,7 @@ public static class StarUpGenerator
         "Assets/Data/Units/Divinity",
         "Assets/Data/Units/Heretic",
         "Assets/Data/Units/Innovation",
+        "Assets/Data/Units/Elite",
     };
 
     private const float Star3StatMul = 1.7f;
@@ -397,6 +408,245 @@ public static class StarUpGenerator
         AssetDatabase.Refresh();
         sb.Insert(0, $"[WireStarData] {wired} wired, {created} Star3 created, {failed} failed\n");
         return sb.ToString();
+    }
+
+
+    // Elite drivers //
+
+    /// <summary>Generate Elite Star2 prefabs from Star1 at the current absolute scale (1.35).</summary>
+    public static string GenerateEliteStar2()
+    {
+        Material silver = AssetDatabase.LoadAssetAtPath<Material>(SilverMatPath);
+        if (silver == null) return $"[Abort] Silver material not found at {SilverMatPath}";
+
+        string star1Dir = ElitePrefabRoot + "/Star1";
+        string star2Dir = ElitePrefabRoot + "/Star2";
+        if (!AssetDatabase.IsValidFolder(star2Dir)) AssetDatabase.CreateFolder(ElitePrefabRoot, "Star2");
+
+        var sb = new StringBuilder();
+        int made = 0;
+        var star1Paths = new List<string>();
+        foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { star1Dir }))
+        {
+            string p = AssetDatabase.GUIDToAssetPath(guid);
+            if (p.EndsWith("_Star1.prefab")) star1Paths.Add(p);
+        }
+        star1Paths.Sort();
+
+        foreach (string s1 in star1Paths)
+        {
+            string name = Path.GetFileName(s1);
+            string s2 = star2Dir + "/" + name.Replace("_Star1.prefab", "_Star2.prefab");
+            sb.AppendLine(GenerateOne(s1, s2, silver, Star2AbsScale));
+            made++;
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        sb.Insert(0, $"[GenerateEliteStar2] {made} Star2 prefabs generated\n");
+        return sb.ToString();
+    }
+
+    /// <summary>Generate Elite Star3 prefabs from Star2 at the current absolute scale (1.5).</summary>
+    public static string GenerateEliteStar3()
+    {
+        Material gold = AssetDatabase.LoadAssetAtPath<Material>(GoldMatPath);
+        if (gold == null) return $"[Abort] Gold material not found at {GoldMatPath}";
+
+        string star2Dir = ElitePrefabRoot + "/Star2";
+        string star3Dir = ElitePrefabRoot + "/Star3";
+        if (!AssetDatabase.IsValidFolder(star3Dir)) AssetDatabase.CreateFolder(ElitePrefabRoot, "Star3");
+
+        var sb = new StringBuilder();
+        int made = 0;
+        var star2Paths = new List<string>();
+        foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { star2Dir }))
+        {
+            string p = AssetDatabase.GUIDToAssetPath(guid);
+            if (p.EndsWith("_Star2.prefab")) star2Paths.Add(p);
+        }
+        star2Paths.Sort();
+
+        foreach (string s2 in star2Paths)
+        {
+            string name = Path.GetFileName(s2);
+            string s3 = star3Dir + "/" + name.Replace("_Star2.prefab", "_Star3.prefab");
+            sb.AppendLine(GenerateStar3One(s2, s3, gold, Star3AbsScale));
+            made++;
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        sb.Insert(0, $"[GenerateEliteStar3] {made} Star3 prefabs generated\n");
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Create Elite Star2 UnitData from Star1 (stats x1.7, starLevel 2, unitPrefab -> Star2 prefab)
+    /// and wire Star1.upgradeUnit -> Star2. WireStarData() then handles Star2 -> Star3.
+    /// </summary>
+    public static string CreateStar2DataElite()
+    {
+        string star1Dir = EliteDataRoot + "/Star1";
+        string star2Dir = EliteDataRoot + "/Star2";
+        if (!AssetDatabase.IsValidFolder(star2Dir)) AssetDatabase.CreateFolder(EliteDataRoot, "Star2");
+
+        var sb = new StringBuilder();
+        int made = 0, failed = 0;
+        foreach (string guid in AssetDatabase.FindAssets("t:UnitData", new[] { star1Dir }))
+        {
+            string s1Path = AssetDatabase.GUIDToAssetPath(guid);
+            if (!s1Path.EndsWith("_Star1.asset")) continue;
+            UnitData s1 = AssetDatabase.LoadAssetAtPath<UnitData>(s1Path);
+            if (s1 == null) { sb.AppendLine($"[Fail] load {s1Path}"); failed++; continue; }
+
+            string s2Path = s1Path.Replace("/Star1/", "/Star2/").Replace("_Star1.asset", "_Star2.asset");
+            if (AssetDatabase.LoadAssetAtPath<UnitData>(s2Path) == null)
+                AssetDatabase.CopyAsset(s1Path, s2Path);
+            UnitData s2 = AssetDatabase.LoadAssetAtPath<UnitData>(s2Path);
+            if (s2 == null) { sb.AppendLine($"[Fail] star2 load {s2Path}"); failed++; continue; }
+
+            // Derive the Star2 prefab from the Star1 prefab reference (robust to data<->prefab name diffs).
+            string p1 = s1.unitPrefab != null ? AssetDatabase.GetAssetPath(s1.unitPrefab) : null;
+            GameObject s2Prefab = (!string.IsNullOrEmpty(p1) && p1.Contains("/Star1/"))
+                ? AssetDatabase.LoadAssetAtPath<GameObject>(p1.Replace("Star1", "Star2"))
+                : null;
+
+            s2.starLevel  = 2;
+            s2.upgradeUnit = null;                 // WireStarData sets this to Star3
+            s2.maxHp = Round1(s1.maxHp);           // x1.7 of Star1
+            s2.att   = Round1(s1.att);
+            if (s2Prefab != null) s2.unitPrefab = s2Prefab;
+
+            s1.starLevel = 1;
+            s1.upgradeUnit = s2;
+
+            EditorUtility.SetDirty(s1);
+            EditorUtility.SetDirty(s2);
+            sb.AppendLine($"[OK] {Path.GetFileName(s2Path)}: hp {s1.maxHp}->{s2.maxHp} att {s1.att}->{s2.att} prefab={(s2Prefab != null)}");
+            made++;
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        sb.Insert(0, $"[CreateStar2DataElite] {made} Star2 data created, {failed} failed\n");
+        return sb.ToString();
+    }
+
+
+    // Weapon accent mirroring (Elite) //
+
+    /// <summary>
+    /// Build a map weaponRootName -> set of "partName#slotIndex" that carry the accent material
+    /// (Silver / Gold), scanned from every non-Elite faction prefab of the given tier.
+    /// </summary>
+    private static Dictionary<string, HashSet<string>> BuildAccentMap(string tier, string accentMat)
+    {
+        var map = new Dictionary<string, HashSet<string>>();
+        foreach (string faction in Star3Factions)
+        {
+            if (faction.EndsWith("Elite_Units")) continue; // reference = other factions only
+            string dir = faction + "/" + tier;
+            if (!AssetDatabase.IsValidFolder(dir)) continue;
+
+            foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { dir }))
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                if (!path.EndsWith("_" + tier + ".prefab")) continue;
+
+                GameObject root = PrefabUtility.LoadPrefabContents(path);
+                try
+                {
+                    Transform gun = FindGunSlot(root);
+                    if (gun == null) continue;
+                    foreach (Transform weapon in gun)
+                        foreach (Renderer r in weapon.GetComponentsInChildren<Renderer>(true))
+                        {
+                            Material[] mats = r.sharedMaterials;
+                            for (int i = 0; i < mats.Length; i++)
+                                if (mats[i] != null && mats[i].name == accentMat)
+                                {
+                                    if (!map.TryGetValue(weapon.name, out var set)) { set = new HashSet<string>(); map[weapon.name] = set; }
+                                    set.Add(r.name + "#" + i);
+                                }
+                        }
+                }
+                finally { PrefabUtility.UnloadPrefabContents(root); }
+            }
+        }
+        return map;
+    }
+
+    /// <summary>Dump the reference accent map for a tier (for verifying weapon coverage before applying).</summary>
+    public static string PrintAccentMap(string tier, string accentMat)
+    {
+        var map = BuildAccentMap(tier, accentMat);
+        var sb = new StringBuilder();
+        sb.AppendLine($"[AccentMap tier={tier} accent={accentMat}] {map.Count} weapons");
+        foreach (var kv in map)
+            sb.AppendLine($"  {kv.Key} :: {string.Join(",", kv.Value)}");
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Color Elite weapons for a tier by mirroring the reference accent map: for each Elite weapon that
+    /// matches a reference weapon name, set the same part/slot to Silver (Star2) or Gold (Star3).
+    /// </summary>
+    public static string ColorEliteWeapons(string tier, string accentMat)
+    {
+        string matPath = accentMat == "Silver" ? SilverMatPath : GoldMatPath;
+        Material accent = AssetDatabase.LoadAssetAtPath<Material>(matPath);
+        if (accent == null) return $"[Abort] {accentMat} material not found at {matPath}";
+
+        var map = BuildAccentMap(tier, accentMat);
+        var sb = new StringBuilder();
+        int changedPrefabs = 0, slots = 0;
+
+        string dir = ElitePrefabRoot + "/" + tier;
+        var paths = new List<string>();
+        foreach (string guid in AssetDatabase.FindAssets("t:Prefab", new[] { dir }))
+        {
+            string p = AssetDatabase.GUIDToAssetPath(guid);
+            if (p.EndsWith("_" + tier + ".prefab")) paths.Add(p);
+        }
+        paths.Sort();
+
+        foreach (string path in paths)
+        {
+            GameObject root = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                Transform gun = FindGunSlot(root);
+                int n = 0; string weaponName = "?"; bool matched = false;
+                if (gun != null)
+                    foreach (Transform weapon in gun)
+                    {
+                        weaponName = weapon.name;
+                        if (!map.TryGetValue(weapon.name, out var parts)) continue;
+                        matched = true;
+                        foreach (Renderer r in weapon.GetComponentsInChildren<Renderer>(true))
+                        {
+                            Material[] mats = r.sharedMaterials;
+                            bool ch = false;
+                            for (int i = 0; i < mats.Length; i++)
+                                if (parts.Contains(r.name + "#" + i)) { mats[i] = accent; ch = true; n++; }
+                            if (ch) r.sharedMaterials = mats;
+                        }
+                    }
+
+                if (n > 0) { PrefabUtility.SaveAsPrefabAsset(root, path); changedPrefabs++; slots += n; }
+                sb.AppendLine($"[{(gun == null ? "NoGun" : matched ? "OK" : "NoRef")}] {Path.GetFileName(path)} weapon='{weaponName}' slots={n}");
+            }
+            finally { PrefabUtility.UnloadPrefabContents(root); }
+        }
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
+        sb.Insert(0, $"[ColorEliteWeapons tier={tier} accent={accentMat}] {changedPrefabs} prefabs, {slots} slots (refMap={map.Count} weapons)\n");
+        return sb.ToString();
+    }
+
+    private static Transform FindGunSlot(GameObject root)
+    {
+        foreach (Transform t in root.GetComponentsInChildren<Transform>(true))
+            if (t.name.Contains("GunSlot")) return t;
+        return null;
     }
 
 

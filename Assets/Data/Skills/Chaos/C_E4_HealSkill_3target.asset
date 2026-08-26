@@ -22,5 +22,6 @@ MonoBehaviour:
   castVfxPrefab: {fileID: 0}
   useRootMotion: 1
   skillSoundDelay: 0
-  healMultiplier: 7
+  healMultiplier: 8
   targetCount: 3
+  vfxScale: {x: 1, y: 1, z: 1}

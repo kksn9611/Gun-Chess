@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Divinity_MG_3_Star1
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Divinity_MG_3
+  unitName: "\uBC1C\uD0A4\uB9AC"
   unitPrefab: {fileID: 7339558638033791742, guid: 9065692ae65bfa74598ea9a642349996, type: 3}
+  portrait: {fileID: 0}
   cost: 3
   starLevel: 1
   upgradeUnit: {fileID: 11400000, guid: ee296038b66000b41a9a6f3ea6370df1, type: 2}

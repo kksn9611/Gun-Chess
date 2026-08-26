@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6831b6def24d54641ab3d14269b19e2b, type: 3}
+  m_Name: E5_PowerShot_randomtarget
+  m_EditorClassIdentifier: Assembly-CSharp::PowerShotSkill
+  skillName: E5_PowerShot
+  description: "\uD22C\uC0AC\uCCB4\uB97C \uBC1C\uC0AC\uD574 \uC801\uC5D0\uAC8C \uB370\uBBF8\uC9C0\uB97C
+    \uC785\uD78C\uB2E4."
+  castTime: 0.1
+  animationSpd: 1.2
+  useAnimationEvent: 0
+  canCrit: 1
+  castVfxPrefab: {fileID: 4446863190969154290, guid: 9dfb3dc0cf7069744b828f225c10d129, type: 3}
+  useRootMotion: 0
+  vfxReturnDelay: 25
+  damageMultiplier: 4
+  targetMode: 1
+  reachTime: 0.2
+  burstCount: 10
+  shotInterval: 1.55
+  shotDelay: 0.9
+  vfxScale: {x: 1, y: 1, z: 1}

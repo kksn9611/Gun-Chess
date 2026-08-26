@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Mystic_2_Star2
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Mystic_2
+  unitName: "\uD5E4\uCE74\uD14C"
   unitPrefab: {fileID: 8028335539950420324, guid: 4835de3ca4471ce45ba58e17625ff06d, type: 3}
+  portrait: {fileID: 0}
   cost: 2
   starLevel: 2
   upgradeUnit: {fileID: 11400000, guid: d5c5162ed971fb743966088cbc4e5d0b, type: 2}

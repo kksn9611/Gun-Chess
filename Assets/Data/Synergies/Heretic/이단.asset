@@ -13,26 +13,33 @@ MonoBehaviour:
   m_Name: "\uC774\uB2E8"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uC774\uB2E8"
-  icon: {fileID: 0}
-  inactiveIcon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 93fe86d24ab251149b4782f71e48bf95, type: 3}
+  inactiveIcon: {fileID: 21300000, guid: ea6f9dc36971b4b47b0d8c08dfeb4a04, type: 3}
+  isWeapon: 0
   description: "\uBAA8\uB4E0 \uAE30\uBCF8 \uB2A5\uB825\uCE58\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4.
     (\uACF5\uACA9, \uBC29\uC5B4, \uACF5\uC774\uC18D, HP, MP)"
   tiers:
   - requiredCount: 2
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: bad62dba05a9175469f921b3a477ff63, type: 3}
     sortPrimary: 3
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: be874d4414f21064c97606c3bc07d88c, type: 2}
   - requiredCount: 3
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 0684c522607dba2449f89cd83af7bdd4, type: 3}
     sortPrimary: 2
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 95d0864ab9b957c4fbf0898484e5ecc7, type: 2}
   - requiredCount: 4
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: e9dace0213d133d4b927f9915fcf2b0d, type: 3}
     sortPrimary: 1
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 0e4707ed69349524084cf329e76c401c, type: 2}
+  - requiredCount: 6
+    icon: {fileID: 21300000, guid: 7b056d2ba4e6c5641a05a8fb5b87e594, type: 3}
+    sortPrimary: 0
+    sortSecondary: 0
+    behaviors:
+    - {fileID: 11400000, guid: 2d29b24293fb9ee4ead90064478c8bb5, type: 2}

@@ -103,13 +103,14 @@ public class UnitController : MonoBehaviour
             currentBenchTile = null;
         }
 
-        OnUnitSpawned?.Invoke(this);
-
         if (!IsOnBench && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle)
         {
             AI.EnterIdleState();
         }
     }
+
+    /// <summary>Fire OnUnitSpawned. Called by UnitSpawner after registration so subscribers (synergy tally, UI bars) see a fully registered unit.</summary>
+    public void NotifySpawned() => OnUnitSpawned?.Invoke(this);
 
     // Placement //
 

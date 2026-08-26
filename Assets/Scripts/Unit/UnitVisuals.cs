@@ -22,8 +22,13 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private bool burstAtOnce = false;
     [Tooltip("Random spread radius around hitbox (burstAtOnce only)")]
     [SerializeField] private float spreadRadius = 0.3f;
+    [Tooltip("Bullet trail homes toward the target instead of flying to a fixed point")]
+    [SerializeField] private bool homingTrail = false;
 
-    [Header("Heal Effect")]
+    [Header("Skill impact Effect")]
+    [SerializeField] private GameObject impactEffectPrefab;
+
+        [Header("Heal Effect")]
     [SerializeField] private GameObject healEffect;
 
     [Header("Shield Effect")]
@@ -207,7 +212,12 @@ public class UnitVisuals : MonoBehaviour
 
                 TrailRenderer trail = GetTrail(bulletTrailPrefab);
                 bool isLastShot = (i == burstCount - 1);
-                SpawnTrailAsync(trail, hitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t)).Forget();
+                Action shotCb = isLastShot ? onLastHit : null;
+                Action<TrailRenderer> ret = (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t);
+                if (homingTrail)
+                    SpawnTrailHomingAsync(trail, target.Visuals.HitBox, bulletReachTime, shotCb, ret).Forget();
+                else
+                    SpawnTrailAsync(trail, hitPoint, bulletReachTime, shotCb, ret).Forget();
             }
         }
         else
@@ -221,7 +231,12 @@ public class UnitVisuals : MonoBehaviour
                 TrailRenderer trail = GetTrail(bulletTrailPrefab);
 
                 bool isLastShot = (i == burstCount - 1);
-                SpawnTrailAsync(trail, finalHitPoint, bulletReachTime, isLastShot ? onLastHit : null, (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t)).Forget();
+                Action shotCb = isLastShot ? onLastHit : null;
+                Action<TrailRenderer> ret = (t) => TrailPoolManager.Instance.Return(bulletTrailPrefab, t);
+                if (homingTrail)
+                    SpawnTrailHomingAsync(trail, target.Visuals.HitBox, bulletReachTime, shotCb, ret).Forget();
+                else
+                    SpawnTrailAsync(trail, finalHitPoint, bulletReachTime, shotCb, ret).Forget();
 
                 if (!isLastShot)
                     await UniTask.WaitForSeconds(shotInterval, cancellationToken: cts.Token);
@@ -273,6 +288,11 @@ public class UnitVisuals : MonoBehaviour
             if (target != null && projectile != null)
             {
                 projectile.transform.position = target.position;
+                if (impactEffectPrefab != null)
+                {
+                    // simple impact effect play
+                    Instantiate(impactEffectPrefab, target.position, projectile.transform.rotation);
+                }
                 onHit?.Invoke();
             }
         }

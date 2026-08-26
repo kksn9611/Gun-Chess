@@ -23,8 +23,8 @@ MonoBehaviour:
   useRootMotion: 0
   boosts:
   - statType: 2
-    percentBoost: 30
+    percentBoost: 40
   - statType: 1
-    percentBoost: 30
+    percentBoost: 20
   skillSoundDelay: 0
   vfxScale: {x: 1, y: 1, z: 1}

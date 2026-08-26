@@ -27,8 +27,8 @@ MonoBehaviour:
   areaShape:
     shapeType: 1
     radius: 0
-    range: 3.5
-    angle: 60
+    range: 4.2
+    angle: 55
     width: 0
     length: 0
   color: {r: 1, g: 0.5490196, b: 0, a: 0.39215687}

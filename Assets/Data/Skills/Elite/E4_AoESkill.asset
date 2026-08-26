@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1883d7d48cabfd46b4a9950ca5ee8f3, type: 3}
+  m_Name: E4_AoESkill
+  m_EditorClassIdentifier: Assembly-CSharp::AoESkill
+  skillName: E4_Skill
+  description: "\uC801\uC744 \uC870\uC900\uD558\uC5EC \uC77C\uC9C1\uC120 \uBC94\uC704\uB85C
+    \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
+  castTime: 0
+  animationSpd: 0.05
+  useAnimationEvent: 1
+  canCrit: 1
+  castVfxPrefab: {fileID: 7221003193399831673, guid: d77cbb80aae75dd4ab9d01f274c52d62, type: 3}
+  useRootMotion: 0
+  damageMultiplier: 7
+  isStun: 0
+  stunDuration: 2
+  areaShape:
+    shapeType: 2
+    radius: 0
+    range: 0
+    angle: 0
+    width: 6
+    length: 15
+  color: {r: 1, g: 0.5490196, b: 0, a: 0.39215687}
+  vfxScale: {x: 1, y: 1, z: 1}
+  vfxDelay: 0
+  castCount: 1
+  lockArea: 1

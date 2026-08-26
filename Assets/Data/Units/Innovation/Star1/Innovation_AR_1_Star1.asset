@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Innovation_AR_1_Star1
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Innovation_AR_1
+  unitName: "\uD0C8\uB85C\uC2A4"
   unitPrefab: {fileID: 4104458227381271381, guid: b4495097819742148ba4f05a33fe865f, type: 3}
+  portrait: {fileID: 0}
   cost: 1
   starLevel: 1
   upgradeUnit: {fileID: 11400000, guid: 26c96dd995fd70d4bbee8f74cbb15ed6, type: 2}

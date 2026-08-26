@@ -57,8 +57,8 @@ public class ShieldSkill : BaseSkill
             return true;
         }
 
-        // Shield the N lowest-HP% allies (self-fallback built into the helper)
-        List<UnitController> targets = AreaTargetingUtility.FindLowestHpAllies(caster, targetCount);
+        // Shield the N lowest-HP% allies — include full-HP allies so it always reaches targetCount
+        List<UnitController> targets = AreaTargetingUtility.FindLowestHpAllies(caster, targetCount, includeFullHp: true);
         foreach (UnitController target in targets)
         {
             target.Stats.ApplyShield(shieldAmount);

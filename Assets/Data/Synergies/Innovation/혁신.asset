@@ -13,14 +13,15 @@ MonoBehaviour:
   m_Name: "\uD601\uC2E0"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uD601\uC2E0"
-  icon: {fileID: 0}
-  inactiveIcon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1d4e4d3f736ab454d9cda6d5190c1aa5, type: 3}
+  inactiveIcon: {fileID: 21300000, guid: 225a8cc88170cad4daebbbe82b373e0b, type: 3}
+  isWeapon: 0
   description: "\uD53C\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uC2E4\uB4DC \uC0DD\uC131,
     \uACF5\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uCD94\uAC00 \uB370\uBBF8\uC9C0
     \uBC1C\uC0DD"
   tiers:
   - requiredCount: 2
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: ac89d96408bdbe246bc4a766c36490f8, type: 3}
     sortPrimary: 3
     sortSecondary: 0
     behaviors:
@@ -28,18 +29,26 @@ MonoBehaviour:
     - {fileID: 11400000, guid: e4c7121951b73df4fbd93c888e0d3578, type: 2}
     - {fileID: 11400000, guid: a4032aa9f4a9d824ba1c828596b2d65d, type: 2}
   - requiredCount: 4
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 566449d68a82aac49974307cc7bcb714, type: 3}
     sortPrimary: 2
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 221ad4b93babed9438de59ba10664b96, type: 2}
     - {fileID: 11400000, guid: 66b9391909eefe845b12d362ad3a9064, type: 2}
     - {fileID: 11400000, guid: 2d2bcbb20cc47f14baab9406e04a5e64, type: 2}
-  - requiredCount: 7
-    icon: {fileID: 0}
+  - requiredCount: 6
+    icon: {fileID: 21300000, guid: 8f9f5ede60af965448ea702b7928279d, type: 3}
     sortPrimary: 1
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 75c06b14d3585454b871b474228e9f0a, type: 2}
     - {fileID: 11400000, guid: 3bdd0a5e5939f004f8b36591ace81fff, type: 2}
     - {fileID: 11400000, guid: a6fea3c9112d8a44e8a0b9dd77d83504, type: 2}
+  - requiredCount: 8
+    icon: {fileID: 21300000, guid: 9eba9bb99d798644ab316c0f9569d0a6, type: 3}
+    sortPrimary: 0
+    sortSecondary: 0
+    behaviors:
+    - {fileID: 11400000, guid: 1632148df663e454185c16e5f72299f2, type: 2}
+    - {fileID: 11400000, guid: 0beef71457afec5479a45fde80a79f00, type: 2}
+    - {fileID: 11400000, guid: 89a8b3f2c750d4a449b9ac6e12ce4c7a, type: 2}

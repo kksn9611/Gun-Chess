@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// Displays active synergy list and tiers as text on the left side of screen.
-/// Subscribes to SynergyState SO's OnSynergyChanged event for auto-refresh.
+/// Displays active synergies as a paged list of badges on the left of the screen.
+/// Subscribes to SynergyState's OnSynergyChanged for auto-refresh. Sorting is manual
+/// (per-tier Inspector keys); inactive synergies are always shown.
 /// </summary>
 public class SynergyUI : MonoBehaviour
 {
@@ -12,73 +14,109 @@ public class SynergyUI : MonoBehaviour
     [Tooltip("Shared synergy state data")]
     [SerializeField] private SynergyState synergyState;
 
-    [Tooltip("TMP text to display synergy info")]
-    [SerializeField] private TextMeshProUGUI synergyText;
+    [Tooltip("Badge row prefab (SynergyBadgeUI)")]
+    [SerializeField] private SynergyBadgeUI badgePrefab;
+
+    [Tooltip("Parent with a VerticalLayoutGroup that holds the badge rows")]
+    [SerializeField] private RectTransform listContainer;
+
+    [Tooltip("Shared hover tooltip injected into each badge")]
+    [SerializeField] private SynergyTooltip tooltip;
+
+    [Header("Paging")]
+    [Tooltip("Button that advances to the next page (hidden when only one page)")]
+    [SerializeField] private Button pageButton;
+    [Tooltip("Optional label, e.g. \"1/3\"")]
+    [SerializeField] private TextMeshProUGUI pageLabel;
+    [Tooltip("Badges shown per page")]
+    [Min(1)]
+    [SerializeField] private int pageSize = 6;
+
+    [Header("Inactive Sort")]
+    [Tooltip("Sort primary applied to any inactive synergy (sinks it to the bottom)")]
+    [SerializeField] private int inactiveSortPrimary = 99;
+    [Tooltip("Sort secondary for inactive weapon synergies (below inactive class synergies)")]
+    [SerializeField] private int inactiveWeaponSecondary = 1;
+
+    private readonly List<SynergyBadgeUI> pool = new List<SynergyBadgeUI>();
+    private int page;
 
     private void OnEnable()
     {
-        if (synergyState != null)
-            synergyState.OnSynergyChanged += UpdateUI;
+        if (synergyState != null) synergyState.OnSynergyChanged += Render;
+        if (pageButton   != null) pageButton.onClick.AddListener(NextPage);
+        Render();
     }
 
     private void OnDisable()
     {
-        if (synergyState != null)
-            synergyState.OnSynergyChanged -= UpdateUI;
+        if (synergyState != null) synergyState.OnSynergyChanged -= Render;
+        if (pageButton   != null) pageButton.onClick.RemoveListener(NextPage);
     }
 
-    /// <summary>
-    /// Called when synergy state changes. Display active synergies as text.
-    /// </summary>
-    private void UpdateUI()
+    // Paging //
+
+    private void NextPage()
     {
-        if (synergyText == null || synergyState == null) return;
-
-        var sb = new System.Text.StringBuilder();
-        sb.AppendLine("<b>[ Synergy ]</b>");
-        sb.AppendLine();
-
-        foreach (var entry in SortedEntries())
-        {
-            if (entry.synergy == null) continue;
-
-            // Color based on active state
-            string color = entry.activeTierIndex >= 0 ? "#FFD700" : "#888888";
-            string tierLabel = entry.activeTierIndex >= 0
-                ? $"Tier {entry.activeTierIndex + 1}"
-                : "-";
-
-            // Show tier thresholds (e.g., 2/4/6)
-            string thresholds = "";
-            if (entry.synergy.tiers != null && entry.synergy.tiers.Length > 0)
-            {
-                var parts = new string[entry.synergy.tiers.Length];
-                for (int i = 0; i < entry.synergy.tiers.Length; i++)
-                {
-                    // Highlight current active tier
-                    if (i == entry.activeTierIndex)
-                        parts[i] = $"<b>{entry.synergy.tiers[i].requiredCount}</b>";
-                    else
-                        parts[i] = $"{entry.synergy.tiers[i].requiredCount}";
-                }
-                thresholds = $" ({string.Join("/", parts)})";
-            }
-
-            sb.AppendLine($"<color={color}>{entry.synergy.synergyName}</color>");
-            sb.AppendLine($"  {entry.currentCount} units | {tierLabel}{thresholds}");
-        }
-
-        // No synergies placed
-        if (synergyState.Entries.Count == 0)
-            sb.AppendLine("<color=#888888>No synergies placed</color>");
-
-        synergyText.text = sb.ToString();
+        int pages = PageCount();
+        if (pages <= 1) return;
+        page = (page + 1) % pages;
+        Render();
     }
 
-    // Sorting //
+    private int PageCount()
+    {
+        int count = synergyState != null ? synergyState.Entries.Count : 0;
+        return Mathf.Max(1, Mathf.CeilToInt(count / (float)pageSize));
+    }
+
+    // Render //
+
+    /// <summary>Sort, slice to the current page, and bind the pooled badge rows.</summary>
+    private void Render()
+    {
+        if (synergyState == null || badgePrefab == null || listContainer == null) return;
+
+        List<SynergyEntry> sorted = SortedEntries();
+
+        int pages = PageCount();
+        page = Mathf.Clamp(page, 0, pages - 1); // keep page valid as the list changes
+
+        int start = page * pageSize;
+        int end   = Mathf.Min(start + pageSize, sorted.Count);
+
+        // Bind the visible slice into pooled rows (grows the pool on demand)
+        int shown = 0;
+        for (int i = start; i < end; i++, shown++)
+            GetRow(shown).Bind(sorted[i]);
+
+        // Hide any leftover pooled rows
+        for (int i = shown; i < pool.Count; i++)
+            pool[i].Hide();
+
+        // Page button + label
+        if (pageButton != null) pageButton.gameObject.SetActive(pages > 1);
+        if (pageLabel  != null) pageLabel.text = pages > 1 ? $"{page + 1}/{pages}" : "";
+    }
+
+    /// <summary>Get (or lazily create) the pooled badge row at index.</summary>
+    private SynergyBadgeUI GetRow(int index)
+    {
+        while (pool.Count <= index)
+        {
+            SynergyBadgeUI row = Instantiate(badgePrefab, listContainer);
+            row.SetTooltip(tooltip);
+            pool.Add(row);
+        }
+        SynergyBadgeUI r = pool[index];
+        r.transform.SetSiblingIndex(index); // keep display order == sort order
+        return r;
+    }
+
+    // Sorting (manual per-tier keys) //
 
     /// <summary>
-    /// Entries ordered for display by the active tier's Inspector sort keys:
+    /// Entries ordered by the active tier's Inspector sort keys:
     /// sortPrimary asc, then sortSecondary asc as tiebreak (lower shown first).
     /// </summary>
     private List<SynergyEntry> SortedEntries()
@@ -88,23 +126,34 @@ public class SynergyUI : MonoBehaviour
         {
             GetSortKeys(a, out int ap, out int asec);
             GetSortKeys(b, out int bp, out int bsec);
-            int byPrimary = ap.CompareTo(bp); // primary key
+            int byPrimary = ap.CompareTo(bp);
             if (byPrimary != 0) return byPrimary;
-            return asec.CompareTo(bsec);       // tiebreak
+            return asec.CompareTo(bsec);
         });
         return sorted;
     }
 
-    /// <summary>Sort keys from the entry's active tier (falls back to tier 0 while inactive).</summary>
-    private static void GetSortKeys(SynergyEntry entry, out int primary, out int secondary)
+    /// <summary>
+    /// Sort keys for an entry. Inactive synergies get a fixed low priority (weapons below classes),
+    /// independent of the per-tier keys. Active synergies use their active tier's manual keys.
+    /// </summary>
+    private void GetSortKeys(SynergyEntry entry, out int primary, out int secondary)
     {
         primary = 0; secondary = 0;
         var synergy = entry.synergy;
-        if (synergy == null || synergy.tiers == null || synergy.tiers.Length == 0) return;
+        if (synergy == null) return;
 
-        int idx = entry.activeTierIndex >= 0
-            ? Mathf.Min(entry.activeTierIndex, synergy.tiers.Length - 1)
-            : 0; // inactive: use the first tier's keys
+        // Inactive: fixed sink-to-bottom priority, weapons after classes.
+        if (entry.activeTierIndex < 0)
+        {
+            primary   = inactiveSortPrimary;
+            secondary = synergy.isWeapon ? inactiveWeaponSecondary : 0;
+            return;
+        }
+
+        // Active: use the active tier's manual sort keys.
+        if (synergy.tiers == null || synergy.tiers.Length == 0) return;
+        int idx = Mathf.Min(entry.activeTierIndex, synergy.tiers.Length - 1);
         primary   = synergy.tiers[idx].sortPrimary;
         secondary = synergy.tiers[idx].sortSecondary;
     }

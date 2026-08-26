@@ -3645,7 +3645,7 @@ Transform:
   m_GameObject: {fileID: 4606946675292991477}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.2, z: -0.1}
+  m_LocalPosition: {x: 0, y: 2.4, z: -0.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5664,7 +5664,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7196969408057859887}
@@ -5804,8 +5804,11 @@ MonoBehaviour:
   shotInterval: 0.05
   burstAtOnce: 0
   spreadRadius: 0.3
+  homingTrail: 1
+  impactEffectPrefab: {fileID: 0}
   healEffect: {fileID: 2979407750726019859, guid: 3e462a8b72afb1c4c81a45c1325559ba, type: 3}
   shieldEffect: {fileID: 871324411638548333, guid: de1bdf6334386804eb36a0d61a9d3f80, type: 3}
+  shieldScale: {x: 0.55, y: 0.55, z: 0.55}
   audioSource: {fileID: 7701235304507000859}
   skillAudioSource: {fileID: 0}
   skillSound: {fileID: 8300000, guid: 922371cc4c16b6b479256d73b02f717d, type: 3}
@@ -5972,7 +5975,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 692925123618977921}

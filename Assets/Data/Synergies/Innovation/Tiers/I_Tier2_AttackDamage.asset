@@ -18,5 +18,5 @@ MonoBehaviour:
   damageChance: 0.2
   damage: 20
   hitVfxPrefab: {fileID: 8307689965681055727, guid: 22a071f31c0ba134ca7a5e82f5c5ca03, type: 3}
-  vfxScale: {x: 0.5, y: 0.5, z: 0.5}
+  vfxScale: {x: 0.55, y: 0.55, z: 0.55}
   vfxLifetime: 2

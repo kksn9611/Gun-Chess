@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Chaos_Enforcer_4_Star1
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Chaos_E_4
+  unitName: "\uB9B4\uB9AC\uC2A4"
   unitPrefab: {fileID: 8028335539950420324, guid: 45a6b4320266b0e408e29b5912ac58d0, type: 3}
+  portrait: {fileID: 0}
   cost: 4
   starLevel: 1
   upgradeUnit: {fileID: 11400000, guid: 075a3b632f3e31c43bebe0f7b966ea03, type: 2}

@@ -12,6 +12,21 @@ public class SynergyManager : MonoBehaviour
     [SerializeField] private SynergyState synergyState;
 
     /// <summary>
+    /// Clear stale synergy state at game start. SynergyState is a shared ScriptableObject, so its
+    /// entries persist between play sessions and would otherwise carry over from a previous run.
+    /// </summary>
+    private void Awake()
+    {
+        ResetState();
+    }
+
+    /// <summary>Clear the shared synergy state.</summary>
+    public void ResetState()
+    {
+        if (synergyState != null) synergyState.Clear();
+    }
+
+    /// <summary>
     /// Subscribe to OnBenchState on unit spawn
     /// to recalculate synergies on field↔bench transitions.
     /// </summary>

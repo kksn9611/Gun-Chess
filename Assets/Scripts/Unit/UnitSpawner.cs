@@ -26,6 +26,7 @@ public class UnitSpawner : MonoBehaviour
             controller.Initialize(data, targetTile, team);
             if (register)
                 UnitManager.Instance.AddUnit(controller, team);
+            controller.NotifySpawned(); // fire after registration so synergy tally sees a field-registered unit
             return controller;
         }
 

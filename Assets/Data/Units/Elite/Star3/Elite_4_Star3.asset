@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
+  m_Name: Elite_4_Star3
+  m_EditorClassIdentifier: Assembly-CSharp::UnitData
+  unitName: "\uD638\uB8E8\uC2A4"
+  unitPrefab: {fileID: 7339558638033791742, guid: be86adc8a4024854293cdc8cc52545c2, type: 3}
+  portrait: {fileID: 0}
+  cost: 4
+  starLevel: 3
+  upgradeUnit: {fileID: 0}
+  maxHp: 1661.8
+  maxMp: 75
+  att: 101.2
+  def: 20
+  attRange: 3
+  attSpd: 0.7
+  moveSpd: 1.25
+  critChance: 0.25
+  critDamage: 1.5
+  synergies:
+  - {fileID: 11400000, guid: 654cbd7bf974091409142bad8a52babb, type: 2}
+  - {fileID: 11400000, guid: 80f7aebb534de7e44b70952cb9b3f6ef, type: 2}
+  bulletTrailPrefab: {fileID: 4233633851725753956, guid: d5d0cd74f075ca74da098da946d2cb6e, type: 3}
+  skillProjectilePrefab: {fileID: 0}
+  poolSize: 5
+  skillPoolSize: 0
+  skill: {fileID: 11400000, guid: 6745da979f503db47886cb783c805f30, type: 2}
+  mpGainOnAttack: 10
+  mpGainOnHit: 2

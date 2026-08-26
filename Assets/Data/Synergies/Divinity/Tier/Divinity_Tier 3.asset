@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68eb8d7cf320da4488803c8abe6573ec, type: 3}
   m_Name: Divinity_Tier 3
   m_EditorClassIdentifier: Assembly-CSharp::GoldPerRoundBehavior
-  goldPerRound: 6
+  goldPerRound: 7

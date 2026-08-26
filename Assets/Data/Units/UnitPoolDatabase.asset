@@ -46,6 +46,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9286eb913518f6d4180bdb2a48283242, type: 2}
   - {fileID: 11400000, guid: a2fc3ddb2b007b64c80fcc71c2130bdb, type: 2}
   - {fileID: 11400000, guid: c38287267eb80f84cb884d89207e1256, type: 2}
+  - {fileID: 11400000, guid: 6c7517938ee25904298310e000ebd943, type: 2}
+  - {fileID: 11400000, guid: 0c08db40dbdd12846b766109638b502c, type: 2}
+  - {fileID: 11400000, guid: fce14b0a842ac454f85c86206da82f68, type: 2}
+  - {fileID: 11400000, guid: 936ffee8d5d1fa7419b3bb2efcbd48c7, type: 2}
+  - {fileID: 11400000, guid: acf6d8aa59ca8b84a998aed2949aa5ca, type: 2}
   costTable:
   - cost: 1
     copies: 20

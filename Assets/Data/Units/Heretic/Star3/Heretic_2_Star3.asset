@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Heretic_2_Star3
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Heretic_2
+  unitName: "\uBA54\uB450\uC0AC"
   unitPrefab: {fileID: 8028335539950420324, guid: 608ef63d9ec27d44b97da6c63e8dc6b4, type: 3}
+  portrait: {fileID: 0}
   cost: 2
   starLevel: 3
   upgradeUnit: {fileID: 0}

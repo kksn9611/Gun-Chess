@@ -13,6 +13,8 @@ public class SynergyData : ScriptableObject
     public Sprite icon;
     [Tooltip("Icon shown in the synergy panel while no tier is active")]
     public Sprite inactiveIcon;
+    [Tooltip("Weapon-category synergy — sorts below class synergies while inactive")]
+    public bool isWeapon;
 
     [Header("Description")]
     [TextArea(2, 4)]
@@ -47,6 +49,10 @@ public struct SynergyTier
 {
     [Tooltip("Required synergy unit count")]
     public int requiredCount;
+
+    [Tooltip("Tooltip line for this tier (TMP rich text). Shown for active synergies, segmented by tier.")]
+    [TextArea(1, 4)]
+    public string description;
 
     [Tooltip("Icon shown while this tier is the active one")]
     public Sprite icon;

@@ -7,6 +7,7 @@ public class UnitData : ScriptableObject
     public string unitName;
     public GameObject unitPrefab; // Unit visual
     public Sprite portrait;       // Shop/UI portrait
+    public Sprite thumbnail;      // Small square thumbnail (synergy tooltip roster, etc.)
     public int cost = 1;
 
     [Header("Upgrade")]

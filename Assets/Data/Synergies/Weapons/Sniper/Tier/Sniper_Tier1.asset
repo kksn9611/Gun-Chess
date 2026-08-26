@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Sniper_Tier1
   m_EditorClassIdentifier: Assembly-CSharp::DistanceAttackBonus
   bonusPerHexPercent: 4
-  maxBonusPercent: 200
+  maxBonusPercent: 20
   minDistance: 3

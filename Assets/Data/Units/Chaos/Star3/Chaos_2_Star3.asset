@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Chaos_2_Star3
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Chaos_2
+  unitName: "\uC544\uB808\uC2A4"
   unitPrefab: {fileID: 7339558638033791742, guid: 4207d4c42bcf0434582d1fd965eb2d88, type: 3}
+  portrait: {fileID: 0}
   cost: 2
   starLevel: 3
   upgradeUnit: {fileID: 0}
   maxHp: 1445
-  maxMp: 50
+  maxMp: 55
   att: 57.8
   def: 20
   attRange: 3

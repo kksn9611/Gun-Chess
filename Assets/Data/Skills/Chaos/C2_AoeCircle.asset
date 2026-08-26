@@ -33,6 +33,6 @@ MonoBehaviour:
     length: 0
   color: {r: 1, g: 0.5490196, b: 0, a: 0.39215687}
   vfxScale: {x: 1, y: 1, z: 1}
-  vfxDelay: 1.5
+  vfxDelay: 2
   castCount: 1
   lockArea: 0

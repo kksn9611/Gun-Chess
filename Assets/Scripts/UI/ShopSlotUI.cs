@@ -16,6 +16,11 @@ public class ShopSlotUI : MonoBehaviour
     [Header("Synergy Rows")]
     [SerializeField] private SynergyRowUI[] synergyRows;  // fixed pool (one per possible synergy)
 
+    [Header("Cost Styling")]
+    [SerializeField] private ShopCostPalette palette;     // shared cost → color table
+    [SerializeField] private Image costFrame;             // colored border, tinted by cost
+    [SerializeField] private Image glow;                  // soft glow, cost-tinted, high-cost only
+
     /// <summary>Show the given unit, or clear the slot when data is null.</summary>
     public void SetUnit(UnitData data)
     {
@@ -36,6 +41,29 @@ public class ShopSlotUI : MonoBehaviour
             if (synergyRows[i] == null) continue;
             if (i < count) synergyRows[i].Set(data.synergies[i]);
             else           synergyRows[i].Hide();
+        }
+
+        ApplyCostStyle(filled ? data.cost : 0, filled);
+    }
+
+    /// <summary>Tint the cost frame and toggle/tint the high-cost glow.</summary>
+    private void ApplyCostStyle(int cost, bool filled)
+    {
+        if (!filled || palette == null)
+        {
+            if (costFrame != null) costFrame.enabled = false;
+            if (glow != null) glow.gameObject.SetActive(false);
+            return;
+        }
+
+        Color c = palette.ColorFor(cost);
+        if (costFrame != null) { costFrame.enabled = true; costFrame.color = c; }
+
+        if (glow != null)
+        {
+            bool shouldGlow = palette.ShouldGlow(cost);
+            glow.gameObject.SetActive(shouldGlow);
+            if (shouldGlow) glow.color = new Color(c.r, c.g, c.b, glow.color.a); // keep pulse-driven alpha
         }
     }
 }

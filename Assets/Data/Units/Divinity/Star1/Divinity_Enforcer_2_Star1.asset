@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4360ac326a21d334a99672283735c1ec, type: 3}
   m_Name: Divinity_Enforcer_2_Star1
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
-  unitName: Divinity_Enforcer_2
+  unitName: "\uAC00\uBE0C\uB9AC\uC5D8"
   unitPrefab: {fileID: 4104458227381271381, guid: e3f8d401be6f1bc469b520bda1ccad0c, type: 3}
+  portrait: {fileID: 0}
   cost: 2
   starLevel: 1
   upgradeUnit: {fileID: 11400000, guid: 2f1528955fd21bd40a008eef240f72d4, type: 2}

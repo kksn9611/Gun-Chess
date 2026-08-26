@@ -209,14 +209,16 @@ public class UnitPlacer : MonoBehaviour
             var benchTarget = (BenchTileScript)targetTile;
             if (other != null)
             {
-                // Swap: other(bench) → hex / held(hex) → bench
-                BenchManager.Instance.RemoveUnit(other);
-                UnitManager.Instance.AddUnit(other, other.CurrentTeam);
-                other.PlaceOnTile((TileScript)originalTile, clearCurrent: false);
-
+                // Swap: held(hex) → bench / other(bench) → hex.
+                // Remove the held board unit BEFORE adding the bench unit so the field count never
+                // transiently exceeds capacity (which would trip EnforceCapacity on the incoming unit).
                 UnitManager.Instance.RemoveUnit(heldUnit, heldUnit.CurrentTeam);
                 BenchManager.Instance.AddUnit(heldUnit, benchTarget);
                 heldUnit.PlaceOnBench(benchTarget, clearCurrent: false);
+
+                BenchManager.Instance.RemoveUnit(other);
+                UnitManager.Instance.AddUnit(other, other.CurrentTeam);
+                other.PlaceOnTile((TileScript)originalTile, clearCurrent: false);
             }
             else
             {

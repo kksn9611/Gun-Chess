@@ -13,26 +13,33 @@ MonoBehaviour:
   m_Name: "\uC9D1\uD589"
   m_EditorClassIdentifier: Assembly-CSharp::SynergyData
   synergyName: "\uC9D1\uD589"
-  icon: {fileID: 0}
-  inactiveIcon: {fileID: 0}
+  icon: {fileID: 21300000, guid: bc6009e6544d02844a255be538fdad9e, type: 3}
+  inactiveIcon: {fileID: 21300000, guid: 9335806eac1cc0e409f52b3f5967c5a9, type: 3}
+  isWeapon: 0
   description: "\uC0DD\uBA85\uB825 \uD761\uC218\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 98380f0737465cc4d8aff4ae9ac1ff91, type: 3}
     sortPrimary: 3
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: f04d4f8251b41c44d91051f944466daf, type: 2}
   - requiredCount: 4
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: eb24613cabc48f94e857cfff584ac548, type: 3}
     sortPrimary: 2
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 04837500f488c134c93cb257496fc80e, type: 2}
   - requiredCount: 5
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 85beef81ded576f45bafb7a4dc47ec0c, type: 3}
     sortPrimary: 1
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: ddfde6395d42f52468946ec33119f568, type: 2}
     - {fileID: 11400000, guid: 0c89773a921ccfb43ad8219c0f154a6b, type: 2}
+  - requiredCount: 6
+    icon: {fileID: 21300000, guid: a0131e464565e5746b2ca492e3ce482f, type: 3}
+    sortPrimary: 0
+    sortSecondary: 1
+    behaviors:
+    - {fileID: 11400000, guid: 135f6c40767a6784dbf797c52e9894c1, type: 2}
