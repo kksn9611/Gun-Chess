@@ -1,14 +1,18 @@
-﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Audio;
 
+/// <summary>Plays a one-shot SFX (2D) when the effect object is enabled, after delayTime.</summary>
 public class EffectController : MonoBehaviour
 {
-    [SerializeField]private AudioSource audioSource;
     public float delayTime = 0.5f;
+
+    [Header("Sound")]
+    [SerializeField] private AudioClip clip;    // played on enable
+    [Range(0f, 1f)]
+    [SerializeField] private float volume = 1f;
+
     void OnEnable()
     {
-        audioSource.PlayDelayed(delayTime);
+        if (clip != null && SoundManager.Instance != null)
+            SoundManager.Instance.PlaySfx(clip, volume, delayTime);
     }
 }
-

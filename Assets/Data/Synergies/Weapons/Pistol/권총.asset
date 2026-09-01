@@ -16,11 +16,13 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: f76e5a157365d9649a81f03056d5418b, type: 3}
   inactiveIcon: {fileID: 21300000, guid: 0bfd56c1c9ca69d4fad2c8ffaa983301, type: 3}
   isWeapon: 1
-  description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960\uC744
-    \uC62C\uB824\uC90D\uB2C8\uB2E4.\n\uAD8C\uCD1D \uC720\uB2DB\uC740 2\uBC30\uB85C
-    \uC801\uC6A9."
+  description: "\uAD8C\uCD1D \uC720\uB2DB\uC740 \uC804\uBC29\uC5D0\uC11C \uC801\uC758
+    \uACF5\uACA9\uC744 \uBB34\uD6A8\uD654\uD558\uAC70\uB098 \uC544\uAD70\uC744 \uC9C0\uC6D0\uD558\uACE0,
+    \uCE58\uBA85\uC801\uC778 \uC77C\uACA9\uC744 \uAC00\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960
+      +10% \n    \uAD8C\uCD1D \uC720\uB2DB\uC740 \uB450\uBC30"
     icon: {fileID: 21300000, guid: 81c1ddd6f9748ea4d91faa686aec3afa, type: 3}
     sortPrimary: 3
     sortSecondary: 1
@@ -28,6 +30,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: c49b99d6420b9274dadbf5eaee15a01a, type: 2}
     - {fileID: 11400000, guid: 7b7a0f227c96eda4581197f93ecc4c18, type: 2}
   - requiredCount: 4
+    description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960
+      +20% \n    \uAD8C\uCD1D \uC720\uB2DB\uC740 \uB450\uBC30"
     icon: {fileID: 21300000, guid: 756ab032253014c4ba47183a38d0eda0, type: 3}
     sortPrimary: 2
     sortSecondary: 1
@@ -35,6 +39,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 7c47ae4cfe8f1c445ba1bd6fe6c77e2b, type: 2}
     - {fileID: 11400000, guid: cacbbaa28c0293542bd67ef8e0da3db3, type: 2}
   - requiredCount: 6
+    description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960
+      +30% \n    \uAD8C\uCD1D \uC720\uB2DB\uC740 \uB450\uBC30"
     icon: {fileID: 21300000, guid: b969a97ad28c5a841928c3a34647490c, type: 3}
     sortPrimary: 1
     sortSecondary: 1
@@ -42,6 +48,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 13153d635286f0e4db902c37b09987bb, type: 2}
     - {fileID: 11400000, guid: c1b364bef5c328149aa28428bff6f9db, type: 2}
   - requiredCount: 7
+    description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uCE58\uBA85\uD0C0 \uD655\uB960
+      +37.5% \n    \uAD8C\uCD1D \uC720\uB2DB\uC740 \uB450\uBC30"
     icon: {fileID: 21300000, guid: d5ba494a855cd394a93d9ebc83ed56c7, type: 3}
     sortPrimary: 0
     sortSecondary: 1

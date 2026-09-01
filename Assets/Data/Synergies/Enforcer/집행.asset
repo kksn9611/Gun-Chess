@@ -19,18 +19,22 @@ MonoBehaviour:
   description: "\uC0DD\uBA85\uB825 \uD761\uC218\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "\uC0DD\uBA85\uB825 \uD761\uC218 +15%"
     icon: {fileID: 21300000, guid: 98380f0737465cc4d8aff4ae9ac1ff91, type: 3}
     sortPrimary: 3
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: f04d4f8251b41c44d91051f944466daf, type: 2}
   - requiredCount: 4
+    description: "\uC0DD\uBA85\uB825 \uD761\uC218 +25%"
     icon: {fileID: 21300000, guid: eb24613cabc48f94e857cfff584ac548, type: 3}
     sortPrimary: 2
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 04837500f488c134c93cb257496fc80e, type: 2}
   - requiredCount: 5
+    description: "\uC0DD\uBA85\uB825 \uD761\uC218 +25%\n    \uBAA8\uB4E0 \uC720\uB2DB\uC758
+      \uC0DD\uBA85\uB825 \uD761\uC218 +15%"
     icon: {fileID: 21300000, guid: 85beef81ded576f45bafb7a4dc47ec0c, type: 3}
     sortPrimary: 1
     sortSecondary: 1
@@ -38,6 +42,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: ddfde6395d42f52468946ec33119f568, type: 2}
     - {fileID: 11400000, guid: 0c89773a921ccfb43ad8219c0f154a6b, type: 2}
   - requiredCount: 6
+    description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uC0DD\uBA85\uB825 \uD761\uC218
+      +50%"
     icon: {fileID: 21300000, guid: a0131e464565e5746b2ca492e3ce482f, type: 3}
     sortPrimary: 0
     sortSecondary: 1

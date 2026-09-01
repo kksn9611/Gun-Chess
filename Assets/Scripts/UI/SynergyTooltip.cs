@@ -28,12 +28,15 @@ public class SynergyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
     private readonly List<SynergyThumbnail> thumbPool = new List<SynergyThumbnail>();
     private readonly List<UnitData> matchBuffer = new List<UnitData>();
+    private readonly HashSet<string> onBoardNames = new HashSet<string>(); // unit names currently on the field
 
     [Header("Tier State Colors")]
     [Tooltip("Color of the currently-active tier line (also bold)")]
     [SerializeField] private Color activeTierColor = Color.white;
     [Tooltip("Color of locked (unreached) tier lines")]
     [SerializeField] private Color lockedTierColor = new Color(0.55f, 0.55f, 0.55f, 1f);
+    [Tooltip("Color of already-met tiers below the active tier (dimmed)")]
+    [SerializeField] private Color metTierColor = new Color(0.4f, 0.4f, 0.4f, 1f);
 
     [Header("Placement")]
     [Tooltip("Offset from the hovered badge's right edge")]
@@ -90,11 +93,18 @@ public class SynergyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitH
             return c != 0 ? c : string.CompareOrdinal(a.unitName, b.unitName);
         });
 
+        // Snapshot which units are on the field (star tiers share a name, so match by name).
+        onBoardNames.Clear();
+        if (UnitManager.Instance != null)
+            foreach (UnitController u in UnitManager.Instance.playerUnits)
+                if (u != null && u.Stats != null && u.Stats.UnitData != null)
+                    onBoardNames.Add(u.Stats.UnitData.unitName);
+
         int i = 0;
         for (; i < matchBuffer.Count; i++)
         {
             SynergyThumbnail cell = GetThumb(i);
-            cell.Bind(matchBuffer[i], unitTooltip);
+            cell.Bind(matchBuffer[i], unitTooltip, onBoardNames.Contains(matchBuffer[i].unitName));
             cell.gameObject.SetActive(true);
         }
         for (; i < thumbPool.Count; i++) thumbPool[i].gameObject.SetActive(false);
@@ -173,7 +183,7 @@ public class SynergyTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitH
                 else if (i > entry.activeTierIndex)
                     sb.Append(Wrap(line, lockedTierColor));             // locked / all-inactive: color
                 else
-                    sb.Append(line);                                    // met (below active): as authored
+                    sb.Append(Wrap(line, metTierColor));                // met (below active): dimmed
             }
         }
         return sb.ToString();

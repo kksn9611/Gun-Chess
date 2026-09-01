@@ -16,11 +16,12 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 1d4e4d3f736ab454d9cda6d5190c1aa5, type: 3}
   inactiveIcon: {fileID: 21300000, guid: 225a8cc88170cad4daebbbe82b373e0b, type: 3}
   isWeapon: 0
-  description: "\uD53C\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uC2E4\uB4DC \uC0DD\uC131,
-    \uACF5\uACA9\uC2DC \uC77C\uC815 \uD655\uB960\uB85C \uCD94\uAC00 \uB370\uBBF8\uC9C0
-    \uBC1C\uC0DD"
+  description: "\uACF5\uACA9\uC2DC \uCD94\uAC00 \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uACE0,
+    \uD53C\uACA9 \uC2DC \uBCF4\uD638\uB9C9\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "10% \uD655\uB960\uB85C 15\uC758 \uCD94\uAC00 \uB370\uBBF8\uC9C0\n   
+      \uCCB4\uB825\uC758 5%\uC758 \uBCF4\uD638\uB9C9 \uC0DD\uC131"
     icon: {fileID: 21300000, guid: ac89d96408bdbe246bc4a766c36490f8, type: 3}
     sortPrimary: 3
     sortSecondary: 0
@@ -29,6 +30,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: e4c7121951b73df4fbd93c888e0d3578, type: 2}
     - {fileID: 11400000, guid: a4032aa9f4a9d824ba1c828596b2d65d, type: 2}
   - requiredCount: 4
+    description: "20% \uD655\uB960\uB85C 20\uC758 \uCD94\uAC00 \uB370\uBBF8\uC9C0\n   
+      \uCCB4\uB825\uC758 5%\uC758 \uBCF4\uD638\uB9C9 \uC0DD\uC131"
     icon: {fileID: 21300000, guid: 566449d68a82aac49974307cc7bcb714, type: 3}
     sortPrimary: 2
     sortSecondary: 0
@@ -37,6 +40,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 66b9391909eefe845b12d362ad3a9064, type: 2}
     - {fileID: 11400000, guid: 2d2bcbb20cc47f14baab9406e04a5e64, type: 2}
   - requiredCount: 6
+    description: "25% \uD655\uB960\uB85C 40\uC758 \uCD94\uAC00 \uB370\uBBF8\uC9C0\n   
+      \uCCB4\uB825\uC758 5%\uC758 \uBCF4\uD638\uB9C9 \uC0DD\uC131"
     icon: {fileID: 21300000, guid: 8f9f5ede60af965448ea702b7928279d, type: 3}
     sortPrimary: 1
     sortSecondary: 0
@@ -45,6 +50,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 3bdd0a5e5939f004f8b36591ace81fff, type: 2}
     - {fileID: 11400000, guid: a6fea3c9112d8a44e8a0b9dd77d83504, type: 2}
   - requiredCount: 8
+    description: "25% \uD655\uB960\uB85C 60\uC758 \uCD94\uAC00 \uB370\uBBF8\uC9C0\n   
+      \uCCB4\uB825\uC758 7%\uC758 \uBCF4\uD638\uB9C9 \uC0DD\uC131"
     icon: {fileID: 21300000, guid: 9eba9bb99d798644ab316c0f9569d0a6, type: 3}
     sortPrimary: 0
     sortSecondary: 0

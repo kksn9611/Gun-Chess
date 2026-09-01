@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -10,8 +10,10 @@ public class GlowPulse : MonoBehaviour
     [SerializeField] private Graphic target; // the glow image (defaults to this object's Graphic)
     [SerializeField] private float minAlpha = 0.35f;
     [SerializeField] private float maxAlpha = 0.85f;
-    [SerializeField] private float minScale = 1.0f;
-    [SerializeField] private float maxScale = 1.12f;
+    [SerializeField] private float minScaleX = 1.0f;
+    [SerializeField] private float maxScaleX = 1.12f;
+    [SerializeField] private float minScaleY = 1.0f;
+    [SerializeField] private float maxScaleY = 1.12f;
     [SerializeField] private float speed    = 2.5f;
 
     private void Reset()    => target = GetComponent<Graphic>();
@@ -27,7 +29,8 @@ public class GlowPulse : MonoBehaviour
             c.a = Mathf.Lerp(minAlpha, maxAlpha, t);
             target.color = c;
         }
-        float s = Mathf.Lerp(minScale, maxScale, t);
-        transform.localScale = new Vector3(s, s, 1f);
+        float s = Mathf.Lerp(minScaleX, maxScaleX, t);
+        float s1 = Mathf.Lerp(minScaleY, maxScaleY, t);
+        transform.localScale = new Vector3(s, s1, 1f);
     }
 }

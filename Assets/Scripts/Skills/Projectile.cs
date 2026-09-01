@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Audio;
 
 /// <summary>
 /// Attach to projectile prefab. Receives runtime data on fire,
@@ -117,25 +116,8 @@ public class Projectile : MonoBehaviour
         }
 
         // Sound (2D — no distance falloff, routed to SFX mixer group)
-        if (data.explodeSound != null)
-        {
-            GameObject sfxObj = new GameObject("ExplosionSFX");
-            AudioSource src = sfxObj.AddComponent<AudioSource>();
-            src.clip = data.explodeSound;
-            src.volume = data.explodeSoundVolume;
-            src.spatialBlend = 0f;
-
-            AudioMixer mixer = Resources.Load<AudioMixer>("Sound/Mixer");
-            if (mixer != null)
-            {
-                AudioMixerGroup[] groups = mixer.FindMatchingGroups("SFX");
-                if (groups.Length > 0)
-                    src.outputAudioMixerGroup = groups[0];
-            }
-
-            src.Play();
-            Destroy(sfxObj, data.explodeSound.length + 0.1f);
-        }
+        if (data.explodeSound != null && SoundManager.Instance != null)
+            SoundManager.Instance.PlaySfx(data.explodeSound, data.explodeSoundVolume);
 
         // AoE damage (direction-based for Cone/Laser, position-based for Circle)
         List<UnitController> targets = AreaTargetingUtility.GetTargetsInArea(

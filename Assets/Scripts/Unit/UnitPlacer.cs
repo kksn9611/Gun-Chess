@@ -98,8 +98,8 @@ public class UnitPlacer : MonoBehaviour
 
     private void HandleHover()
     {
-        // BaseTile raycast — detects both hex and bench tiles
-        BaseTile tile = RaycastTarget<BaseTile>();
+        // Tile under the cursor — detects both hex and bench tiles (unit hits resolve to their tile)
+        BaseTile tile = RaycastTile();
 
         if (tile == hoveredTile) return;
 
@@ -147,7 +147,7 @@ public class UnitPlacer : MonoBehaviour
 
     private void TryPickUp()
     {
-        BaseTile tile = RaycastTarget<BaseTile>();
+        BaseTile tile = RaycastTile();
         if (tile == null || !tile.IsOccupied) return;
 
         // Battle phase: can only pick from bench slots (field units locked)
@@ -165,7 +165,16 @@ public class UnitPlacer : MonoBehaviour
 
         heldUnit     = unit;
         originalTile = tile;
+        SetHeldColliders(false); // don't let the dragged unit shadow its own drop raycast
         ShowPlacementOverlays();
+    }
+
+    /// <summary>Toggle the held unit's colliders so it never intercepts the drop-target raycast while dragging.</summary>
+    private void SetHeldColliders(bool enabled)
+    {
+        if (heldUnit == null) return;
+        foreach (Collider col in heldUnit.GetComponentsInChildren<Collider>(true))
+            col.enabled = enabled;
     }
 
     /// <summary>
@@ -173,7 +182,7 @@ public class UnitPlacer : MonoBehaviour
     /// </summary>
     private void TryDrop()
     {
-        BaseTile targetTile = RaycastTarget<BaseTile>();
+        BaseTile targetTile = RaycastTile();
 
         if (targetTile == null || !IsValidDropTarget(targetTile))
         {
@@ -271,6 +280,7 @@ public class UnitPlacer : MonoBehaviour
             }
         }
 
+        SetHeldColliders(true); // restore collider now that the drag ended
         heldUnit     = null;
         originalTile = null;
         HidePlacementOverlays();
@@ -285,6 +295,7 @@ public class UnitPlacer : MonoBehaviour
             else if (originalTile is BenchTileScript benchSlot)
                 heldUnit.PlaceOnBench(benchSlot);
         }
+        SetHeldColliders(true); // restore collider now that the drag ended
         heldUnit     = null;
         originalTile = null;
         HidePlacementOverlays();
@@ -339,14 +350,12 @@ public class UnitPlacer : MonoBehaviour
         => tile.GridCoordinate.y < playerZoneMaxRow;
 
     /// <summary>
-    /// Raycast from mouse position and return T component on hit.
+    /// Tile under the cursor via the shared click resolver (a unit hit resolves to its tile).
     /// </summary>
-    private T RaycastTarget<T>() where T : Component
+    private BaseTile RaycastTile()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.value);
-        if (Physics.Raycast(ray, out RaycastHit hit))
-            return hit.collider.GetComponent<T>();
-        return null;
+        ClickResolver.TryResolve(mainCamera, Mouse.current.position.value, out BaseTile tile, out _);
+        return tile;
     }
 
     /// <summary>

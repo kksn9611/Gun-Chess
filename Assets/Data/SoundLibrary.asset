@@ -1,0 +1,93 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd1f2e26b2250a144ba0e4468b1f39de, type: 3}
+  m_Name: SoundLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
+  entries:
+  - id: 10
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 11
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 12
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 13
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 14
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 15
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 16
+    clip: {fileID: 0}
+    volume: 1
+    category: 1
+    lowPassCutoff: 0
+    loop: 0
+  - id: 50
+    clip: {fileID: 0}
+    volume: 0.6
+    category: 2
+    lowPassCutoff: 0
+    loop: 1
+  - id: 51
+    clip: {fileID: 0}
+    volume: 0.6
+    category: 2
+    lowPassCutoff: 0
+    loop: 1
+  - id: 52
+    clip: {fileID: 0}
+    volume: 0.6
+    category: 2
+    lowPassCutoff: 0
+    loop: 1
+  - id: 53
+    clip: {fileID: 0}
+    volume: 0.6
+    category: 2
+    lowPassCutoff: 0
+    loop: 1
+  - id: 100
+    clip: {fileID: 8300000, guid: 391ec4503f60f814ca5641190729a888, type: 3}
+    volume: 1
+    category: 0
+    lowPassCutoff: 0
+    loop: 0
+  - id: 101
+    clip: {fileID: 8300000, guid: fcf643ef3d4d0f7449db171704b8f47a, type: 3}
+    volume: 1
+    category: 0
+    lowPassCutoff: 0
+    loop: 0

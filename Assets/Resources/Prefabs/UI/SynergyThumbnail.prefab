@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 40, y: 40}
+  m_SizeDelta: {x: 52, y: 52}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7916879114055312369
 CanvasRenderer:
@@ -92,6 +92,8 @@ MonoBehaviour:
   image: {fileID: 4145195928374993643}
   border: {fileID: 8578829914258513950}
   palette: {fileID: 11400000, guid: 06b423a7099bf4146909be7e8ebda38e, type: 2}
+  grayscaleMaterial: {fileID: 2100000, guid: 531090584923b274d927e098265580d1, type: 2}
+  offBoardTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &4226666942474815178
 GameObject:
   m_ObjectHideFlags: 0
@@ -127,7 +129,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -5, y: -5}
+  m_SizeDelta: {x: -7, y: -7}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2554770398699398102
 CanvasRenderer:

@@ -16,10 +16,12 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 334d07ed37004094485e084fe5bd7c94, type: 3}
   inactiveIcon: {fileID: 21300000, guid: d4c1f0be6a6c6c14baaad2ef5ba0fdc4, type: 3}
   isWeapon: 0
-  description: "\uD300 \uBC29\uC5B4\uB825\uC774 \uC99D\uAC00\uD558\uACE0, \uB77C\uC6B4\uB4DC\uB9C8\uB2E4
-    \uCD94\uAC00 \uACE8\uB4DC\uB97C \uD68D\uB4DD\uD569\uB2C8\uB2E4."
+  description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uBC29\uC5B4\uB825\uC774 \uC99D\uAC00\uD558\uACE0,
+    \uD134\uB9C8\uB2E4 \uACE8\uB4DC\uB97C \uCD94\uAC00\uB85C \uD68D\uB4DD\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "\uD134 \uACE8\uB4DC +2\n    \uBAA8\uB4E0 \uC720\uB2DB \uBC29\uC5B4\uB825
+      +50%"
     icon: {fileID: 21300000, guid: bca6b4b789dbd5e4fb86611ef4739190, type: 3}
     sortPrimary: 3
     sortSecondary: 0
@@ -27,6 +29,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 74252fe3e0d28a040a24dfdaa2ccb4a2, type: 2}
     - {fileID: 11400000, guid: 3d3773439d53d164a9d5997af8417d25, type: 2}
   - requiredCount: 4
+    description: "\uD134 \uACE8\uB4DC +4\n    \uBAA8\uB4E0 \uC720\uB2DB \uBC29\uC5B4\uB825
+      +75%"
     icon: {fileID: 21300000, guid: 211408041492bae43befd88c1cc29d89, type: 3}
     sortPrimary: 2
     sortSecondary: 0
@@ -34,6 +38,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 270fe6d4ce55ddb49a4e17d116cbe681, type: 2}
     - {fileID: 11400000, guid: 6a8d902ee71897a4caf1b47a7dd76790, type: 2}
   - requiredCount: 6
+    description: "\uD134 \uACE8\uB4DC +7\n    \uBAA8\uB4E0 \uC720\uB2DB \uBC29\uC5B4\uB825
+      +100%"
     icon: {fileID: 21300000, guid: 722f7a9972b908e4592a5d0c7a48b71e, type: 3}
     sortPrimary: 1
     sortSecondary: 0
@@ -41,6 +47,8 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 48ee3f7a0b26e9447bcf5a189053af1a, type: 2}
     - {fileID: 11400000, guid: 245e9762d48c7c448b8e029542f9a2e9, type: 2}
   - requiredCount: 8
+    description: "\uD134 \uACE8\uB4DC +10\n    \uBAA8\uB4E0 \uC720\uB2DB \uBC29\uC5B4\uB825
+      +125%"
     icon: {fileID: 21300000, guid: 2cacece38ff3a044ea6cf7a5b067ff6d, type: 3}
     sortPrimary: 0
     sortSecondary: 0

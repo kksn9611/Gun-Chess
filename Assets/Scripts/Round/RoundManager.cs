@@ -26,6 +26,7 @@ public class RoundManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private UnitSpawner unitSpawner;
     [SerializeField] private SynergyManager synergyManager;
+    [SerializeField] private ShopManager shopManager;
 
     private CancellationTokenSource cts;
 
@@ -154,6 +155,16 @@ public class RoundManager : MonoBehaviour
 
         // Gain Synergy gold each round
         synergyManager.GrantRoundIncome();
+
+        // Gain base EXP each round (auto level-up when the threshold is met)
+        PlayerManager.Instance.GrantRoundExp();
+
+        // Reroll the shop for the new round (uses the post-level-up level); skipped while locked
+        if (shopManager != null)
+        {
+            shopManager.RefreshForNewRound();
+            shopManager.AddFreeReroll(PlayerManager.Instance.FreeRerollsPerRound); // n free rerolls this round
+        }
 
         // Advance to next round
         currentRound++;

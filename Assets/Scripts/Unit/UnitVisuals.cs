@@ -36,8 +36,11 @@ public class UnitVisuals : MonoBehaviour
     [SerializeField] private Vector3 shieldScale = new Vector3 (0.55f, 0.55f, 0.55f);
 
     [Header("Sound Setting")]
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private AudioSource skillAudioSource;
+    [SerializeField] private AudioClip attackSound;   // fired by PlaySound (Animation Event)
+    [Range(0f, 1f)]
+    [SerializeField] private float attackVolume = 1f;
+    [SerializeField] private float attackPitch = 1f;
+    [SerializeField] private float lowPassCutoff = 12000f; // low-pass applied to attack + skill sounds
     [SerializeField] private AudioClip skillSound;
     [Range(0f, 1f)]
     [SerializeField] private float skillSoundVolume = 1f;
@@ -121,26 +124,30 @@ public class UnitVisuals : MonoBehaviour
         if (shieldEffect != null) shieldEffect.SetActive(currentShield > 0f);
     }
 
-    public void PlaySkillSoundVolume(float volume)
-    {
-        skillAudioSource.volume = volume;
-        skillAudioSource.PlayOneShot(skillSound);
-    }
-
+    /// <summary>Play the skill SFX (2D). Volume mirrors the old PlayOneShot scaling: skillSoundVolume * attackVolume.</summary>
     public async UniTaskVoid PlaySkillSound(float delay)
     {
         if (delay > 0f)
         {
             await UniTask.WaitForSeconds(delay, cancellationToken: cts.Token);
         }
-        audioSource.PlayOneShot(skillSound, skillSoundVolume);
+        if (skillSound == null || SoundManager.Instance == null) return;
+        SoundManager.Instance.Play(new SfxParams
+        {
+            clip = skillSound, volume = skillSoundVolume * attackVolume, pitch = attackPitch,
+            spatialBlend = 0f, category = SoundCategory.Sfx, lowPassCutoff = lowPassCutoff
+        });
     }
+
+    /// <summary>Play the attack SFX (2D). Called by Animation Event.</summary>
     public void PlaySound()
     {
-        if (audioSource != null && audioSource.generator != null)
+        if (attackSound == null || SoundManager.Instance == null) return;
+        SoundManager.Instance.Play(new SfxParams
         {
-            audioSource.Play();
-        }
+            clip = attackSound, volume = attackVolume, pitch = attackPitch,
+            spatialBlend = 0f, category = SoundCategory.Sfx, lowPassCutoff = lowPassCutoff
+        });
     }
 
     /// <summary>Called by Animation Event to trigger trail firing.</summary>

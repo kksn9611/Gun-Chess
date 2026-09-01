@@ -42,6 +42,7 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
+        AddFreeReroll(player.StartingFreeRerolls); // seed starting free rerolls from PlayerManager
         RollShop(); // initial shop
     }
 

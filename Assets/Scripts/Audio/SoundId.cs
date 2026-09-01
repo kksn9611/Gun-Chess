@@ -1,0 +1,27 @@
+/// <summary>
+/// Stable identifiers for catalog-driven sounds (UI, BGM, shared SFX). Explicit values so entries
+/// stay bound if the list is reordered. Per-unit attack/skill clips are NOT here — they stay on the unit.
+/// </summary>
+public enum SoundId
+{
+    None = 0,
+
+    // UI (10-49)
+    UiClick = 10,
+    UiHover = 11,
+    UiPurchase = 12,
+    UiSell = 13,
+    UiReroll = 14,
+    UiError = 15,
+    UiLevelUp = 16,
+
+    // BGM (50-99)
+    BgmPreparation = 50,
+    BgmBattle = 51,
+    BgmVictory = 52,
+    BgmDefeat = 53,
+
+    // Shared SFX (100+)
+    UnitLevelUpStar2 = 100,
+    UnitLevelUpStar3 = 101,
+}

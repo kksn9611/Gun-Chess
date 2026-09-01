@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitData
   unitName: "\uC624\uB9AC\uC628"
   unitPrefab: {fileID: 4104458227381271381, guid: a9a63938269333149b3d2096036d42a2, type: 3}
-  portrait: {fileID: 0}
+  portrait: {fileID: 21300000, guid: d7bccf5fb7ddbf545baf945fe99c7867, type: 3}
+  thumbnail: {fileID: 0}
   cost: 1
   starLevel: 2
   upgradeUnit: {fileID: 11400000, guid: 15390fde91491314cb3b1908ec832aa9, type: 2}

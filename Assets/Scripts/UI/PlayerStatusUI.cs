@@ -41,7 +41,12 @@ public class PlayerStatusUI : MonoBehaviour
 
     private void UpdateGold(int gold)
     {
-        if (goldText != null) goldText.text = $"{gold}";
+        if (goldText != null)
+        {
+            if (gold < 10) goldText.text = $"    <sprite=0>{gold}";
+            else if (gold < 100) goldText.text = $"  <sprite=0>{gold}";
+            else goldText.text = $"<sprite=0>{gold}";
+        }
     }
 
     private void UpdateLevel(int level)

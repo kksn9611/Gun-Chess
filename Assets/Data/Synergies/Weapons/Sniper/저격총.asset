@@ -16,28 +16,34 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 7b050a170c3b43442b8e23002c2f2c17, type: 3}
   inactiveIcon: {fileID: 21300000, guid: 2837d3cf021cfac4f84e2a75fbf9996c, type: 3}
   isWeapon: 1
-  description: "\uC801\uC774 \uBA40\uB9AC \uC788\uC744 \uACBD\uC6B0, \uCD94\uAC00
-    \uB370\uBBF8\uC9C0\uB97C \uC785\uD799\uB2C8\uB2E4."
+  description: "\uC800\uACA9\uCD1D \uC720\uB2DB\uC740 \uAE34 \uC0AC\uAC70\uB9AC\uB85C
+    \uD6C4\uBC29\uC5D0\uC11C \uC801\uC744 \uACF5\uACA9\uD569\uB2C8\uB2E4. \uBA40\uB9AC
+    \uB5A8\uC5B4\uC9C4 \uC801\uC744 \uACF5\uACA9 \uC2DC \uCD94\uAC00 \uACF5\uACA9\uB825\uC744
+    \uC5BB\uC2B5\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "3\uCE78 \uC774\uC0C1, \uCE78\uB9C8\uB2E4 \uACF5\uACA9\uB825 4%+"
     icon: {fileID: 21300000, guid: 10ae50c0ac239c04893594b0cdb47ede, type: 3}
     sortPrimary: 3
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: f5543716b5ca0a749a484cb1e052ae9f, type: 2}
   - requiredCount: 4
+    description: "3\uCE78 \uC774\uC0C1, \uCE78\uB9C8\uB2E4 \uACF5\uACA9\uB825 8%+"
     icon: {fileID: 21300000, guid: 3cf3a8565b7b7934b835cbd873832697, type: 3}
     sortPrimary: 2
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 180ce6bb6e879f74386aa3663e07a949, type: 2}
   - requiredCount: 6
+    description: "3\uCE78 \uC774\uC0C1, \uCE78\uB9C8\uB2E4 \uACF5\uACA9\uB825 12%+"
     icon: {fileID: 21300000, guid: 1b60822e7416e8b4a8761c163986a136, type: 3}
     sortPrimary: 1
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: e266345a977016d448abdde7f7dd5613, type: 2}
   - requiredCount: 7
+    description: "3\uCE78 \uC774\uC0C1, \uCE78\uB9C8\uB2E4 \uACF5\uACA9\uB825 20%+"
     icon: {fileID: 21300000, guid: 1da15bdc283d3184e82fc15b81093fad, type: 3}
     sortPrimary: 0
     sortSecondary: 1

@@ -11,6 +11,8 @@ public class SynergyThumbnail : MonoBehaviour, IPointerEnterHandler, IPointerExi
     [SerializeField] private Image image;                // inner icon (portrait / placeholder)
     [SerializeField] private Image border;               // cost-colored frame
     [SerializeField] private ShopCostPalette palette;    // shared cost → color table (same as shop)
+    [SerializeField] private Material grayscaleMaterial; // desaturates the icon when the unit isn't on the board
+    [SerializeField] private Color offBoardTint = new Color(0.5f, 0.5f, 0.5f, 1f); // dims the grayscale icon
 
     private UnitData unit;
     private UnitTooltip tooltip;
@@ -25,7 +27,8 @@ public class SynergyThumbnail : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
 
     /// <summary>Bind this cell to a unit and the shared unit tooltip.</summary>
-    public void Bind(UnitData u, UnitTooltip t)
+    /// <param name="onBoard">True if a copy of this unit is currently on the field; drives color vs grayscale.</param>
+    public void Bind(UnitData u, UnitTooltip t, bool onBoard)
     {
         unit = u;
         tooltip = t;
@@ -36,10 +39,13 @@ public class SynergyThumbnail : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
         if (image == null) return;
 
+        // Color when a copy is on the board, grayscale otherwise.
+        image.material = onBoard ? null : grayscaleMaterial;
+
         if (u != null && u.thumbnail != null)     // art available
         {
             image.sprite = u.thumbnail;
-            image.color  = Color.white;
+            image.color  = onBoard ? Color.white : offBoardTint; // dim when off-board
         }
         else if (cached)                          // empty → placeholder look
         {

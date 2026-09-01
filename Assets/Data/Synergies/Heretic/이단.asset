@@ -20,24 +20,32 @@ MonoBehaviour:
     (\uACF5\uACA9, \uBC29\uC5B4, \uACF5\uC774\uC18D, HP, MP)"
   tiers:
   - requiredCount: 2
+    description: "\uACF5\uACA9, \uBC29\uC5B4 +20%\n    \uADF8 \uC678 \uB2A5\uB825\uCE58
+      +10%"
     icon: {fileID: 21300000, guid: bad62dba05a9175469f921b3a477ff63, type: 3}
     sortPrimary: 3
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: be874d4414f21064c97606c3bc07d88c, type: 2}
   - requiredCount: 3
+    description: "\uACF5\uACA9, \uBC29\uC5B4 +40%\n    \uADF8 \uC678 \uB2A5\uB825\uCE58
+      +20%"
     icon: {fileID: 21300000, guid: 0684c522607dba2449f89cd83af7bdd4, type: 3}
     sortPrimary: 2
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 95d0864ab9b957c4fbf0898484e5ecc7, type: 2}
   - requiredCount: 4
+    description: "\uACF5\uACA9, \uBC29\uC5B4 +60%\n    \uADF8 \uC678 \uB2A5\uB825\uCE58
+      +30%"
     icon: {fileID: 21300000, guid: e9dace0213d133d4b927f9915fcf2b0d, type: 3}
     sortPrimary: 1
     sortSecondary: 0
     behaviors:
     - {fileID: 11400000, guid: 0e4707ed69349524084cf329e76c401c, type: 2}
   - requiredCount: 6
+    description: "\uACF5\uACA9, \uBC29\uC5B4 +80%\n    \uADF8 \uC678 \uB2A5\uB825\uCE58
+      +40%"
     icon: {fileID: 21300000, guid: 7b056d2ba4e6c5641a05a8fb5b87e594, type: 3}
     sortPrimary: 0
     sortSecondary: 0

@@ -16,12 +16,12 @@ MonoBehaviour:
   description: "\uC801\uC744 \uAD00\uD1B5\uD558\uB294 \uCD1D\uC54C\uC744 \uBC1C\uC0AC\uD574,
     \uB370\uBBF8\uC9C0\uB97C \uC785\uD799\uB2C8\uB2E4."
   castTime: 1
-  animationSpd: 0.4
+  animationSpd: 0.15
   useAnimationEvent: 1
   canCrit: 1
   castVfxPrefab: {fileID: 4580325160271238322, guid: ff73835f503a4c849a19f54582c4dba9, type: 3}
   useRootMotion: 0
-  damageMultiplier: 2
+  damageMultiplier: 2.5
   isStun: 0
   stunDuration: 0
   areaShape:
@@ -33,6 +33,6 @@ MonoBehaviour:
     length: 20
   color: {r: 0.78431374, g: 0.11764706, b: 0.19607843, a: 0.78431374}
   vfxScale: {x: 1, y: 1, z: 1}
-  vfxDelay: 0.2
+  vfxDelay: 0
   castCount: 2
   lockArea: 0

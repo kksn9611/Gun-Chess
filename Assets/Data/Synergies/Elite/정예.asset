@@ -20,18 +20,21 @@ MonoBehaviour:
     \uC218\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
   tiers:
   - requiredCount: 2
+    description: "\uBC30\uCE58 \uAC00\uB2A5 \uC720\uB2DB \uC218 +1"
     icon: {fileID: 21300000, guid: e1dc3e04700414841a8beff71a7ded13, type: 3}
     sortPrimary: 2
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: cc11390e279513042a5375cec7169cdf, type: 2}
   - requiredCount: 4
+    description: "\uBC30\uCE58 \uAC00\uB2A5 \uC720\uB2DB \uC218 +2"
     icon: {fileID: 21300000, guid: f9a3f6cf51409c4469b4b2164d7acba6, type: 3}
     sortPrimary: 1
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 30b175b25b3adf54ea583976412b9593, type: 2}
   - requiredCount: 6
+    description: "\uBC30\uCE58 \uAC00\uB2A5 \uC720\uB2DB \uC218 +3"
     icon: {fileID: 21300000, guid: 3fc3a4130e618d34396bdfa05a1f12c0, type: 3}
     sortPrimary: 0
     sortSecondary: 1

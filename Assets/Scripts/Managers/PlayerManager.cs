@@ -26,9 +26,12 @@ public class PlayerManager : MonoBehaviour
     [Header("Starting Values")]
     [SerializeField] private int startingGold = 3;
     [SerializeField] private int startingLevel = 1;
+    [SerializeField] private int startingFreeRerolls = 0; // free shop rerolls granted at game start
 
     [Header("Round Income")]
-    [SerializeField] private int baseTurnGold = 2; // base gold granted each turn
+    [SerializeField] private int baseTurnGold = 2;       // base gold granted each turn
+    [SerializeField] private int expPerRound = 2;        // EXP granted after each combat round
+    [SerializeField] private int freeRerollsPerRound = 0; // free shop rerolls granted each round
 
     [Header("Interest")]
     [SerializeField] private int goldPerInterest = 10; // 1 interest per this much gold held
@@ -40,7 +43,10 @@ public class PlayerManager : MonoBehaviour
     [SerializeField] private int currentExp;    // EXP accumulated toward next level
 
     public int Gold => gold;
-    public int BaseTurnGold => baseTurnGold; // flat gold granted each turn
+    public int BaseTurnGold => baseTurnGold;             // flat gold granted each turn
+    public int ExpPerRound => expPerRound;               // EXP granted after each combat round
+    public int FreeRerollsPerRound => freeRerollsPerRound;   // free shop rerolls granted each round
+    public int StartingFreeRerolls => startingFreeRerolls;   // free shop rerolls granted at game start
     public int CurrentLevel => currentLevel;
     public int CurrentExp => currentExp;
     /// <summary>EXP required to reach next level; 0 if at max level.</summary>
@@ -104,6 +110,13 @@ public class PlayerManager : MonoBehaviour
     {
         if (baseTurnGold > 0) AddGold(baseTurnGold);
         return baseTurnGold;
+    }
+
+    /// <summary>Grant the per-round EXP (auto level-up handled by AddExp) and return the amount granted.</summary>
+    public int GrantRoundExp()
+    {
+        if (expPerRound > 0) AddExp(expPerRound);
+        return expPerRound;
     }
 
 
