@@ -312,8 +312,8 @@ public class UnitStats : MonoBehaviour
         }
     }
 
-    /// <summary>Remove all synergy buffs. Called on round reset.</summary>
-    private void RemoveAllSynergyBuffs()
+    /// <summary>Remove all synergy buffs. Called on round reset and by SynergyManager's rebuild.</summary>
+    public void RemoveAllSynergyBuffs()
     {
         if (unitData == null || unitData.synergies == null) return;
 

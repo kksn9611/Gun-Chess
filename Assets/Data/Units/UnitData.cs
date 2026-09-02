@@ -9,6 +9,8 @@ public class UnitData : ScriptableObject
     public Sprite portrait;       // Shop/UI portrait
     public Sprite thumbnail;      // Small square thumbnail (synergy tooltip roster, etc.)
     public int cost = 1;
+    [Tooltip("Gold refunded when this unit is sold (placeholder = 1)")]
+    public int sellPrice = 1;
 
     [Header("Upgrade")]
     [Tooltip("Current star level (1~3)")]

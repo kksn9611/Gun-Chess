@@ -33,6 +33,7 @@ public class MergeManager : MonoBehaviour
     /// <summary>Check for a merge of this unit type. Call after a unit is added or sold.</summary>
     public void CheckMerge(UnitData data)
     {
+        if (IsResultPhase()) return; // merging during Result leaves the upgrade unresponsive
         if (data == null || data.upgradeUnit == null) return; // final tier never merges
 
         List<UnitController> copies = CollectPlayerCopies(data);
@@ -46,6 +47,7 @@ public class MergeManager : MonoBehaviour
     /// <summary>True if buying one more copy of this unit would complete a merge (used for bench-full purchases).</summary>
     public bool WouldMergeOnAdd(UnitData data)
     {
+        if (IsResultPhase()) return false; // no merging during Result
         if (data == null || data.upgradeUnit == null) return false; // final tier never merges
         return CollectPlayerCopies(data).Count >= MergeCount - 1;
     }
@@ -57,6 +59,7 @@ public class MergeManager : MonoBehaviour
     /// </summary>
     public void MergeFromPurchase(UnitData data)
     {
+        if (IsResultPhase()) return; // no merging during Result
         if (data == null || data.upgradeUnit == null) return;
 
         List<UnitController> copies = CollectPlayerCopies(data);
@@ -192,6 +195,9 @@ public class MergeManager : MonoBehaviour
 
     private static bool IsBattlePhase()
         => BattleManager.Instance != null && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle;
+
+    private static bool IsResultPhase()
+        => BattleManager.Instance != null && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Result;
 
     /// <summary>Unit's hitbox world position, falling back to its transform if no hitbox is assigned.</summary>
     private static Vector3 HitboxPos(UnitController unit)

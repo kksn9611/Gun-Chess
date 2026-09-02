@@ -9,6 +9,10 @@ public class StageData : ScriptableObject
 {
     [Header("Enemy Composition")]
     public EnemySpawnInfo[] enemies;
+
+    [Header("Enemy Modifiers")]
+    [Tooltip("Percent stat boosts applied to every enemy spawned this stage")]
+    public StatBoostEntry[] enemyBuffs;
 }
 
 /// <summary>

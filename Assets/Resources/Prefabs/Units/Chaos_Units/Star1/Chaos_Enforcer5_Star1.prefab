@@ -5718,7 +5718,7 @@ MonoBehaviour:
   attackPitch: 0.8
   lowPassCutoff: 12000
   skillSound: {fileID: 8300000, guid: 5a86603a8cd29b840bfa801323d0fa4c, type: 3}
-  skillSoundVolume: 1
+  skillSoundVolume: 0.6
 --- !u!114 &2183734794639486157
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,8 +18,10 @@ public enum SoundId
     // BGM (50-99)
     BgmPreparation = 50,
     BgmBattle = 51,
-    BgmVictory = 52,
-    BgmDefeat = 53,
+
+    // Result stingers — played as SFX one-shots (values kept for catalog binding)
+    Victory = 52,
+    Defeat = 53,
 
     // Shared SFX (100+)
     UnitLevelUpStar2 = 100,

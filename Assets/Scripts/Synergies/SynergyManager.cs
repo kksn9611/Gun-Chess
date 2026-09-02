@@ -73,6 +73,14 @@ public class SynergyManager : MonoBehaviour
     {
         if (synergyState == null) return;
 
+        // 0) Strip every board unit's synergy buffs first. The re-apply below (UpdateEntries →
+        //    OnSynergyChanged) then rebuilds them over the CURRENT roster, so a unit placed or merged
+        //    onto the board after a global boost was applied still receives it (fixes the late-joiner
+        //    bug where e.g. a merged Star2 missed a team-wide GlobalStatBoost).
+        foreach (var unit in UnitManager.Instance.playerUnits)
+            if (unit != null && !unit.IsOnBench)
+                unit.Stats.RemoveAllSynergyBuffs();
+
         // 1) Tally field unit synergies (same champion counted once across star tiers)
         Dictionary<SynergyData, int> synergyCounts = new Dictionary<SynergyData, int>();
         HashSet<string> countedUnits = new HashSet<string>();

@@ -9,10 +9,11 @@ public class MusicDirector : MonoBehaviour
     [Header("Tracks (SoundId in the SoundLibrary)")]
     [SerializeField] private SoundId preparation = SoundId.BgmPreparation;
     [SerializeField] private SoundId battle = SoundId.BgmBattle;
-    [SerializeField] private SoundId victory = SoundId.BgmVictory;
-    [SerializeField] private SoundId defeat = SoundId.BgmDefeat;
 
-    [SerializeField] private bool playVictoryDefeat = false; // off until those tracks are authored
+    [Header("Result stingers (played as SFX)")]
+    [SerializeField] private SoundId victory = SoundId.Victory;
+    [SerializeField] private SoundId defeat = SoundId.Defeat;
+    [SerializeField] private bool playVictoryDefeat = false; // off until those clips are authored
 
     private void OnEnable()
     {
@@ -44,9 +45,9 @@ public class MusicDirector : MonoBehaviour
 
     private void OnBattleEnd(Team winner)
     {
-        if (!playVictoryDefeat) return;
+        if (!playVictoryDefeat || SoundManager.Instance == null) return;
         bool playerWon = winner == Team.Player;
-        Play(playerWon ? victory : defeat);
+        SoundManager.Instance.Play(playerWon ? victory : defeat); // SFX one-shot, not BGM
     }
 
     private void Play(SoundId id)

@@ -26,31 +26,31 @@ MonoBehaviour:
     lowPassCutoff: 0
     loop: 0
   - id: 12
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: d122e8fbd8a57014381c12c08520defb, type: 3}
     volume: 1
     category: 1
     lowPassCutoff: 0
     loop: 0
   - id: 13
-    clip: {fileID: 0}
-    volume: 1
+    clip: {fileID: 8300000, guid: de90381671ca6c44fb4fadd718a275d8, type: 3}
+    volume: 0.6
     category: 1
     lowPassCutoff: 0
     loop: 0
   - id: 14
-    clip: {fileID: 0}
-    volume: 1
+    clip: {fileID: 8300000, guid: 1af6b110fdff65f46bc1f4660da3a5b7, type: 3}
+    volume: 0.6
     category: 1
     lowPassCutoff: 0
     loop: 0
   - id: 15
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: de9038abc31eeb844952402c659d1b3d, type: 3}
     volume: 1
     category: 1
     lowPassCutoff: 0
     loop: 0
   - id: 16
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 85c532eb3cb54924f962f0d882a3fba3, type: 3}
     volume: 1
     category: 1
     lowPassCutoff: 0
@@ -68,17 +68,17 @@ MonoBehaviour:
     lowPassCutoff: 0
     loop: 1
   - id: 52
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: da795610d50c3084b9ca95e9552b93d5, type: 3}
     volume: 0.6
-    category: 2
+    category: 0
     lowPassCutoff: 0
-    loop: 1
+    loop: 0
   - id: 53
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 9a75f03e51d2c7047b2a9359d96f08b6, type: 3}
     volume: 0.6
-    category: 2
+    category: 0
     lowPassCutoff: 0
-    loop: 1
+    loop: 0
   - id: 100
     clip: {fileID: 8300000, guid: 391ec4503f60f814ca5641190729a888, type: 3}
     volume: 1

@@ -62,6 +62,8 @@ public class ShopManager : MonoBehaviour
             Debug.Log("[Shop] Not enough gold to reroll");
             return;
         }
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiReroll);
         RollShop();
     }
 
@@ -136,6 +138,7 @@ public class ShopManager : MonoBehaviour
         if (benchSlot == null && !mergeOnBuy)
         {
             Debug.Log("[Shop] No empty bench slot");
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiError);
             return false;
         }
 
@@ -143,6 +146,7 @@ public class ShopManager : MonoBehaviour
         if (!player.TrySpendGold(unit.cost))
         {
             Debug.Log("[Shop] Not enough gold");
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiError);
             return false;
         }
 
@@ -155,6 +159,7 @@ public class ShopManager : MonoBehaviour
             OnShopChanged?.Invoke();
 
             MergeManager.Instance.MergeFromPurchase(unit);
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiPurchase);
             return true;
         }
 
@@ -174,6 +179,8 @@ public class ShopManager : MonoBehaviour
         currnetShop[slotIndex].currnetUnit = null;
         currnetShop[slotIndex].isPurchased = true;
         OnShopChanged?.Invoke();
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiPurchase);
 
         // Unit added -> check for a 3-copy merge (board + bench)
         if (MergeManager.Instance != null)

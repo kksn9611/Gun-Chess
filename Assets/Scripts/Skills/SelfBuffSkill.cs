@@ -31,6 +31,11 @@ public class SelfBuffSkill : BaseSkill
         }
 
         if (caster == null || caster.Stats.CurrentHp <= 0) return false;
+        // Skip a cast that resolves after the fight is over (AI cancelled, or no longer in Battle phase):
+        // applying a buff or spawning a lingering aura outside combat is meaningless and causes the
+        // late-cast VFX-linger bug.
+        if (ct.IsCancellationRequested) return false;
+        if (BattleManager.Instance != null && BattleManager.Instance.CurrentPhase != BattleManager.Phase.Battle) return false;
         if (boosts == null || boosts.Length == 0) return false;
 
         // Cast VFX parented to the caster so it follows the unit //
@@ -41,7 +46,7 @@ public class SelfBuffSkill : BaseSkill
             vfx.transform.localPosition = new Vector3(0f, 0.1f, 0f);
             vfx.transform.localRotation = Quaternion.identity;
             vfx.transform.localScale = vfxScale;
-            ReturnVfxOnBattleEnd(castVfxPrefab, vfx);
+            ReturnVfxOnCancel(castVfxPrefab, vfx, ct).Forget();
         }
 
         // Apply stat boosts to self
@@ -53,15 +58,19 @@ public class SelfBuffSkill : BaseSkill
         return true;
     }
 
-    // Keep the buff VFX alive until the battle ends, then return it to the pool. //
-    private void ReturnVfxOnBattleEnd(GameObject prefab, GameObject instance)
+    // Keep the buff VFX alive until the cast token cancels (battle reset / death), then pool it.
+    // Self-contained (no global event) and finally-guaranteed, so it can't miss cleanup no matter when
+    // it spawned — unlike the old OnBattleEnd subscription, which was lost if it spawned after that event.
+    private async UniTaskVoid ReturnVfxOnCancel(GameObject prefab, GameObject instance, CancellationToken ct)
     {
-        void OnEnd(Team winner)
+        try
         {
-            BattleManager.OnBattleEnd -= OnEnd;
+            await UniTask.WaitUntilCanceled(ct);
+        }
+        finally
+        {
             if (instance != null)
                 VfxPoolManager.Instance.Return(prefab, instance);
         }
-        BattleManager.OnBattleEnd += OnEnd;
     }
 }

@@ -27,7 +27,7 @@ public class UnitStatusWindow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillDescText; // skill description
 
     [Header("Live Refresh")]
-    [SerializeField] private float refreshInterval = 0.25f; // stats poll rate while a live unit is shown
+    [SerializeField] private float refreshInterval = 0.5f; // stats poll rate while a live unit is shown
 
     private readonly StringBuilder sb = new StringBuilder();
 
@@ -175,11 +175,13 @@ public class UnitStatusWindow : MonoBehaviour
     private string BuildLiveStats(UnitStats s)
     {
         sb.Clear(); // HP/MP shown as bars, not here
-        Line("Attack",    Mathf.RoundToInt(s.CurrentAtt).ToString());
-        Line("Defense",   Mathf.RoundToInt(s.CurrentDef).ToString());
-        Line("Atk Speed", s.CurrentAttSpd.ToString("0.00"));
-        Line("Range",     Mathf.RoundToInt(s.CurrentAttRange).ToString());
-        Line("Crit",      $"{Mathf.RoundToInt(s.CurrentCritChance * 100f)}%  x{s.CurrentCritDamage:0.0}");
+        Line("공격력   ",    Mathf.RoundToInt(s.CurrentAtt).ToString());
+        Line("방어력   ",   Mathf.RoundToInt(s.CurrentDef).ToString());
+        Line("공격속도", s.CurrentAttSpd.ToString("0.00"));
+        Line("사거리   ",     Mathf.RoundToInt(s.CurrentAttRange).ToString());
+        Line("치명타율", $"{Mathf.RoundToInt(s.CurrentCritChance * 100f)}%  x{s.CurrentCritDamage:0.0}");
+        Line("스킬배율", $"{Mathf.RoundToInt(s.SkillDamageMultiplier * 100f)}%");
+        Line("생명흡수", $"{Mathf.RoundToInt(s.CurrentLifesteal * 100f)}%");
         return sb.ToString();
     }
 
@@ -187,11 +189,13 @@ public class UnitStatusWindow : MonoBehaviour
     private string BuildBaseStats(UnitData d)
     {
         sb.Clear(); // HP/MP shown as bars, not here
-        Line("Attack",    Mathf.RoundToInt(d.att).ToString());
-        Line("Defense",   Mathf.RoundToInt(d.def).ToString());
-        Line("Atk Speed", d.attSpd.ToString("0.00"));
-        Line("Range",     Mathf.RoundToInt(d.attRange).ToString());
-        Line("Crit",      $"{Mathf.RoundToInt(d.critChance * 100f)}%  x{d.critDamage:0.0}");
+        Line("공격력   ",    Mathf.RoundToInt(d.att).ToString());
+        Line("방어력   ",   Mathf.RoundToInt(d.def).ToString());
+        Line("공격속도", d.attSpd.ToString("0.00"));
+        Line("사거리   ",     Mathf.RoundToInt(d.attRange).ToString());
+        Line("치명타율",      $"{Mathf.RoundToInt(d.critChance * 100f)}%  x{d.critDamage:0.0}");
+        Line("스킬배율", "100%"); // UnitData has no base skill-dmg field; default multiplier = 1
+        Line("생명흡수", "0%");   // UnitData has no base lifesteal field; default = 0
         return sb.ToString();
     }
 

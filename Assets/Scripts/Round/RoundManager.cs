@@ -22,6 +22,11 @@ public class RoundManager : MonoBehaviour
     private float resultPhaseDuration = 5f;
     private int previousRound;
 
+    [Header("Debug")]
+    [Tooltip("Target round for the 'Force Set Round' context-menu action")]
+    [SerializeField] private int debugRound = 1;
+    private bool forcedRoundPending; // set by OnValidate (Play mode), applied safely in Update
+
 
     [Header("References")]
     [SerializeField] private UnitSpawner unitSpawner;
@@ -32,19 +37,31 @@ public class RoundManager : MonoBehaviour
 
     public int CurrentRound => currentRound;
 
+    /// <summary>StageData for the current round, or null if out of range.</summary>
+    public StageData CurrentStage =>
+        (stages != null && currentRound >= 1 && currentRound <= stages.Length) ? stages[currentRound - 1] : null;
+
     /// <summary>Saved field unit positions before battle starts</summary>
     private readonly Dictionary<UnitController, TileScript> savedFieldPositions = new();
 
     /// <summary>Enemy units spawned for current round preview</summary>
     private readonly List<UnitController> previewEnemies = new();
 
-    private void OnValidate() // Editor: preview stage enemies by changing round
+    // Inspector: changing currentRound requests a forced transition.
+    // Edit mode does nothing (tiles/managers don't exist yet); Play mode defers to Update so we never
+    // Instantiate/Destroy from within OnValidate (which Unity may call mid-serialization).
+    private void OnValidate()
     {
-        if (currentRound != previousRound && currentRound >= 1 && currentRound <= stages.Length)
-        {
-            SpawnEnemiesForPreview(stages[currentRound - 1]);
-            previousRound = currentRound;
-        }
+        if (currentRound == previousRound) return;
+        previousRound = currentRound;
+        if (Application.isPlaying) forcedRoundPending = true;
+    }
+
+    private void Update()
+    {
+        if (!forcedRoundPending) return;
+        forcedRoundPending = false;
+        ForceSetRound(currentRound);
     }
     private void OnEnable()
     {
@@ -185,6 +202,88 @@ public class RoundManager : MonoBehaviour
     }
 
 
+    // Debug / Forced Round Transition //
+
+    /// <summary>Editor context-menu: force the round to <c>debugRound</c> (Play mode only).</summary>
+    [ContextMenu("Debug: Force Set Round")]
+    private void DebugForceSetRound() => ForceSetRound(debugRound);
+
+    /// <summary>
+    /// Safely jump to a round from any state (debug). Cancels any in-flight transition, tears down all
+    /// enemies, returns player units to their saved tiles, forces the Preparation phase, and previews the
+    /// new round. Defensive: no-ops with a warning if prerequisites aren't met, and can't throw.
+    /// </summary>
+    public void ForceSetRound(int round)
+    {
+        // Play-mode only: tiles, singletons, and unit prefabs aren't live in Edit mode.
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[RoundManager] ForceSetRound is Play-mode only.");
+            return;
+        }
+        if (stages == null || stages.Length == 0)
+        {
+            Debug.LogWarning("[RoundManager] No stages configured — cannot force round.");
+            return;
+        }
+        if (BattleManager.Instance == null || TileManager.Instance == null
+            || UnitManager.Instance == null || unitSpawner == null)
+        {
+            Debug.LogWarning("[RoundManager] Core managers/spawner not ready — cannot force round.");
+            return;
+        }
+
+        int target = Mathf.Clamp(round, 1, stages.Length);
+        if (target != round)
+            Debug.LogWarning($"[RoundManager] Round {round} out of range [1,{stages.Length}] — clamped to {target}.");
+
+        StageData stage = stages[target - 1];
+        if (stage == null)
+        {
+            Debug.LogWarning($"[RoundManager] StageData for round {target} is null — aborting.");
+            return;
+        }
+
+        // 1) Kill any in-flight result transition so it can't mutate state after this reset.
+        ResetCts();
+
+        // 2) A battle is "in progress" if we're past Preparation or still hold saved field positions.
+        bool battleInProgress = BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation
+                                || savedFieldPositions.Count > 0;
+
+        // 3) Tear down every enemy — preview (releases their tiles) and any live/registered ones.
+        ClearPreviewEnemies();
+        ClearEnemyUnits();
+
+        // 4) Mid-battle: reset field occupancy and bring player units home (also resets their AI/stats).
+        if (battleInProgress)
+        {
+            TileManager.Instance.ClearAllOccupied(); // field only; bench untouched
+            if (savedFieldPositions.Count > 0) RestorePlayerPositions();
+        }
+        savedFieldPositions.Clear(); // never leave a stale save behind
+
+        // 5) Force the Preparation phase (idempotent — skip if already there to avoid re-firing events).
+        if (BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation)
+            BattleManager.Instance.ResetBattle();
+
+        // 6) Commit the round and preview its enemies.
+        currentRound  = target;
+        previousRound = target;
+        SpawnEnemiesForPreview(stage);
+
+        Debug.Log($"[RoundManager] Forced round -> {target} (Preparation).");
+    }
+
+    /// <summary>Cancel and replace the transition CancellationTokenSource so a stale token can't fire.</summary>
+    private void ResetCts()
+    {
+        cts?.Cancel();
+        cts?.Dispose();
+        cts = new CancellationTokenSource();
+    }
+
+
     /// <summary>
     /// Spawn player units on bench from Inspector settings.
     /// Assigns empty bench slots in order; warns if no slots available.
@@ -229,13 +328,24 @@ public class RoundManager : MonoBehaviour
             {
                 UnitController unit = unitSpawner.SpawnUnit(enemy.unitData, tile, Team.Enemy, register: false);
                 if (unit != null)
+                {
+                    ApplyEnemyBuffs(unit, stage); // per-stage stat modifiers (fresh each round, no revert needed)
                     previewEnemies.Add(unit);
+                }
             }
             else
             {
                 Debug.LogWarning($"[RoundManager] Enemy spawn tile ({enemy.spawnCoordinate}) not found");
             }
         }
+    }
+
+    /// <summary>Apply the stage's percent stat modifiers to a freshly spawned enemy.</summary>
+    private void ApplyEnemyBuffs(UnitController unit, StageData stage)
+    {
+        if (stage.enemyBuffs == null || unit.Stats == null) return;
+        foreach (StatBoostEntry b in stage.enemyBuffs)
+            unit.Stats.ApplyStatModifier(b.statType, b.percentBoost);
     }
 
     /// <summary>
@@ -267,32 +377,87 @@ public class RoundManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Restore player units to saved positions.
-    /// Reactivate dead units, reset stats, and re-place on original tiles.
+    /// Restore player field units after battle. Snapshot units go back to their saved tiles; any other
+    /// live player field unit (e.g. a merge upgrade created mid-round) is reclaimed rather than orphaned.
+    /// Reconciles against the live scene, not just the pre-battle snapshot.
     /// </summary>
     private void RestorePlayerPositions()
     {
-        // Clear player unit roster
+        // Clear player unit roster (rebuilt below)
         UnitManager.Instance.ClearTeam(Team.Player);
 
-        // Restore field units (synergy recalc runs once after full restore)
+        // 1) Restore pre-battle snapshot units to their saved tiles.
+        var restored = new HashSet<UnitController>();
         foreach (var pair in savedFieldPositions)
         {
             UnitController unit = pair.Key;
-            TileScript tile     = pair.Value;
             if (unit == null) continue;
-
-            // Reactivate units deactivated by death
-            unit.gameObject.SetActive(true);
-            // Reset stats and state (including synergy buff removal)
-            unit.ResetForNewRound();
-            // Register with UnitManager first (Recalculate iterates playerUnits)
-            UnitManager.Instance.AddUnit(unit, Team.Player);
-            // Place on saved tile (OnBenchState -> Recalculate trigger)
-            unit.PlaceOnTile(tile);
+            RestoreFieldUnit(unit, pair.Value);
+            restored.Add(unit);
         }
 
-        Debug.Log($"[RoundManager] Player unit restoration complete");
+        // 2) Reconcile against the live scene. Any active player field unit missing from the snapshot
+        //    was created after SavePlayerUnitPositions (merge upgrade, deferred/cascaded spawn) — without
+        //    this it would be left on the board in no roster, on an unoccupied tile, untargetable and
+        //    unselectable. Reclaim it so it stays usable.
+        int reclaimed = 0;
+        foreach (UnitController unit in Object.FindObjectsByType<UnitController>(FindObjectsSortMode.None))
+        {
+            if (unit == null || restored.Contains(unit)) continue;
+            if (unit.CurrentTeam != Team.Player || unit.IsOnBench) continue;
+            ReclaimOrphan(unit);
+            reclaimed++;
+        }
+
+        Debug.Log($"[RoundManager] Player restoration: {restored.Count} restored, {reclaimed} reclaimed");
+    }
+
+    /// <summary>Reactivate, reset, register, and place a player unit on a hex tile.</summary>
+    private void RestoreFieldUnit(UnitController unit, TileScript tile)
+    {
+        unit.gameObject.SetActive(true);       // reactivate units deactivated by death
+        unit.ResetForNewRound();               // reset stats/state (removes synergy buffs)
+        UnitManager.Instance.AddUnit(unit, Team.Player); // register first (Recalculate iterates playerUnits)
+        unit.PlaceOnTile(tile);                // OnBenchState -> synergy recalc
+    }
+
+    /// <summary>
+    /// Reclaim a player field unit that isn't in the snapshot: keep it on its current tile if free,
+    /// otherwise move it to a bench slot; as a last resort register it in place so it stays targetable.
+    /// </summary>
+    private void ReclaimOrphan(UnitController unit)
+    {
+        unit.gameObject.SetActive(true);
+        unit.ResetForNewRound();
+
+        TileScript tile = unit.CurrentHexTile;
+
+        if (tile != null && !tile.IsOccupied)
+        {
+            RestoreFieldUnit(unit, tile);
+            Debug.LogWarning($"[RoundManager] Reclaimed orphaned unit '{unit.name}' at {tile.GetCoordinate()}");
+            return;
+        }
+
+        BenchTileScript slot = BenchManager.Instance.GetEmptySlot();
+        if (slot != null)
+        {
+            BenchManager.Instance.AddUnit(unit, slot);
+            unit.PlaceOnBench(slot);
+            Debug.LogWarning($"[RoundManager] Reclaimed orphaned unit '{unit.name}' to bench (tile unavailable)");
+            return;
+        }
+
+        if (tile != null)
+        {
+            UnitManager.Instance.AddUnit(unit, Team.Player);
+            unit.PlaceOnTile(tile); // contested tile, but at least registered/targetable
+            Debug.LogWarning($"[RoundManager] Reclaimed orphaned unit '{unit.name}' onto a contested tile (bench full)");
+        }
+        else
+        {
+            Debug.LogWarning($"[RoundManager] Could not reclaim orphaned unit '{unit.name}' (no tile/bench)");
+        }
     }
 
 

@@ -16,6 +16,9 @@ public class UnitPlacer : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] private Material highlightMaterial;
 
+    [Header("Selling")]
+    [SerializeField] private UnitSellController sellController; // BottomBar sell drop-zone
+
     [Header("Placement Overlay")]
     [SerializeField] private Color overlayPlaceableColor = new Color(1f, 1f, 1f, 1f); // valid drop targets
     [SerializeField] private Color overlayHoverColor     = new Color(1f, 1f, 1f, 1f);   // tile under cursor
@@ -50,7 +53,12 @@ public class UnitPlacer : MonoBehaviour
         HandleHover();
 
         if (heldUnit != null)
+        {
             UpdateDragVisuals();
+            // Show the sell notice while hovering the BottomBar sell zone
+            if (sellController != null)
+                sellController.SetSellMode(sellController.Contains(Mouse.current.position.value));
+        }
     }
 
     /// <summary>
@@ -182,6 +190,17 @@ public class UnitPlacer : MonoBehaviour
     /// </summary>
     private void TryDrop()
     {
+        // Sell: dropped over the BottomBar sell zone
+        if (sellController != null && sellController.Contains(Mouse.current.position.value))
+        {
+            sellController.Sell(heldUnit); // held unit is destroyed; no collider restore needed
+            sellController.SetSellMode(false);
+            heldUnit     = null;
+            originalTile = null;
+            HidePlacementOverlays();
+            return;
+        }
+
         BaseTile targetTile = RaycastTile();
 
         if (targetTile == null || !IsValidDropTarget(targetTile))
@@ -257,6 +276,7 @@ public class UnitPlacer : MonoBehaviour
                 // Move: held → empty hex (blocked when the board is at capacity)
                 if (BoardManager.Instance != null && !BoardManager.Instance.HasRoom)
                 {
+                    if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiError);
                     CancelPlacement();
                     return;
                 }
@@ -281,6 +301,7 @@ public class UnitPlacer : MonoBehaviour
         }
 
         SetHeldColliders(true); // restore collider now that the drag ended
+        if (sellController != null) sellController.SetSellMode(false);
         heldUnit     = null;
         originalTile = null;
         HidePlacementOverlays();
@@ -296,6 +317,7 @@ public class UnitPlacer : MonoBehaviour
                 heldUnit.PlaceOnBench(benchSlot);
         }
         SetHeldColliders(true); // restore collider now that the drag ended
+        if (sellController != null) sellController.SetSellMode(false);
         heldUnit     = null;
         originalTile = null;
         HidePlacementOverlays();

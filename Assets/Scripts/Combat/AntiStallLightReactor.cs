@@ -1,8 +1,8 @@
 using UnityEngine;
 
 /// <summary>
-/// Anti-stall reaction: shifts the battlefield spot light toward a mood color/intensity on each trigger
-/// (deeper per stack), and restores the original look when the next preparation phase begins.
+/// Anti-stall reaction: the battlefield spot light stays off until the anti-stall system first fires,
+/// then shifts toward a mood color/intensity per stack. Switches off the instant the battle is decided.
 /// </summary>
 public class AntiStallLightReactor : MonoBehaviour
 {
@@ -23,19 +23,20 @@ public class AntiStallLightReactor : MonoBehaviour
             originalColor     = spotLight.color;
             originalIntensity = spotLight.intensity;
             cached = true;
+            spotLight.enabled = false; // off until the anti-stall system triggers
         }
     }
 
     private void OnEnable()
     {
-        AntiStallController.OnTriggered  += Shift;
-        BattleManager.OnPreparationStart += Restore;
+        AntiStallController.OnTriggered += Shift;
+        BattleManager.OnBattleEnd       += Deactivate;
     }
 
     private void OnDisable()
     {
-        AntiStallController.OnTriggered  -= Shift;
-        BattleManager.OnPreparationStart -= Restore;
+        AntiStallController.OnTriggered -= Shift;
+        BattleManager.OnBattleEnd       -= Deactivate;
     }
 
     // Mood //
@@ -43,15 +44,20 @@ public class AntiStallLightReactor : MonoBehaviour
     private void Shift(int stack)
     {
         if (spotLight == null) return;
+        spotLight.enabled = true; // enable on first (and every) trigger
         float t = Mathf.Clamp01((stack + 1) * perStackBlend); // stack 0 -> perStackBlend, escalates
         spotLight.color     = Color.Lerp(originalColor, moodColor, t);
         spotLight.intensity = Mathf.Lerp(originalIntensity, moodIntensity, t);
     }
 
-    private void Restore()
+    private void Deactivate(Team winner)
     {
-        if (spotLight == null || !cached) return;
-        spotLight.color     = originalColor;
-        spotLight.intensity = originalIntensity;
+        if (spotLight == null) return;
+        spotLight.enabled = false; // off the moment the outcome is decided
+        if (cached)
+        {
+            spotLight.color     = originalColor;
+            spotLight.intensity = originalIntensity;
+        }
     }
 }

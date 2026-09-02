@@ -17,6 +17,7 @@ MonoBehaviour:
   portrait: {fileID: 21300000, guid: 6f532156fb812094db0627fdf94516e0, type: 3}
   thumbnail: {fileID: 21300000, guid: c9d8be6faf929f64fb009e121d13647b, type: 3}
   cost: 2
+  sellPrice: 2
   starLevel: 1
   upgradeUnit: {fileID: 11400000, guid: fe0f9807f6a8dc842bf5e328ba41883b, type: 2}
   maxHp: 550

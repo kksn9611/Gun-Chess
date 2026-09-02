@@ -116,8 +116,8 @@ public class SynergyUI : MonoBehaviour
     // Sorting (manual per-tier keys) //
 
     /// <summary>
-    /// Entries ordered by the active tier's Inspector sort keys:
-    /// sortPrimary asc, then sortSecondary asc as tiebreak (lower shown first).
+    /// Entries ordered by: sortPrimary asc, then deployed unit count desc (more units first) as the
+    /// tie-breaker, then sortSecondary asc as the final tie-breaker (lower shown first).
     /// </summary>
     private List<SynergyEntry> SortedEntries()
     {
@@ -128,6 +128,10 @@ public class SynergyUI : MonoBehaviour
             GetSortKeys(b, out int bp, out int bsec);
             int byPrimary = ap.CompareTo(bp);
             if (byPrimary != 0) return byPrimary;
+            // Tie-breaker: more deployed units on the board shown first.
+            int byCount = b.currentCount.CompareTo(a.currentCount);
+            if (byCount != 0) return byCount;
+            // Final tie-breaker: existing per-tier sort secondary (ascending).
             return asec.CompareTo(bsec);
         });
         return sorted;

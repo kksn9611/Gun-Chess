@@ -147,6 +147,7 @@ public class PlayerManager : MonoBehaviour
         if (amount <= 0 || IsMaxLevel) return;
 
         currentExp += amount;
+        int levelBefore = currentLevel;
 
         // Multi-level gain handled by loop
         while (!IsMaxLevel && currentExp >= ExpToNextLevel)
@@ -157,6 +158,10 @@ public class PlayerManager : MonoBehaviour
         }
 
         if (IsMaxLevel) currentExp = 0;
+
+        // Level-up SFX: once per gain (multi-level jumps don't stack overlapping plays)
+        if (currentLevel > levelBefore && SoundManager.Instance != null)
+            SoundManager.Instance.PlayUi(SoundId.UiLevelUp);
 
         OnExpChanged?.Invoke(currentExp, ExpToNextLevel);
     }

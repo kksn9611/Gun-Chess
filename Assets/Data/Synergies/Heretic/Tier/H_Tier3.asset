@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatBoostBehavior
   boosts:
   - statType: 0
-    percentBoost: 60
+    percentBoost: 50
   - statType: 1
-    percentBoost: 60
+    percentBoost: 50
   - statType: 2
     percentBoost: 30
   - statType: 3

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
@@ -19,11 +19,21 @@ public class BuyExpButton : MonoBehaviour
     private void BuyExp()
     {
         if (PlayerManager.Instance == null) return;
-
+        if (PlayerManager.Instance.IsMaxLevel)
+        {
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiError);
+            return;
+        }
         if (PlayerManager.Instance.TrySpendGold(goldCost))
+        {
             PlayerManager.Instance.AddExp(expGain);
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiPurchase);
+        }
         else
+        {
             Debug.Log("[BuyExpButton] Not enough gold");
+            if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiError);
+        }
     }
 
     private void OnDestroy()

@@ -35,16 +35,17 @@ MonoBehaviour:
     behaviors:
     - {fileID: 11400000, guid: 9835669dbf282f6478f0e0b212a1e8cb, type: 2}
   - requiredCount: 6
-    description: "\uBC29\uC5B4\uB825 +175%"
+    description: "\uBC29\uC5B4\uB825 +150%"
     icon: {fileID: 21300000, guid: 6108f955fad025245be8ef13e57a40cf, type: 3}
     sortPrimary: 1
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: f05758edda575a548ac63fd2e04ebaae, type: 2}
   - requiredCount: 7
-    description: "\uBC29\uC5B4\uB825 +225%"
+    description: "\uBC29\uC5B4\uB825 +150%\n    MaxHP + 20%"
     icon: {fileID: 21300000, guid: 4b0ff1e01f208144d9da1199d47e3528, type: 3}
     sortPrimary: 0
     sortSecondary: 1
     behaviors:
     - {fileID: 11400000, guid: 936993e4bcba73a4d9128f2aa592260a, type: 2}
+    - {fileID: 11400000, guid: d031793ac841de04883fbec3588b69ed, type: 2}
