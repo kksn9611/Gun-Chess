@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99f45397c381ceb46a7462a5904bdbb2, type: 3}
   m_Name: C_D2_BuffSkill_Ad
   m_EditorClassIdentifier: Assembly-CSharp::AllyBuffSkill
-  skillName: BuffSkill
-  description: "\uBB34\uC791\uC704\n\uC544\uAD70 1\uBA85\uC5D0\uAC8C \uACF5\uACA9\uB825
-    75% \uBC84\uD504."
+  skillName: "\uC0AC\uAE30\uC9C4\uC791"
+  description: "\uBB34\uC791\uC704 \uC544\uAD70 1\uBA85\uC5D0\uAC8C \uACF5\uACA9\uB825
+    75% \uBC84\uD504\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 1
   useAnimationEvent: 1
@@ -26,3 +26,4 @@ MonoBehaviour:
     percentBoost: 75
   targetCount: 1
   skillSoundDelay: 0
+  vfxScale: {x: 1, y: 1, z: 1}

@@ -2850,7 +2850,7 @@ MonoBehaviour:
   shotInterval: 0.05
   burstAtOnce: 1
   spreadRadius: 0.35
-  homingTrail: 1
+  homingTrail: 0
   impactEffectPrefab: {fileID: 0}
   healEffect: {fileID: 2979407750726019859, guid: 3e462a8b72afb1c4c81a45c1325559ba, type: 3}
   shieldEffect: {fileID: 871324411638548333, guid: de1bdf6334386804eb36a0d61a9d3f80, type: 3}

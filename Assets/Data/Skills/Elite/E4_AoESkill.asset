@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1883d7d48cabfd46b4a9950ca5ee8f3, type: 3}
   m_Name: E4_AoESkill
   m_EditorClassIdentifier: Assembly-CSharp::AoESkill
-  skillName: E4_Skill
-  description: "\uC801\uC744 \uC870\uC900\uD558\uC5EC \uC77C\uC9C1\uC120 \uBC94\uC704\uB85C
+  skillName: "\uBD88\uB81B\uB808\uC778"
+  description: "\uC801\uC744 \uC870\uC900\uD558\uC5EC \uC9C1\uC120 \uBC94\uC704\uB85C
     \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
   castTime: 0
   animationSpd: 0.05

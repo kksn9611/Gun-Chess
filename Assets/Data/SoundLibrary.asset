@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SoundLibrary
   entries:
   - id: 10
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 07ce44abcd06f374ea0f1f3cde69d3fe, type: 3}
     volume: 1
     category: 1
     lowPassCutoff: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
     loop: 0
   - id: 15
     clip: {fileID: 8300000, guid: de9038abc31eeb844952402c659d1b3d, type: 3}
-    volume: 1
+    volume: 0.8
     category: 1
     lowPassCutoff: 0
     loop: 0
@@ -55,18 +55,18 @@ MonoBehaviour:
     category: 1
     lowPassCutoff: 0
     loop: 0
-  - id: 50
-    clip: {fileID: 0}
-    volume: 0.6
-    category: 2
-    lowPassCutoff: 0
-    loop: 1
-  - id: 51
-    clip: {fileID: 0}
-    volume: 0.6
-    category: 2
-    lowPassCutoff: 0
-    loop: 1
+  - id: 17
+    clip: {fileID: 8300000, guid: fac6769d38d844249a5d7172909c68e2, type: 3}
+    volume: 0.3
+    category: 1
+    lowPassCutoff: 4000
+    loop: 0
+  - id: 18
+    clip: {fileID: 8300000, guid: 564378172fe263e4b80d307126aefb39, type: 3}
+    volume: 0.17
+    category: 1
+    lowPassCutoff: 12000
+    loop: 0
   - id: 52
     clip: {fileID: 8300000, guid: da795610d50c3084b9ca95e9552b93d5, type: 3}
     volume: 0.6
@@ -91,3 +91,15 @@ MonoBehaviour:
     category: 0
     lowPassCutoff: 0
     loop: 0
+  - id: 51
+    clip: {fileID: 8300000, guid: 7f1725aa39adbd248a075dd69fbfde50, type: 3}
+    volume: 0.35
+    category: 2
+    lowPassCutoff: 0
+    loop: 1
+  - id: 50
+    clip: {fileID: 8300000, guid: baafbf376fe079f46ad3700d357ff274, type: 3}
+    volume: 0.2
+    category: 2
+    lowPassCutoff: 0
+    loop: 1

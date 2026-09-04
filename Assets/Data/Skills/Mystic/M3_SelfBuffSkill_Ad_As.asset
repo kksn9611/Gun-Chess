@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eae227b89bd3d84393ee6b22541eb52, type: 3}
   m_Name: M3_SelfBuffSkill_Ad_As
   m_EditorClassIdentifier: Assembly-CSharp::SelfBuffSkill
-  skillName: "M3_\uBC84\uD504"
+  skillName: "\uAC15\uD654"
   description: "\uC790\uC2E0\uC5D0\uAC8C \uC911\uCCA9 \uAC00\uB2A5\uD55C \uACF5\uACA9\uB825
-    50%, \uACF5\uACA9 \uC18D\uB3C4 20% \uBC84\uD504\uB97C \uAC74\uB2E4."
+    50% \uBC84\uD504\uC640 \uACF5\uACA9 \uC18D\uB3C4 20% \uBC84\uD504\uB97C \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   castTime: 1.5
   animationSpd: 1
   useAnimationEvent: 1
@@ -27,3 +27,4 @@ MonoBehaviour:
   - statType: 2
     percentBoost: 20
   skillSoundDelay: 0
+  vfxScale: {x: 1, y: 1, z: 1}

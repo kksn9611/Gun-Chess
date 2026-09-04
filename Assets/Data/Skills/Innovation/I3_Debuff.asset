@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 585e026371f0a1149b844f06187d3419, type: 3}
   m_Name: I3_Debuff
   m_EditorClassIdentifier: Assembly-CSharp::DebuffShotSkill
-  skillName: I3_Debuff
-  description: "\uD22C\uC0AC\uCCB4\uB97C \uBC1C\uC0AC\uD574 \uB79C\uB364\uD55C \uC801\uC758
-    \uACF5\uACA9 \uC18D\uB3C4\uC640 \uC774\uB3D9\uC18D\uB3C4\uB97C \uB0AE\uCD98\uB2E4."
+  skillName: "\uC57D\uD654"
+  description: "\uBB34\uC791\uC704 \uC801 3\uBA85\uC758 \uACF5\uACA9 \uC18D\uB3C4\uC640
+    \uC774\uB3D9\uC18D\uB3C4\uB97C \uB0AE\uCD98\uB2E4."
   castTime: 1
   animationSpd: 1
   useAnimationEvent: 1

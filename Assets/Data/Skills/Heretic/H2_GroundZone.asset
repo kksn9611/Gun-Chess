@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497c937e1c34f0547805b6961adb3f47, type: 3}
   m_Name: H2_GroundZone
   m_EditorClassIdentifier: Assembly-CSharp::GroundZoneSkill
-  skillName: H2_GroundZone
-  description: "\uC801 \uC8FC\uC704\uC5D0 \uC9C0\uC18D \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uB294
+  skillName: "\uD3EC\uC774\uC988\uB2DD"
+  description: "\uC801\uC5D0\uAC8C \uC9C0\uC18D \uB370\uBBF8\uC9C0\uB97C \uC785\uD788\uB294
     \uC601\uC5ED\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 1

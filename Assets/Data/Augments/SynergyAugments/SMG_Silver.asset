@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61020d6d8ad4dd34a86e93c03e019a1a, type: 3}
+  m_Name: SMG_Silver
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  augmentName: "\uC2E0\uC18D\uC815\uD655"
+  description: "\uAE30\uAD00\uB2E8\uCD1D \uC2DC\uB108\uC9C0 +1"
+  icon: {fileID: 0}
+  rarity: 2
+  unique: 1
+  effects:
+  - {fileID: 11400000, guid: b6ad7966296ed6c41957f95f7a87e5cc, type: 2}

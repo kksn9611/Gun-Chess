@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -25,6 +26,10 @@ public class UnitController : MonoBehaviour
     [SerializeField] private Vector2Int currentCoord; // Current tile coordinate
     [SerializeField] private Team currentTeam;
     private CancellationTokenSource cts;
+
+    // Caster-owned skill VFX. Persistent skill VFX (e.g. buff auras) are tracked here and returned to the
+    // pool on death / round reset — the reliable lifecycle, unlike a per-cast token that gets disposed.
+    private readonly List<(GameObject prefab, GameObject instance)> activeSkillVfx = new();
 
     // Component Cache //
 
@@ -223,6 +228,32 @@ public class UnitController : MonoBehaviour
         await Stats.Skill.Execute(this, linked.Token);
     }
 
+    // Skill VFX Lifecycle //
+
+    /// <summary>
+    /// Track a persistent skill VFX so it's returned to the pool on death / round reset. Replaces any
+    /// existing VFX of the same prefab (a recast refreshes the aura instead of stacking instances).
+    /// </summary>
+    public void RegisterSkillVfx(GameObject prefab, GameObject instance)
+    {
+        if (prefab == null || instance == null) return;
+        for (int i = activeSkillVfx.Count - 1; i >= 0; i--)
+        {
+            if (activeSkillVfx[i].prefab != prefab) continue;
+            VfxPoolManager.Instance.Return(activeSkillVfx[i].prefab, activeSkillVfx[i].instance);
+            activeSkillVfx.RemoveAt(i);
+        }
+        activeSkillVfx.Add((prefab, instance));
+    }
+
+    /// <summary>Return all tracked skill VFX to the pool. Called on death and round reset.</summary>
+    public void ClearSkillVfx()
+    {
+        for (int i = 0; i < activeSkillVfx.Count; i++)
+            VfxPoolManager.Instance.Return(activeSkillVfx[i].prefab, activeSkillVfx[i].instance);
+        activeSkillVfx.Clear();
+    }
+
     // Stun, CC //
     public void OnStunApplied()
     {
@@ -271,6 +302,7 @@ public class UnitController : MonoBehaviour
         cts?.Dispose();
         cts = new CancellationTokenSource(); // reset for potential reuse (player units)
         StopAllCoroutines();
+        ClearSkillVfx(); // return any lingering buff/skill auras to the pool
         AI.EnterDeadState();
         CCHandler.ClearCC(); // clear stun/taunt and hide CC VFX on death
 
@@ -298,6 +330,7 @@ public class UnitController : MonoBehaviour
     {
         AI.ResetState();
         Stats.ResetStats();
+        ClearSkillVfx(); // return any lingering buff/skill auras to the pool
         transform.rotation = Quaternion.identity; // reset facing direction
     }
 

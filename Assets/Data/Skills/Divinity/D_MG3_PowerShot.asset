@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6831b6def24d54641ab3d14269b19e2b, type: 3}
   m_Name: D_MG3_PowerShot
   m_EditorClassIdentifier: Assembly-CSharp::PowerShotSkill
-  skillName: D_MG3_PowerShot
-  description: "\uD22C\uC0AC\uCCB4\uB97C \uBB34\uC791\uC704\uB85C \uBC1C\uC0AC\uD574
+  skillName: "\uB4DC\uB77C\uC774\uBE0C"
+  description: "\uBB34\uC791\uC704\uB85C \uD22C\uC0AC\uCCB4\uB97C \uBC1C\uC0AC\uD574
     \uC801\uC5D0\uAC8C \uB370\uBBF8\uC9C0\uB97C \uC785\uD78C\uB2E4."
   castTime: 1
   animationSpd: 3
@@ -21,9 +21,11 @@ MonoBehaviour:
   canCrit: 1
   castVfxPrefab: {fileID: 0}
   useRootMotion: 0
+  vfxReturnDelay: 5
   damageMultiplier: 1
   targetMode: 1
   reachTime: 0.3
   burstCount: 8
   shotInterval: 0.03
   shotDelay: 0.15
+  vfxScale: {x: 1, y: 1, z: 1}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61020d6d8ad4dd34a86e93c03e019a1a, type: 3}
+  m_Name: Gold10_Common
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  augmentName: "\uACE8\uB4DC \uD68D\uB4DD"
+  description: "+10 \uACE8\uB4DC"
+  icon: {fileID: 0}
+  rarity: 0
+  unique: 0
+  effects:
+  - {fileID: 11400000, guid: d34b78fb87ae9b84684351ce2cf96ff6, type: 2}

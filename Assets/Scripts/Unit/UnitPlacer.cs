@@ -300,6 +300,9 @@ public class UnitPlacer : MonoBehaviour
             }
         }
 
+        // Successful drop (sell / invalid / board-full paths returned earlier)
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiClick);
+
         SetHeldColliders(true); // restore collider now that the drag ended
         if (sellController != null) sellController.SetSellMode(false);
         heldUnit     = null;

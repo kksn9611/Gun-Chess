@@ -47,6 +47,7 @@ public class UnitSellController : MonoBehaviour
     {
         if (unit == null || unit.CurrentTeam != Team.Player) return false;
         UnitData data = unit.Stats != null ? unit.Stats.UnitData : null;
+        bool wasOnField = !unit.IsOnBench; // board unit -> affects synergies/buffs
 
         // Release the tile it still occupies (pickup does not clear occupancy)
         BaseTile tile = unit.CurrentTile;
@@ -55,6 +56,10 @@ public class UnitSellController : MonoBehaviour
         // Drop it from the owning manager
         if (unit.IsOnBench) BenchManager.Instance.RemoveUnit(unit);
         else                UnitManager.Instance.RemoveUnit(unit, unit.CurrentTeam);
+
+        // Selling a board unit changes the roster -> re-evaluate synergies + re-apply buffs on the
+        // remaining board units (unit is already out of playerUnits, so it won't be counted).
+        if (wasOnField && SynergyManager.Instance != null) SynergyManager.Instance.Recalculate();
 
         // Return copies to the shop pool and refund
         if (data != null)

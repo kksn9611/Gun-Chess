@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15055b1571822a943bf8572a08840aa3, type: 3}
+  m_Name: DefaultAugmentPool
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentPool
+  entries:
+  - {fileID: 11400000, guid: cda593eadd9a53b4d8c1fe78001bed61, type: 2}
+  - {fileID: 11400000, guid: 9462c9b370caea344ab628f03cf942eb, type: 2}
+  - {fileID: 11400000, guid: aa3cee6b06f0f044bbc210aae8109811, type: 2}
+  - {fileID: 11400000, guid: 15b2d3ea1eb2bd645bd7bf3cc0f4bed3, type: 2}
+  - {fileID: 11400000, guid: f391d6eafa15d1649b20f81b216609de, type: 2}
+  - {fileID: 11400000, guid: a1e56109e33e4ef40b04ffa102fad85d, type: 2}
+  - {fileID: 11400000, guid: ab9f372ef9d886e469a536bdd1806beb, type: 2}
+  - {fileID: 11400000, guid: 45322b85c8681a546b962d99bd4a1ccc, type: 2}
+  - {fileID: 11400000, guid: 6b9fc776a674766438b3055b6736b6c3, type: 2}
+  - {fileID: 11400000, guid: dc9942f87cdf65b4d88afe12d0d05688, type: 2}
+  - {fileID: 11400000, guid: db8d8dc93cdb3a349a50d853d51529ab, type: 2}
+  - {fileID: 11400000, guid: 322440231b5da334c87d8b003225799f, type: 2}
+  - {fileID: 11400000, guid: 8f92d49b52ca4dd48b430d5e1f01be7d, type: 2}
+  - {fileID: 11400000, guid: 1802d72efb6667e47af6307d2d1d0c51, type: 2}
+  - {fileID: 11400000, guid: 89864a70afb43b742a860102bb547974, type: 2}
+  - {fileID: 11400000, guid: f0d56e6fc5922a844ad457cb02934b9a, type: 2}
+  - {fileID: 11400000, guid: 250589e3a70646a48a1ff5ddcf02fa86, type: 2}
+  - {fileID: 11400000, guid: e23e7e44ced2cec4385ed39ca18b85df, type: 2}
+  - {fileID: 11400000, guid: 03909e4774bbef5488d57c8bcbd84538, type: 2}
+  - {fileID: 11400000, guid: 2ef09662778361141bb3497165d19175, type: 2}
+  - {fileID: 11400000, guid: 5e37af07bb771ef4985bad62bc760611, type: 2}
+  - {fileID: 11400000, guid: 0df5deceef344a84eb3bbecbb10cdd5e, type: 2}
+  - {fileID: 11400000, guid: 881c894a98c66c64fa3fa5c2a15e7e6b, type: 2}
+  - {fileID: 11400000, guid: 2d08e7afa7e5a1b4086efdfb4c22c4e2, type: 2}
+  - {fileID: 11400000, guid: 49ed9ca3a5dbf294ab604982f0e6184e, type: 2}
+  - {fileID: 11400000, guid: 08380f74e07a0bb408e583d03661f755, type: 2}
+  - {fileID: 11400000, guid: 2ec476ae65a4fce46a04caae34df3084, type: 2}
+  - {fileID: 11400000, guid: b8792e20118f82742abdf5a72bd9487a, type: 2}
+  - {fileID: 11400000, guid: cac719eb774d5484ab9f86929bbc8258, type: 2}
+  - {fileID: 11400000, guid: 267e5bd562010134193c1dffd879a226, type: 2}
+  - {fileID: 11400000, guid: f723f35a6dbc4e44aa64af645f440693, type: 2}
+  - {fileID: 11400000, guid: 2b02e57b2724b38478ff8ea52b42ff52, type: 2}
+  - {fileID: 11400000, guid: d1ffd00983a1dd541aac0bdbf67bf06a, type: 2}
+  - {fileID: 11400000, guid: 7805a59e1929a4349addd2e820b4a870, type: 2}
+  - {fileID: 11400000, guid: a7d1149d94bac1e4eb1ebc5a67654e9b, type: 2}
+  - {fileID: 11400000, guid: e5fc8224e4d12d844bc9249086323931, type: 2}
+  - {fileID: 11400000, guid: 99feb2f2b89679b4382f4ff754545e25, type: 2}
+  - {fileID: 11400000, guid: 50d0008b1ca782847af275d8a23181dd, type: 2}
+  - {fileID: 11400000, guid: c1e375fe38eebff4a93581a5c50b48ee, type: 2}
+  - {fileID: 11400000, guid: 100680f7eccac714fa083dd363e5c316, type: 2}
+  - {fileID: 11400000, guid: fb83d0f6b96e3b243a4c4a0f98f2ff3b, type: 2}
+  - {fileID: 11400000, guid: 0a806b18ea5353e4289ecd98ba87cb40, type: 2}
+  - {fileID: 11400000, guid: 31da7ba4e5709584085593222dc136d8, type: 2}
+  - {fileID: 11400000, guid: 54f1a00abc1065f439e965109a5ead3f, type: 2}
+  - {fileID: 11400000, guid: cd677256d662e014a9ace10d9e3a0bf3, type: 2}
+  - {fileID: 11400000, guid: 8e09bcbf952faef45bee90d67598c87e, type: 2}
+  - {fileID: 11400000, guid: 879ce635ffaf9d04d9b99098afc93eca, type: 2}
+  - {fileID: 11400000, guid: d6c115bd3bf783f47b8ed81bd44d6d44, type: 2}
+  - {fileID: 11400000, guid: 1f3f71728940c944c9d385cf4e11e08d, type: 2}
+  - {fileID: 11400000, guid: b52b11aa790f5954ab027a4cbdbd4574, type: 2}
+  - {fileID: 11400000, guid: 92409fc88024e4142a9bad408bc2790e, type: 2}
+  - {fileID: 11400000, guid: 9f46341825730154fa8f31f34174e55f, type: 2}
+  - {fileID: 11400000, guid: f98ada1e52d37914aafa07cd43d16a07, type: 2}
+  - {fileID: 11400000, guid: a5f9128022b827d44aa74ce3529aedce, type: 2}
+  - {fileID: 11400000, guid: 63989925bccd0cd47936c477f805d620, type: 2}
+  - {fileID: 11400000, guid: 63f8907ab7c8d8d4db8b8e52996a4b8d, type: 2}
+  rarityWeights:
+  - rarity: 0
+    weight: 10
+  - rarity: 1
+    weight: 5
+  - rarity: 2
+    weight: 3
+  - rarity: 3
+    weight: 2
+  collectFolders:
+  - Assets/Data/Augments/StatAugments
+  - Assets/Data/Augments/SynergyAugments
+  - Assets/Data/Augments/GoldAugments

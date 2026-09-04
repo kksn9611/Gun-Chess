@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eae227b89bd3d84393ee6b22541eb52, type: 3}
   m_Name: I_AR1_SelfbuffSkill_AS
   m_EditorClassIdentifier: Assembly-CSharp::SelfBuffSkill
-  skillName: "I_AR1_\uBC84\uD504"
+  skillName: "\uADF8\uB77C\uC778\uB529"
   description: "\uC790\uC2E0\uC5D0\uAC8C \uC911\uCCA9 \uAC00\uB2A5\uD55C \uACF5\uACA9
     \uC18D\uB3C4 40% \uBC84\uD504\uC640 \uBC29\uC5B4\uB825 20% \uBC84\uD504\uB97C
-    \uAC74\uB2E4."
+    \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   castTime: 0
   animationSpd: 1.5
   useAnimationEvent: 1

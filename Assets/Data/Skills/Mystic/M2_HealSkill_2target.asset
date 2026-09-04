@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2501f3682ea284bbdc504c4f5a6ba7, type: 3}
   m_Name: M2_HealSkill_2target
   m_EditorClassIdentifier: Assembly-CSharp::HealSkill
-  skillName: "M2_\uBA40\uD2F0\uD790"
-  description: "\uCCB4\uB825 \uBE44\uC728\uC774 \uB0AE\uC740 \uC544\uAD70 2\uBA85\uC744
-    \uD68C\uBCF5\uC2DC\uD0A8\uB2E4."
+  skillName: "\uBA40\uD2F0\uD790"
+  description: "\uC544\uAD70 2\uBA85\uC744 \uD68C\uBCF5\uC2DC\uD0B5\uB2C8\uB2E4."
   castTime: 2
   animationSpd: 1.5
   useAnimationEvent: 1
@@ -24,3 +23,4 @@ MonoBehaviour:
   skillSoundDelay: 1.5
   healMultiplier: 7
   targetCount: 2
+  vfxScale: {x: 1, y: 1, z: 1}

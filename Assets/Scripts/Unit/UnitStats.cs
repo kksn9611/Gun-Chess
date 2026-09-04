@@ -44,6 +44,7 @@ public class UnitStats : MonoBehaviour
     [Header("Synergy")]
     [SerializeField] private SynergyState synergyState; // Assigned in Inspector
     private readonly Dictionary<SynergyData, int> appliedSynergyTiers = new Dictionary<SynergyData, int>();
+    private StatBoostEntry[] appliedAugments; // snapshot of augment deltas currently on this unit (for idempotent reconcile)
 
     // Events //
 
@@ -120,6 +121,7 @@ public class UnitStats : MonoBehaviour
     {
         CancelHealOverTime();
         RemoveAllSynergyBuffs();
+        appliedAugments = null; // stats reset to base -> augment snapshot is stale; rebuild re-applies
 
         currentShield   = 0f;
         OnShieldChanged?.Invoke(currentShield, unitData.maxHp);
@@ -331,6 +333,31 @@ public class UnitStats : MonoBehaviour
             }
         }
         appliedSynergyTiers.Clear();
+    }
+
+    /// <summary>
+    /// Reconcile this unit's augment stat buffs to the given aggregate. Idempotent: removes exactly the
+    /// deltas last applied to THIS unit (snapshot), then applies the new set — so repeated rebuilds don't
+    /// stack, a never-augmented (late/merged) unit isn't pushed below base, and augment changes update live.
+    /// </summary>
+    public void SetAugmentBoosts(IReadOnlyList<StatBoostEntry> boosts)
+    {
+        if (appliedAugments != null)
+            foreach (StatBoostEntry b in appliedAugments)
+                ApplyStatModifier(b.statType, -b.percentBoost);
+
+        if (boosts != null && boosts.Count > 0)
+        {
+            var snap = new StatBoostEntry[boosts.Count];
+            for (int i = 0; i < boosts.Count; i++)
+            {
+                StatBoostEntry b = boosts[i];
+                ApplyStatModifier(b.statType, b.percentBoost);
+                snap[i] = b;
+            }
+            appliedAugments = snap;
+        }
+        else appliedAugments = null;
     }
 
     // Stat Modifiers //

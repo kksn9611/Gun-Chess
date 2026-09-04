@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62173de7dacb0624689a19d8e65a0180, type: 3}
   m_Name: E3_ShieldSkill
   m_EditorClassIdentifier: Assembly-CSharp::ShieldSkill
-  skillName: E3_ShieldSkill
+  skillName: "\uBCF4\uD638\uB9C9 \uC804\uAC1C"
   description: "\uCCB4\uB825\uC774 \uB0AE\uC740 \uC544\uAD70 2\uBA85\uC5D0\uAC8C,
-    \uD53C\uD574\uB97C \uB9C9\uB294 \uBCF4\uD638\uB9C9\uC744 \uBD80\uC5EC\uD55C\uB2E4."
+    \uD53C\uD574\uB97C \uB9C9\uB294 \uBCF4\uD638\uB9C9\uC744 \uBD80\uC5EC\uD569\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 1
   useAnimationEvent: 1

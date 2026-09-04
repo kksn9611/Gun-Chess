@@ -39,14 +39,14 @@ public class SelfBuffSkill : BaseSkill
         if (boosts == null || boosts.Length == 0) return false;
 
         // Cast VFX parented to the caster so it follows the unit //
-        if (castVfxPrefab != null)
+        if (castVfxPrefab != null && BattleManager.Instance.CurrentPhase == BattleManager.Phase.Battle)
         {
             GameObject vfx = VfxPoolManager.Instance.Get(castVfxPrefab, caster.transform.position, Quaternion.identity);
             vfx.transform.SetParent(caster.transform, worldPositionStays: false);
             vfx.transform.localPosition = new Vector3(0f, 0.1f, 0f);
             vfx.transform.localRotation = Quaternion.identity;
             vfx.transform.localScale = vfxScale;
-            ReturnVfxOnCancel(castVfxPrefab, vfx, ct).Forget();
+            caster.RegisterSkillVfx(castVfxPrefab, vfx); // caster owns it; pooled on death / round reset
         }
 
         // Apply stat boosts to self
@@ -56,21 +56,5 @@ public class SelfBuffSkill : BaseSkill
             Debug.Log($"[SelfBuff] {caster.Stats.UnitData.unitName} +{entry.percentBoost}% {entry.statType}");
         }
         return true;
-    }
-
-    // Keep the buff VFX alive until the cast token cancels (battle reset / death), then pool it.
-    // Self-contained (no global event) and finally-guaranteed, so it can't miss cleanup no matter when
-    // it spawned — unlike the old OnBattleEnd subscription, which was lost if it spawned after that event.
-    private async UniTaskVoid ReturnVfxOnCancel(GameObject prefab, GameObject instance, CancellationToken ct)
-    {
-        try
-        {
-            await UniTask.WaitUntilCanceled(ct);
-        }
-        finally
-        {
-            if (instance != null)
-                VfxPoolManager.Instance.Return(prefab, instance);
-        }
     }
 }

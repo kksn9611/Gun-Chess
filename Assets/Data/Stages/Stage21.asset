@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f575635ce607dd4fb4bc2bea2497c7f, type: 3}
+  m_Name: Stage21
+  m_EditorClassIdentifier: Assembly-CSharp::StageData
+  enemies:
+  - unitData: {fileID: 11400000, guid: c97277561551228489f9447cd6f5a9bd, type: 2}
+    spawnCoordinate: {x: 3, y: 7}
+  - unitData: {fileID: 11400000, guid: 9b8ff2f0aa008d048850138375b30de5, type: 2}
+    spawnCoordinate: {x: 1, y: 7}
+  - unitData: {fileID: 11400000, guid: 6de3a627b5f690640a480c690f3c12e2, type: 2}
+    spawnCoordinate: {x: 5, y: 7}
+  - unitData: {fileID: 11400000, guid: c1b6801b9417e6549a10c1355ba414d6, type: 2}
+    spawnCoordinate: {x: 3, y: 6}
+  - unitData: {fileID: 11400000, guid: 628add7d59f46ce4f8c866efe319ec50, type: 2}
+    spawnCoordinate: {x: 1, y: 6}
+  - unitData: {fileID: 11400000, guid: 751958d06a621284ba453f71b4e22a56, type: 2}
+    spawnCoordinate: {x: 5, y: 6}
+  - unitData: {fileID: 11400000, guid: b995c0d8b62d5c94590ffef4584d40de, type: 2}
+    spawnCoordinate: {x: 3, y: 5}
+  - unitData: {fileID: 11400000, guid: 45fbf96731472d947922be96d017f183, type: 2}
+    spawnCoordinate: {x: 1, y: 5}
+  - unitData: {fileID: 11400000, guid: bc0484a2ac23438469529201d807de24, type: 2}
+    spawnCoordinate: {x: 5, y: 5}
+  enemyBuffs:
+  - statType: 2
+    percentBoost: 40
+  - statType: 3
+    percentBoost: 100
+  - statType: 0
+    percentBoost: 55
+  - statType: 1
+    percentBoost: 45

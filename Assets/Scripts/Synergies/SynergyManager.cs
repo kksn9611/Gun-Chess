@@ -7,6 +7,8 @@ using UnityEngine;
 /// </summary>
 public class SynergyManager : MonoBehaviour
 {
+    public static SynergyManager Instance { get; private set; }
+
     [Header("Shared Data")]
     [Tooltip("Project-wide shared SynergyState asset")]
     [SerializeField] private SynergyState synergyState;
@@ -17,7 +19,14 @@ public class SynergyManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
+        if (Instance == null) Instance = this;
+        else { Destroy(gameObject); return; }
         ResetState();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     /// <summary>Clear the shared synergy state.</summary>
@@ -34,12 +43,14 @@ public class SynergyManager : MonoBehaviour
     {
         UnitController.OnUnitSpawned += OnUnitSpawned;
         BattleManager.OnBattleEnd   += OnBattleEnd;
+        AugmentManager.OnAugmentsChanged += Recalculate; // re-apply player buffs when augments change
     }
 
     private void OnDisable()
     {
         UnitController.OnUnitSpawned -= OnUnitSpawned;
         BattleManager.OnBattleEnd   -= OnBattleEnd;
+        AugmentManager.OnAugmentsChanged -= Recalculate;
     }
 
     /// <summary>
@@ -103,6 +114,14 @@ public class SynergyManager : MonoBehaviour
             }
         }
 
+        // 1b) Fold in augment synergy-count bonuses (can activate a synergy from zero units)
+        if (AugmentManager.Instance != null)
+            foreach (var bonus in AugmentManager.Instance.AggregateSynergyBonuses())
+            {
+                if (bonus.Key == null) continue;
+                synergyCounts[bonus.Key] = (synergyCounts.TryGetValue(bonus.Key, out int c) ? c : 0) + bonus.Value;
+            }
+
         // 2) Build SynergyEntry list
         List<SynergyEntry> newEntries = new List<SynergyEntry>();
 
@@ -122,6 +141,13 @@ public class SynergyManager : MonoBehaviour
 
         // 3) Write to SynergyState → fire OnSynergyChanged
         synergyState.UpdateEntries(newEntries);
+
+        // 4) Apply augment stat buffs over the current player board (idempotent per-unit reconcile, so
+        //    late/merged units get them and repeated rebuilds don't stack).
+        var augBoosts = AugmentManager.Instance != null ? AugmentManager.Instance.AggregateBoosts() : null;
+        foreach (var unit in UnitManager.Instance.playerUnits)
+            if (unit != null && !unit.IsOnBench)
+                unit.Stats.SetAugmentBoosts(augBoosts);
 
         // Debug log
         foreach (var entry in newEntries)

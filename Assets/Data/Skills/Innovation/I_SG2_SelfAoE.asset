@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42359182c47dd864e92f67dccbfef1e1, type: 3}
   m_Name: I_SG2_SelfAoE
   m_EditorClassIdentifier: Assembly-CSharp::SelfAoESkill
-  skillName: I_SG2_SelfAoE
-  description: 
+  skillName: "\uC5D0\uB108\uC9C0\uD0C4"
+  description: "\uC8FC\uBCC0\uC73C\uB85C \uC5D0\uB108\uC9C0\uD0C4\uC744 \uC804\uAC1C\uD574
+    \uD53C\uD574\uB97C \uC785\uD799\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 2
   useAnimationEvent: 1

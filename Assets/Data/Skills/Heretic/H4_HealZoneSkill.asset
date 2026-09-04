@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12b63824be8ec7a4b8b8981cbc59cd2d, type: 3}
   m_Name: H4_HealZoneSkill
   m_EditorClassIdentifier: Assembly-CSharp::HealZoneSkill
-  skillName: H4_HealZoneSkill
-  description: "\uCCB4\uB825\uC774 \uB0AE\uC740 \uC544\uAD70 \uC8FC\uC704\uB85C,
-    \uD790 \uC601\uC5ED\uC744 \uC0DD\uC131\uD55C\uB2E4."
+  skillName: "\uD790\uB9C1\uC874"
+  description: "\uCCB4\uB825\uC774 \uB0AE\uC740 \uC544\uAD70\uC5D0\uAC8C, \uD790
+    \uC601\uC5ED\uC744 \uC0DD\uC131\uD569\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 1.5
   useAnimationEvent: 1
@@ -30,3 +30,4 @@ MonoBehaviour:
   color: {r: 0.3, g: 1, b: 0.4, a: 0.4}
   poolVfxPrefab: {fileID: 4369787680043664565, guid: 8541d0f8892d5ef449b23af6f820da4a, type: 3}
   vfxScale: {x: 1.65, y: 1, z: 1.65}
+  castVfxScale: {x: 1, y: 1, z: 1}

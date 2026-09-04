@@ -32,6 +32,21 @@ public class RoundManager : MonoBehaviour
     [SerializeField] private UnitSpawner unitSpawner;
     [SerializeField] private SynergyManager synergyManager;
     [SerializeField] private ShopManager shopManager;
+    [SerializeField] private MapIntro mapIntro;                   // board slide-in; gates unit placement
+
+    [Header("Pre-Battle Transition")]
+    [SerializeField] private PreBattleTransitionBar transitionBar; // drains during the pre-battle delay
+    [SerializeField] private float transitionDuration = 2f;        // seconds before the battle actually starts
+
+    private bool transitioning; // true while the pre-battle drain is running (blocks re-trigger)
+
+    [Header("Augments")]
+    [SerializeField] private AugmentSelectUI augmentSelectUI;      // offered on augment rounds
+    [SerializeField] private int[] augmentRounds = { 1, 3, 5 };    // rounds whose Preparation offers an augment
+    [SerializeField] private int augmentChoiceCount = 3;
+
+    [Header("Game Clear")]
+    [SerializeField] private GameClearUI gameClearUI;             // shown after the final stage is cleared
 
     private CancellationTokenSource cts;
 
@@ -46,6 +61,12 @@ public class RoundManager : MonoBehaviour
 
     /// <summary>Enemy units spawned for current round preview</summary>
     private readonly List<UnitController> previewEnemies = new();
+
+    // Initial (round 1) enemy placement is deferred until the BottomBar intro completes, so enemies
+    // appear only after the intro animation rather than immediately on Start.
+    private bool setupReady;            // Start finished the tile wait + player placement + round init
+    private bool bottomBarIntroDone;    // BottomBar intro onComplete has fired
+    private bool initialEnemiesPlaced;  // guard: place exactly once
 
     // Inspector: changing currentRound requests a forced transition.
     // Edit mode does nothing (tiles/managers don't exist yet); Play mode defers to Update so we never
@@ -82,14 +103,50 @@ public class RoundManager : MonoBehaviour
         // Wait for HexGridLayout / BenchLayout to create tiles
         await UniTask.WaitForSeconds(0.5f, cancellationToken: cts.Token);
 
+        // Wait for the Map intro to finish before placing any units: the board (tiles/bench) slides in as
+        // a child of Map, but units are positioned at tile world positions and are NOT parented, so they
+        // must be placed only once the board is at rest.
+        if (mapIntro != null) await mapIntro.WaitForCompletion(cts.Token);
+
         // Initial player unit placement
         SpawnPlayerUnitsForTest();
 
-        // Start round 1 preparation -- preview enemy units
+        // Round 1 setup. Enemy placement is deferred until the BottomBar intro finishes
+        // (see OnBottomBarIntroComplete), so it does NOT trigger immediately on Start.
         currentRound = 1;
         previousRound = currentRound;
+        setupReady = true;
+        TryPlaceInitialEnemies();
+    }
+
+    /// <summary>
+    /// Wired to BottomBarIntro.onComplete: the initial enemy placement runs only once the BottomBar
+    /// intro animation has completely finished.
+    /// </summary>
+    public void OnBottomBarIntroComplete()
+    {
+        bottomBarIntroDone = true;
+        TryPlaceInitialEnemies();
+    }
+
+    // Place round-1 preview enemies once BOTH the Start setup and the BottomBar intro are done
+    // (order-independent). Runs exactly once.
+    private void TryPlaceInitialEnemies()
+    {
+        if (initialEnemiesPlaced || !setupReady || !bottomBarIntroDone) return;
+        initialEnemiesPlaced = true;
+
         SpawnEnemiesForPreview(stages[currentRound - 1]);
         Debug.Log($"[RoundManager] === Round {currentRound} Preparation Phase ===");
+        MaybeOfferAugment();
+    }
+
+    /// <summary>Offer an augment choice if the current round is an augment round.</summary>
+    private void MaybeOfferAugment()
+    {
+        if (augmentSelectUI == null || augmentRounds == null) return;
+        for (int i = 0; i < augmentRounds.Length; i++)
+            if (augmentRounds[i] == currentRound) { augmentSelectUI.Offer(augmentChoiceCount); return; }
     }
 
     /// <summary>
@@ -102,35 +159,57 @@ public class RoundManager : MonoBehaviour
         BeginBattle();
     }
     /// <summary>
-    /// Start battle for the current round.
+    /// Begin the pre-battle transition for the current round. Returns true if it started (guards passed),
+    /// false otherwise. The battle itself starts after the transition delay.
     /// </summary>
-    public void BeginBattle()
+    public bool BeginBattle()
     {
-        if (BattleManager.Instance == null) return;
-        if (BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation) return;
+        if (transitioning) return false; // already committing
+        if (BattleManager.Instance == null) return false;
+        if (BattleManager.Instance.CurrentPhase != BattleManager.Phase.Preparation) return false;
 
         if (currentRound < 1 || currentRound > stages.Length)
         {
             Debug.LogWarning($"[RoundManager] Invalid round: {currentRound} (max {stages.Length})");
-            return;
+            return false;
         }
 
         // Block start while over the board limit (e.g. auto-bench couldn't fit the excess)
         if (BoardManager.Instance != null && BoardManager.Instance.FieldCount > BoardManager.Instance.Capacity)
         {
             Debug.LogWarning($"[RoundManager] Over board capacity: {BoardManager.Instance.FieldCount}/{BoardManager.Instance.Capacity}");
-            return;
+            return false;
         }
 
-        // 1) Save player unit positions (field units only)
+        BeginBattleTransitionAsync().Forget();
+        return true;
+    }
+
+    /// <summary>Pre-battle transition: play the cue + drain the bar, then capture board state and start.</summary>
+    private async UniTaskVoid BeginBattleTransitionAsync()
+    {
+        transitioning = true;
+
+        if (SoundManager.Instance != null) SoundManager.Instance.PlayUi(SoundId.UiTransition);
+
+        try
+        {
+            if (transitionBar != null) await transitionBar.Drain(transitionDuration, cts.Token);
+            else if (transitionDuration > 0f) await UniTask.WaitForSeconds(transitionDuration, cancellationToken: cts.Token);
+        }
+        catch (System.OperationCanceledException)
+        {
+            transitioning = false;
+            return; // scene teardown — abort the start
+        }
+
+        // Capture the final board (players may have adjusted during the transition), then start.
         SavePlayerUnitPositions();
-
-        // 2) Register preview enemies with UnitManager
         RegisterPreviewEnemies();
-
-        // 3) Start battle
         BattleManager.Instance.StartBattle();
         Debug.Log($"[RoundManager] === Round {currentRound} Battle Start ===");
+
+        transitioning = false;
     }
 
     // Battle End //
@@ -154,15 +233,16 @@ public class RoundManager : MonoBehaviour
         // Clear enemy units
         ClearEnemyUnits();
 
-        // Trim pools: remove unused VFX pools, shrink trail pools
-        TrailPoolManager.Instance.Trim();
-        VfxPoolManager.Instance.Trim();
-
         // Reset field tile occupancy (bench untouched)
         TileManager.Instance.ClearAllOccupied();
 
         // Restore player units to pre-battle positions
         RestorePlayerPositions();
+
+        // Trim pools AFTER units have returned their skill VFX this round (removes unused VFX pools,
+        // shrinks trail pools). Trimming earlier could evict pools whose instances aren't back yet.
+        TrailPoolManager.Instance.Trim();
+        VfxPoolManager.Instance.Trim();
 
         // Gain interest gold each round (calculated on held gold before this round's income)
         PlayerManager.Instance.GrantInterest();
@@ -191,6 +271,7 @@ public class RoundManager : MonoBehaviour
             Debug.Log("[RoundManager] === All Stages Cleared! ===");
             await UniTask.WaitForSeconds(resultPhaseDuration, cancellationToken: cts.Token);
             BattleManager.Instance.ResetBattle();
+            if (gameClearUI != null) gameClearUI.Show(); // dim screen + Return-to-Title / Quit
             return;
         }
 
@@ -199,6 +280,7 @@ public class RoundManager : MonoBehaviour
 
         BattleManager.Instance.ResetBattle();
         Debug.Log($"[RoundManager] === Round {currentRound} Preparation Phase ===");
+        MaybeOfferAugment();
     }
 
 
@@ -401,7 +483,9 @@ public class RoundManager : MonoBehaviour
         //    this it would be left on the board in no roster, on an unoccupied tile, untargetable and
         //    unselectable. Reclaim it so it stays usable.
         int reclaimed = 0;
-        foreach (UnitController unit in Object.FindObjectsByType<UnitController>(FindObjectsSortMode.None))
+        // Include inactive: a player unit spawned after the snapshot (merge/cascade) that then died is
+        // SetActive(false); without Include it's skipped and never reset (stale buffs/VFX if it returns).
+        foreach (UnitController unit in Object.FindObjectsByType<UnitController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
         {
             if (unit == null || restored.Contains(unit)) continue;
             if (unit.CurrentTeam != Team.Player || unit.IsOnBench) continue;
@@ -491,6 +575,7 @@ public class RoundManager : MonoBehaviour
         {
             if (enemy != null && enemy.gameObject != null)
             {
+                enemy.ClearSkillVfx();       // return buff/skill auras before the unit (and its children) die
                 // OnDestroy on each component cancels their CTS
                 Destroy(enemy.gameObject);
             }

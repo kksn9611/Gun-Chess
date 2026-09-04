@@ -36,7 +36,8 @@ public class StartBattleButton : MonoBehaviour
     /// <summary>Button onClick target.</summary>
     public void OnClick()
     {
-        if (roundManager != null) roundManager.BeginBattle();
+        // Hide as soon as the transition commits so it can't be re-clicked during the drain.
+        if (roundManager != null && roundManager.BeginBattle()) SetVisible(false);
     }
 
     // Phase handlers //

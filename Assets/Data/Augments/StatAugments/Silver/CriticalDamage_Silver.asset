@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61020d6d8ad4dd34a86e93c03e019a1a, type: 3}
+  m_Name: CriticalDamage_Silver
+  m_EditorClassIdentifier: Assembly-CSharp::AugmentData
+  augmentName: "\uCE58\uBA85\uD0C0"
+  description: "\uBAA8\uB4E0 \uC720\uB2DB\uC758 \uD06C\uB9AC\uD2F0\uCEEC \uB370\uBBF8\uC9C0
+    +16%"
+  icon: {fileID: 0}
+  rarity: 2
+  unique: 0
+  effects:
+  - {fileID: 11400000, guid: bf0ec3bf746039843975bfc028a20dbe, type: 2}

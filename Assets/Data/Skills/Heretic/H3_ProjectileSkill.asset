@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58e5b6ee1ad342a4eb06a05fc583d6cf, type: 3}
   m_Name: H3_ProjectileSkill
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileSkill
-  skillName: H3_ProjectileSkill
-  description: 
+  skillName: "\uB4DC\uB9B4"
+  description: "\uC801\uC5D0\uAC8C 4\uD68C \uAC15\uB825\uD55C \uC0AC\uACA9\uC744
+    \uAC00\uD569\uB2C8\uB2E4."
   castTime: 1
   animationSpd: 0.5
   useAnimationEvent: 1

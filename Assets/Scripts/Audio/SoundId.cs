@@ -14,10 +14,12 @@ public enum SoundId
     UiReroll = 14,
     UiError = 15,
     UiLevelUp = 16,
+    UiTransition = 17,
+    UiSelect = 18, // augment pick confirm
 
     // BGM (50-99)
-    BgmPreparation = 50,
-    BgmBattle = 51,
+    MainBgm = 50,
+    TitleBgm = 51,
 
     // Result stingers — played as SFX one-shots (values kept for catalog binding)
     Victory = 52,
