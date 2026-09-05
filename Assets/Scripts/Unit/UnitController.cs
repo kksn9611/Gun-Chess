@@ -92,6 +92,7 @@ public class UnitController : MonoBehaviour
     {
         Stats.Initialize(data);
         Visuals.Initialize(data);
+        if (team == Team.Enemy) Visuals.ApplyEnemySkin(); // enemy re-skin (stages reuse champion prefabs)
         currentTeam  = team;
         currentCoord = spawnTile.GetCoordinate();
         spawnTile.IsOccupied = true;

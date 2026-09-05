@@ -23,8 +23,6 @@ MonoBehaviour:
     spawnCoordinate: {x: 1, y: 6}
   - unitData: {fileID: 11400000, guid: de1ce9825381c7f49b770a07652924e4, type: 2}
     spawnCoordinate: {x: 5, y: 6}
-  - unitData: {fileID: 11400000, guid: 042e553ce84ae054c93e6bf5baa384b0, type: 2}
-    spawnCoordinate: {x: 3, y: 6}
   enemyBuffs:
   - statType: 2
     percentBoost: 25

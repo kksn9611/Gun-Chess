@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Stage12
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   enemies:
-  - unitData: {fileID: 11400000, guid: 7827e9a0810e25f4d91daba4ac3ec99a, type: 2}
-    spawnCoordinate: {x: 3, y: 7}
   - unitData: {fileID: 11400000, guid: 936ffee8d5d1fa7419b3bb2efcbd48c7, type: 2}
     spawnCoordinate: {x: 1, y: 7}
   - unitData: {fileID: 11400000, guid: c5cdc97302fb7934f9111d4f03c7a3df, type: 2}

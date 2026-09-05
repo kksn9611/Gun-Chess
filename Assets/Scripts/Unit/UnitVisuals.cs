@@ -98,6 +98,39 @@ public class UnitVisuals : MonoBehaviour
         if (skillProjectilePrefab != null && data.skillPoolSize > 0)
             VfxPoolManager.Instance.Prewarm(skillProjectilePrefab, data.skillPoolSize);
     }
+
+    // Enemy Skin //
+
+    private const string CamoPath = "Materials/Enemy/Agent_Camo";
+    private const string BodyObject = "SK_Body";
+    private const string LegsObject = "SK_Legs";
+    private static Material enemyCamo; // shared, loaded once
+
+    /// <summary>
+    /// Re-skin an enemy-team unit's body and legs to Agent_Camo. Stages reuse player champion prefabs as
+    /// enemies, so without this they wear their own faction camo and read as friendly units.
+    /// </summary>
+    public void ApplyEnemySkin()
+    {
+        if (enemyCamo == null) enemyCamo = Resources.Load<Material>(CamoPath);
+        if (enemyCamo == null)
+        {
+            Debug.LogWarning($"[UnitVisuals] Enemy camo material not found at Resources/{CamoPath}");
+            return;
+        }
+
+        foreach (SkinnedMeshRenderer r in GetComponentsInChildren<SkinnedMeshRenderer>(true))
+        {
+            if (r.gameObject.name != BodyObject && r.gameObject.name != LegsObject) continue;
+
+            // Slot 0 is the faction camo; slot 1 is the per-unit accent / belt, kept as-is so enemies
+            // match how the dedicated Agent prefabs are built.
+            Material[] mats = r.sharedMaterials;
+            if (mats.Length == 0 || mats[0] == enemyCamo) continue;
+            mats[0] = enemyCamo;
+            r.sharedMaterials = mats; // instance-level assignment; the prefab asset is untouched
+        }
+    }
     private void OnDestroy()
     {
         cts?.Cancel();

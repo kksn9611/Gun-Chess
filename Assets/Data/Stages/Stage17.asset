@@ -13,8 +13,6 @@ MonoBehaviour:
   m_Name: Stage17
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   enemies:
-  - unitData: {fileID: 11400000, guid: 25fcf4174048f5b4790dd629ce6d1300, type: 2}
-    spawnCoordinate: {x: 3, y: 7}
   - unitData: {fileID: 11400000, guid: c1b6801b9417e6549a10c1355ba414d6, type: 2}
     spawnCoordinate: {x: 1, y: 7}
   - unitData: {fileID: 11400000, guid: 748cba07ae05857469e749f841ab2147, type: 2}
@@ -23,16 +21,14 @@ MonoBehaviour:
     spawnCoordinate: {x: 3, y: 6}
   - unitData: {fileID: 11400000, guid: b317bb8bfe0ad7f4bbca3dc3e01243e9, type: 2}
     spawnCoordinate: {x: 1, y: 6}
-  - unitData: {fileID: 11400000, guid: c5cdc97302fb7934f9111d4f03c7a3df, type: 2}
+  - unitData: {fileID: 11400000, guid: 46869eeb7fce8b84fafbb89bfabf6c58, type: 2}
     spawnCoordinate: {x: 5, y: 6}
   - unitData: {fileID: 11400000, guid: bc0484a2ac23438469529201d807de24, type: 2}
     spawnCoordinate: {x: 3, y: 5}
   enemyBuffs:
-  - statType: 2
-    percentBoost: 30
   - statType: 3
     percentBoost: 50
   - statType: 0
-    percentBoost: 35
-  - statType: 1
     percentBoost: 25
+  - statType: 1
+    percentBoost: 50

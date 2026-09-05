@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: Stage23
   m_EditorClassIdentifier: Assembly-CSharp::StageData
   enemies:
-  - unitData: {fileID: 11400000, guid: 9b8ff2f0aa008d048850138375b30de5, type: 2}
-    spawnCoordinate: {x: 3, y: 7}
-  - unitData: {fileID: 11400000, guid: 6de3a627b5f690640a480c690f3c12e2, type: 2}
+  - unitData: {fileID: 11400000, guid: b7c64af9873a31d4c9be8847b5c3274b, type: 2}
     spawnCoordinate: {x: 1, y: 7}
   - unitData: {fileID: 11400000, guid: f183879e0a20a5044aa331a42c9fc5a1, type: 2}
     spawnCoordinate: {x: 5, y: 7}
@@ -32,11 +30,9 @@ MonoBehaviour:
   - unitData: {fileID: 11400000, guid: 45fbf96731472d947922be96d017f183, type: 2}
     spawnCoordinate: {x: 5, y: 5}
   enemyBuffs:
-  - statType: 2
-    percentBoost: 40
   - statType: 3
-    percentBoost: 100
+    percentBoost: 50
   - statType: 0
-    percentBoost: 65
+    percentBoost: 25
   - statType: 1
-    percentBoost: 55
+    percentBoost: 50

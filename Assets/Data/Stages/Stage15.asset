@@ -19,20 +19,14 @@ MonoBehaviour:
     spawnCoordinate: {x: 1, y: 7}
   - unitData: {fileID: 11400000, guid: 45fbf96731472d947922be96d017f183, type: 2}
     spawnCoordinate: {x: 5, y: 7}
-  - unitData: {fileID: 11400000, guid: eda89350d2a9f9641b5fab7f1e1197c7, type: 2}
+  - unitData: {fileID: 11400000, guid: 46869eeb7fce8b84fafbb89bfabf6c58, type: 2}
     spawnCoordinate: {x: 3, y: 6}
-  - unitData: {fileID: 11400000, guid: 06371fcbeadd4af4e808cf030b53fc35, type: 2}
-    spawnCoordinate: {x: 1, y: 6}
-  - unitData: {fileID: 11400000, guid: 9286eb913518f6d4180bdb2a48283242, type: 2}
-    spawnCoordinate: {x: 5, y: 6}
   - unitData: {fileID: 11400000, guid: 25fcf4174048f5b4790dd629ce6d1300, type: 2}
     spawnCoordinate: {x: 3, y: 5}
   enemyBuffs:
-  - statType: 2
-    percentBoost: 30
   - statType: 3
     percentBoost: 50
   - statType: 0
     percentBoost: 25
   - statType: 1
-    percentBoost: 15
+    percentBoost: 50

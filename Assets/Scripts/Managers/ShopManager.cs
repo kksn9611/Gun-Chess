@@ -92,11 +92,12 @@ public class ShopManager : MonoBehaviour
         ReturnReservedUnits();
 
         int level = player.CurrentLevel;
+        HashSet<UnitData> maxedBases = CollectMaxedBases(); // 3-star (9-copy) champions to hide from the roll
         shopList.Clear();
         for (int i = 0; i < currnetShop.Length; i++)
         {
             int cost = probabilitySO.RollCostTier(level);
-            UnitData unit = unitPool.GetRandomAvailableUnit(cost);
+            UnitData unit = unitPool.GetRandomAvailableUnit(cost, maxedBases);
             if (unit != null && !unitPool.TryAcquire(unit)) unit = null; // reserve the shown copy
 
             currnetShop[i].currnetUnit = unit; // null if tier depleted
@@ -104,6 +105,31 @@ public class ShopManager : MonoBehaviour
             shopList.Add(unit);
         }
         OnShopChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Base champions the player has already maxed to 3-star (9+ copies). Those are hidden from rerolls —
+    /// buying more is pointless since they can't upgrade further. Scans owned units on board and bench.
+    /// </summary>
+    private HashSet<UnitData> CollectMaxedBases()
+    {
+        var maxed = new HashSet<UnitData>();
+        if (unitPool == null) return maxed;
+        if (UnitManager.Instance != null) AddMaxedFrom(maxed, UnitManager.Instance.playerUnits);
+        if (BenchManager.Instance != null) AddMaxedFrom(maxed, BenchManager.Instance.benchUnits);
+        return maxed;
+    }
+
+    private void AddMaxedFrom(HashSet<UnitData> maxed, IEnumerable<UnitController> units)
+    {
+        if (units == null) return;
+        foreach (UnitController u in units)
+        {
+            if (u == null || u.Stats == null || u.Stats.UnitData == null) continue;
+            if (UnitPool.CopiesFor(u.Stats.StarLevel) < 9) continue; // 3-star = 9 copies
+            UnitData baseUnit = unitPool.GetBaseUnit(u.Stats.UnitData);
+            if (baseUnit != null) maxed.Add(baseUnit);
+        }
     }
 
     /// <summary>Return every still-shown (unpurchased) copy to the pool and clear the slots.</summary>

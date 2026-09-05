@@ -11,6 +11,10 @@ public class HPBar : MonoBehaviour
     private Camera mainCam;
     private Transform targetAnchor;
 
+    // Screen-to-canvas conversion (works for Overlay and Camera/World Space canvases alike) //
+    private RectTransform canvasRect;
+    private Camera uiCamera; // null for Screen Space - Overlay, the canvas's render camera otherwise
+
     public void Initialize(UnitController target, Transform uiAnchor)
     {
         targetUnit = target;
@@ -19,6 +23,10 @@ public class HPBar : MonoBehaviour
         targetUnit.OnBenchState += BarStateChanged;
         mainCam = Camera.main;
         targetAnchor = uiAnchor;
+
+        canvasRect = transform.parent as RectTransform; // bar is instantiated directly under the canvas
+        Canvas canvas = canvasRect != null ? canvasRect.GetComponent<Canvas>() : null;
+        uiCamera = (canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay) ? canvas.worldCamera : null;
 
         // Apply initial state (hide immediately if spawned on bench)
         gameObject.SetActive(!targetUnit.IsOnBench);
@@ -82,7 +90,12 @@ public class HPBar : MonoBehaviour
             gameObject.SetActive(true);
         }
 
-        transform.position = mainCam.WorldToScreenPoint(targetAnchor.position);
+        // Convert to canvas-local space instead of assigning world position directly: only equivalent to
+        // screen pixels under Screen Space - Overlay, and silently wrong (bar flies off to whatever world
+        // point those pixel numbers name) under Screen Space - Camera / World Space.
+        Vector2 screenPoint = mainCam.WorldToScreenPoint(targetAnchor.position);
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, uiCamera, out Vector2 localPoint))
+            transform.localPosition = localPoint;
     }
 
     private void OnDestroy()

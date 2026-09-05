@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,6 +29,10 @@ public class TitleMenu : MonoBehaviour
 
     private void Awake()
     {
+
+        QualitySettings.vSyncCount = 0;
+        Application.targetFrameRate = 120;
+
         if (loadingBarRoot != null) loadingBarRoot.SetActive(false);
     }
 

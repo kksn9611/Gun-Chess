@@ -106,6 +106,10 @@ public class UnitPool : MonoBehaviour
     public int GetAvailable(UnitData unit)
         => ResolveEntry(unit, out Entry e) ? e.available : 0;
 
+    /// <summary>The tier-1 base champion for any star variant (null if not in the database).</summary>
+    public UnitData GetBaseUnit(UnitData unit)
+        => (unit != null && baseOf.TryGetValue(unit, out UnitData baseUnit)) ? baseUnit : null;
+
 
     // Acquire / Return //
 
@@ -137,14 +141,15 @@ public class UnitPool : MonoBehaviour
     // Roll //
 
     /// <summary>
-    /// Random in-stock base unit of the given cost, weighted by available copies.
-    /// Null if none of that cost has stock. Does not change pool counts.
+    /// Random in-stock base unit of the given cost, weighted by available copies. Bases in
+    /// <paramref name="excludedBases"/> (e.g. already maxed to 3-star) are skipped. Null if none
+    /// of that cost qualifies. Does not change pool counts.
     /// </summary>
-    public UnitData GetRandomAvailableUnit(int targetCost)
+    public UnitData GetRandomAvailableUnit(int targetCost, ICollection<UnitData> excludedBases = null)
     {
         int total = 0;
         foreach (var pair in entries)
-            if (pair.Key.cost == targetCost && pair.Value.available > 0)
+            if (Eligible(pair.Key, pair.Value, targetCost, excludedBases))
                 total += pair.Value.available;
 
         if (total == 0) return null;
@@ -152,12 +157,16 @@ public class UnitPool : MonoBehaviour
         int roll = UnityEngine.Random.Range(0, total);
         foreach (var pair in entries)
         {
-            if (pair.Key.cost != targetCost || pair.Value.available <= 0) continue;
+            if (!Eligible(pair.Key, pair.Value, targetCost, excludedBases)) continue;
             roll -= pair.Value.available;
             if (roll < 0) return pair.Key;
         }
         return null; // unreachable
     }
+
+    private static bool Eligible(UnitData baseUnit, Entry e, int targetCost, ICollection<UnitData> excludedBases)
+        => baseUnit.cost == targetCost && e.available > 0
+           && (excludedBases == null || !excludedBases.Contains(baseUnit));
 
 
     // Helpers //
