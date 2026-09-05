@@ -15,7 +15,7 @@ MonoBehaviour:
   enemies:
   - unitData: {fileID: 11400000, guid: ad1c235d4c8bc7041bde3fb18778024a, type: 2}
     spawnCoordinate: {x: 3, y: 7}
-  - unitData: {fileID: 11400000, guid: c97277561551228489f9447cd6f5a9bd, type: 2}
+  - unitData: {fileID: 11400000, guid: 748cba07ae05857469e749f841ab2147, type: 2}
     spawnCoordinate: {x: 1, y: 7}
   - unitData: {fileID: 11400000, guid: b7c64af9873a31d4c9be8847b5c3274b, type: 2}
     spawnCoordinate: {x: 3, y: 6}
@@ -29,8 +29,8 @@ MonoBehaviour:
     spawnCoordinate: {x: 1, y: 5}
   enemyBuffs:
   - statType: 3
-    percentBoost: 50
+    percentBoost: 40
   - statType: 0
     percentBoost: 25
   - statType: 1
-    percentBoost: 50
+    percentBoost: 20

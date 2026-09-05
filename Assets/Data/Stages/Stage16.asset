@@ -27,8 +27,8 @@ MonoBehaviour:
     spawnCoordinate: {x: 3, y: 5}
   enemyBuffs:
   - statType: 3
-    percentBoost: 50
+    percentBoost: 40
   - statType: 0
     percentBoost: 25
   - statType: 1
-    percentBoost: 50
+    percentBoost: 20

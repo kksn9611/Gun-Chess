@@ -16,7 +16,7 @@ MonoBehaviour:
   triggerOnSkill: 0
   triggerOnDamaged: 0
   damageChance: 0.25
-  damage: 60
+  damage: 75
   hitVfxPrefab: {fileID: 8307689965681055727, guid: 22a071f31c0ba134ca7a5e82f5c5ca03, type: 3}
   vfxScale: {x: 0.7, y: 0.7, z: 0.7}
   vfxLifetime: 2
